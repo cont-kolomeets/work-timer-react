@@ -1,0 +1,1059 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Work Timer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
+
+    <script src="http://js.arcgis.com/3.9/"></script>
+    <script>
+        // Version 0.0.3
+
+        require([
+                "dojo/_base/lang",
+                "dojo/on",
+                "dojo/dom",
+                "dojo/dom-class",
+                "dojo/dom-construct",
+                "dojo/string",
+                "dojo/request/xhr",
+                "dojo/domReady!"
+            ],
+            function (
+                lang,
+                on,
+                dom,
+                domClass,
+                domConstruct,
+                string,
+                xhr
+            ) {
+
+                // User action controller
+
+                var UserActionController = {
+                    start: function () {
+                        document.body.style["backgroundColor"] = "black";
+
+                        on(document.body, "keyup", function (event) {
+                            if (event.keyCode == 32) {
+                                TimeController.toggleTimer();
+                                document.body.style["backgroundColor"] = "black";
+                            }
+                        });
+
+                        on(document.body, "keydown", function (event) {
+                            if (event.keyCode == 32)
+                                document.body.style["backgroundColor"] = "#333333";
+                        });
+                    }
+                }
+
+                // TimeConverted
+
+                var TimeConverter = {
+
+                    // 100000 => { h, m, s, ms10 }
+                    totalToParts: function (total) {
+                        var h = Math.floor(total / 3600000);
+                        total -= h * 3600000;
+                        var m = Math.floor(total / 60000);
+                        total -= m * 60000;
+                        var s = Math.floor(total / 1000);
+                        total -= s * 1000;
+                        var ms10 = Math.floor(total / 10);
+
+                        return {
+                            h: h,
+                            m: m,
+                            s: s,
+                            ms10: ms10
+                        }
+                    },
+
+                    // objectOrString "h:m:s:ms10" => { h, m, s, ms10 } => 1000000
+                    partsToTotal: function (objectOrString) {
+                        var parts;
+                        if (typeof objectOrString == "object")
+                            parts = objectOrString;
+                        else {
+                            var ps = objectOrString.split(":");
+                            parts = {
+                                h: Number(ps[0] || 0),
+                                m: Number(ps[1] || 0),
+                                s: Number(ps[2] || 0),
+                                ms10: Number(ps[3] || 0)
+                            }
+                        }
+                        return (parts.h || 0) * 3600000 + (parts.m || 0) * 60000 + (parts.s || 0) * 1000 + (
+                            parts.ms10 || 0) * 10;
+                    },
+
+                    // 10 => 10
+                    // 1 => 01
+                    format2digit: function (value) {
+                        return (value < 10 ? "0" : "") + value;
+                    },
+
+                    // 100000 => "h:m:s" | "h:m:s:ms10"
+                    formatTotal: function (total, format /* e.g. "h:m:s", "h:m:s:ms10"*/ ) {
+                        var parts = this.totalToParts(total);
+                        var fs = format.split(":");
+                        return fs.map(function (f) {
+                            return parts[f] || 0;
+                        }).map(function (v) {
+                            return TimeConverter.format2digit(v);
+                        }).join(":");
+                    }
+                };
+
+                // TimeController
+
+                function _toDayInfo(dayInfo) {
+                    if (!dayInfo || typeof dayInfo === "number") {
+                        dayInfo = {
+                            elapsed: typeof dayInfo === "number" ? dayInfo : 0
+                        };
+                    }
+
+                    dayInfo.elapsed = dayInfo.elapsed || 0;
+                    dayInfo.points = dayInfo.points || [];
+
+                    if (dayInfo.firstStart) {
+                        dayInfo.points.push({
+                            start: dayInfo.firstStart,
+                            end: dayInfo.firstStart
+                        });
+                        dayInfo.points.length = 1;
+                        delete dayInfo.firstStart;
+                    }
+
+                    if (dayInfo.points.length === 1 && !dayInfo.points[0].end) {
+                        dayInfo.points[0].end = dayInfo.points[0].start;
+                    }
+
+                    return dayInfo;
+                }
+
+                var TimeController = {
+
+                    years: {}, // hash
+
+                    _currentDay: -1,
+
+                    _currentMonth: -1,
+
+                    _currentYear: -1,
+
+                    _userMonth: -1,
+
+                    _userYear: -1,
+
+                    toggleTimer: function () {
+                        if (DayTimer.isRunning) {
+                            DayTimer.stop();
+                            this._saveCurrentData();
+                        } else {
+                            this._provideCurrentDayPath();
+                            DayTimer.start(this.getCurrentDayInfo().elapsed);
+
+                            var self = this;
+                            DayTimer.onTickSecond = function () {
+                                self._saveCurrentData();
+                                StatusController.update();
+                                Chart.update();
+                            }
+
+                            DateLabel.update();
+                        }
+                    },
+
+                    getCurrentDayInfo: function () {
+                        var year = this.years[this._currentYear];
+                        var month = year && year.months[this._currentMonth];
+                        var dayInfo = _toDayInfo(month && month.days[this._currentDay]);
+                        month && (month.days[this._currentDay] = dayInfo);
+                        return dayInfo;
+                    },
+
+                    // makes sure the hash structure for the current month/day exists
+                    _provideCurrentDayPath: function () {
+                        this._currentDay = this._getMonthDay();
+                        this._currentMonth = this._getMonth();
+                        this._currentYear = this._getYear();
+
+                        var year = this.years[this._currentYear] = this.years[this._currentYear] ||
+                        {}; // provide a year
+                        var months = year.months = year.months || {};
+
+                        var month = months[this._currentMonth] = months[this._currentMonth] ||
+                        {}; // provide a month
+                        month.days = month.days || {}; // provide days hash
+                        // TODO: update timeNeeded
+                        month.timeNeeded = month.timeNeeded || TimeConverter.partsToTotal({
+                            h: 8 * 20
+                        });
+
+                        var days = months[this._currentMonth].days;
+                        var dayInfo = days[this._currentDay] = _toDayInfo(days[this._currentDay]);
+                        if (!dayInfo.points.length) {
+                            dayInfo.points.push({
+                                start: new Date().getTime(),
+                                end: new Date().getTime()
+                            })
+                        }
+                    },
+
+                    _saveCurrentData: function () {
+                        if (this._currentDay === -1)
+                            return;
+
+                        const m = this.years[this._currentYear].months[this._currentMonth]
+
+                        var dayInfo = m.days[this._currentDay] = _toDayInfo(m.days[this._currentDay]);
+                        dayInfo.elapsed = DayTimer.info.timeElapsed || 0;
+
+                        const lastPoint = dayInfo.points[dayInfo.points.length - 1];
+                        if (lastPoint && lastPoint.end) {
+                            const curTime = new Date().getTime();
+
+                            if (curTime - lastPoint.end > 20000 /* 20 seconds */ ) {
+                                // start a new interval
+                                dayInfo.points.push({
+                                    start: curTime,
+                                    end: curTime
+                                });
+                            } else {
+                                lastPoint.end = curTime;
+                            }
+                        }
+
+                        localStorage.setItem("workTimer.yearsItem", JSON.stringify({
+                            years: this.years
+                        }));
+                    },
+
+                    // return
+                    // { total: ms, timeNeeded: ms, completedRatio: 0..1 }
+                    getCurrentMonthCompletion: function () {
+                        var year = this.years[this.getVisibleYear()];
+                        if (!year)
+                            return;
+
+                        var month = year.months[this.getVisibleMonth()];
+                        if (!month)
+                            return null;
+
+                        var totalFromDays = 0;
+                        for (var id in month.days) {
+                            var dayInfo = month.days[id] = _toDayInfo(month.days[id]);
+                            totalFromDays += dayInfo.elapsed > 0 ? dayInfo.elapsed : 0;
+                        }
+
+                        return {
+                            total: totalFromDays,
+                            timeNeeded: month.timeNeeded,
+                            completedRatio: totalFromDays / month.timeNeeded
+                        };
+                    },
+
+                    getCurrentMonthTimeList: function (daysOnly) {
+                        var self = this;
+                        var list = [];
+
+                        var isUserMonth = this._userMonth != -1 && this._userMonth != this._currentMonth &&
+                            this._userYear != -1 && this._userYear != this._currentYear;
+                        var year = this.years[this.getVisibleYear()];
+                        if (!year)
+                            return list;
+
+                        var month = year.months[this.getVisibleMonth()];
+                        if (!month)
+                            return list;
+
+                        for (var id in month.days)
+                            createDayDataObject(id);
+
+                        function createDayDataObject(id) {
+                            var dayInfo = month.days[id] = _toDayInfo(month.days[id]);
+                            var dayTime = dayInfo.elapsed;
+                            if (dayTime > 0)
+                                list.push({
+                                    dayIndex: id,
+                                    isCurrent: !isUserMonth && id == self._currentDay,
+                                    dayTime: dayTime,
+                                    // Ability to change the elapased time for a specified day
+                                    setNewTimeFunc: function (value /*hh:mm*/ ) {
+                                        if (!value || value.indexOf(":") == -1) {
+                                            alert("Incorrect entry!");
+                                            return;
+                                        }
+                                        var ps = value.split(":");
+
+                                        DayTimer.stop();
+
+                                        const dayInfo = month.days[id] = _toDayInfo(month.days[id]);
+                                        dayInfo.elapsed = TimeConverter.partsToTotal({
+                                            h: Number(ps[0]),
+                                            m: Number(ps[1])
+                                        });
+                                        if (!isUserMonth && id == self._currentDay)
+                                            DayTimer.setElapsedTime(month.days[id].elapsed);
+                                        else
+                                            DayTimer.visualizeGrid();
+
+                                        self._saveCurrentData();
+                                    }
+                                });
+                        }
+
+                        var completionInfo = this.getCurrentMonthCompletion();
+                        if (completionInfo && !daysOnly) {
+                            list.push({
+                                dayIndex: "Total",
+                                dayTime: completionInfo.total,
+                                isTotal: true,
+                                // Ability to change the total month time
+                                setNewMonthTimeFunc: function (value /*hh:mm*/ ) {
+                                    if (!value || value.indexOf(":") == -1) {
+                                        alert("Incorrect entry!");
+                                        return;
+                                    }
+                                    var ps = value.split(":");
+
+                                    DayTimer.stop();
+
+                                    month.timeNeeded = TimeConverter.partsToTotal({
+                                        h: Number(ps[0]),
+                                        m: Number(ps[1])
+                                    });
+                                    DayTimer.visualizeData();
+                                    DayTimer.visualizeGrid();
+
+                                    self._saveCurrentData();
+                                }
+                            });
+                        }
+
+                        if (!daysOnly) {
+                            list.push({
+                                dayIndex: "Dept",
+                                dayTime: year.dept,
+                                isDept: true,
+                                // Ability to change the total depth for a year
+                                setYearDeptFunc: function (value /*hh:mm*/ ) {
+                                    if (!value || value.indexOf(":") == -1) {
+                                        alert("Incorrect entry!");
+                                        return;
+                                    }
+                                    var ps = value.split(":");
+
+                                    DayTimer.stop();
+
+                                    year.dept = TimeConverter.partsToTotal({
+                                        h: Number(ps[0]),
+                                        m: Number(ps[1])
+                                    });
+                                    DayTimer.visualizeData();
+                                    DayTimer.visualizeGrid();
+
+                                    self._saveCurrentData();
+                                }
+                            });
+                        }
+
+                        return list;
+                    },
+
+                    _getMonthDay: function () {
+                        return new Date().getDate();
+                    },
+
+                    _getMonth: function () {
+                        return new Date().getMonth() + 1;
+                    },
+
+                    _getYear: function () {
+                        return new Date().getFullYear();
+                    },
+
+                    // used to visualize data from other years and months
+                    setUserYearMonth: function (year, month) {
+                        this._userYear = year;
+                        this._userMonth = month;
+                    },
+
+                    getVisibleMonth: function () {
+                        return this._userMonth != -1 ? this._userMonth : this._currentMonth;
+                    },
+
+                    getVisibleYear: function () {
+                        return this._userYear != -1 ? this._userYear : this._currentYear;
+                    },
+
+                    getNumDaysInCurrentMonth: function (excludeWeekend) {
+                        var d = new Date();
+                        var totalDaysInMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+
+                        if (excludeWeekend) {
+                            var numWeekendDays = 0;
+                            for (var i = 1; i <= totalDaysInMonth; i++) {
+                                var d = new Date();
+                                d.setDate(i);
+                                if (d.getDay() == 0 || d.getDay() == 6)
+                                    numWeekendDays++;
+                            }
+                            totalDaysInMonth -= numWeekendDays;
+                        }
+
+                        return totalDaysInMonth;
+                    },
+
+                    fromJson: function (settings) {
+                        this.years = settings.years || {};
+                        this._provideCurrentDayPath();
+                    }
+                };
+
+                // DayTimer
+
+                var DayTimer = {
+
+                    info: {
+                        // startTime
+                        // timeElapsed
+                    },
+
+                    _intervalHandle: null,
+
+                    isRunning: false,
+
+                    // this can be used to visualize the time before starting the timer
+                    setElapsedTime: function (timeElapsed) {
+                        this.stop();
+                        this.info.timeElapsed = timeElapsed;
+                        this.visualizeData();
+                        this.visualizeGrid();
+                    },
+
+                    // specify timeElapsed if you want to start the timer with some time already elapsed
+                    start: function (timeElapsed) {
+                        this.stop();
+
+                        this.isRunning = true;
+                        this._updateDocumentHeader();
+                        this.info.startTime = new Date().getTime();
+                        if (timeElapsed > 0)
+                            this.info.startTime -= timeElapsed;
+
+                        var self = this;
+                        var secondPoint = new Date().getTime();
+
+                        function _updateTimer() {
+                            var currentTime = new Date().getTime();
+                            var delta = currentTime - self.info.startTime;
+                            self.info.timeElapsed = delta;
+                            self.visualizeData();
+                            if (currentTime - secondPoint > 5000) {
+                                secondPoint = currentTime;
+                                self.onTickSecond();
+                                self.visualizeGrid();
+                            }
+                        }
+
+                        this._intervalHandle = setInterval(_updateTimer, 33);
+                        _updateTimer();
+                    },
+
+                    stop: function () {
+                        this._intervalHandle && clearInterval(this._intervalHandle);
+                        this.isRunning = false;
+                        this._updateDocumentHeader();
+                    },
+
+                    _updateDocumentHeader: function () {
+                        if (this.isRunning)
+                            document.title = "WT " + TimeConverter.formatTotal(this.info.timeElapsed,
+                                "h:m:s");
+                        else
+                            document.title = "Work Timer (STOPPED!)";
+                    },
+
+                    onTickSecond: function () {},
+
+                    visualizeData: function () {
+                        timerDivH.innerHTML = TimeConverter.formatTotal(this.info.timeElapsed, "h") + ":";
+                        timerDivRest.innerHTML = TimeConverter.formatTotal(this.info.timeElapsed,
+                            "m:s:ms10");
+
+                        // day completion
+                        dayProgressBarCompleted.style["width"] = Math.min(100, this.info.timeElapsed / (8 *
+                            3.6E6) * 100) + "%";
+
+                        // month completion
+                        var monthCompletionInfo = TimeController.getCurrentMonthCompletion();
+                        var percent = monthCompletionInfo ? monthCompletionInfo.completedRatio : 0;
+                        progressBarCompleted.style["width"] = Math.min(100, percent * 100) + "%";
+                        progressBarLabel.innerHTML = (percent * 100).toFixed(2) + "%";
+
+                        this._calcWhenStarted();
+                        this._calcWhenToLeave();
+
+                        this._updateDocumentHeader();
+                    },
+
+                    _calcWhenStarted: function () {
+                        const dayInfo = TimeController.getCurrentDayInfo();
+                        if (!dayInfo.points.length) {
+                            startedTodayInfo.innerHTML = "Hasn't started yet";
+                        } else {
+                            var started = new Date(dayInfo.points[0].start);
+                            startedTodayInfo.innerHTML =
+                                `Started today at ${started.getHours()}:${TimeConverter
+                                .format2digit(started.getMinutes())}`;
+                        }
+                    },
+
+                    _calcWhenToLeave: function () {
+                        var date = new Date();
+                        var elapsedInfo = TimeConverter.totalToParts(this.info.timeElapsed);
+                        var hLeft = 8 - elapsedInfo.h;
+                        var mLeft = 0;
+                        if (elapsedInfo.m) {
+                            hLeft--;
+                            mLeft = 60 - elapsedInfo.m;
+                        }
+
+                        // add time for lunch if before 2 PM
+                        if (date.getHours() < 14)
+                            mLeft += 40;
+
+                        if (mLeft > 60) {
+                            hLeft++;
+                            mLeft -= 60;
+                        }
+
+                        if (hLeft < 0) {
+                            whenLeaveInfo.innerHTML = "You can leave now!"
+                        } else {
+                            var hLeave = date.getHours() + hLeft;
+                            var mLeave = date.getMinutes() + mLeft;
+                            if (mLeave > 60) {
+                                hLeave++;
+                                mLeave -= 60;
+                            }
+                            // update when to leave today
+                            whenLeaveInfo.innerHTML = "You can leave at " + hLeave + ":" + TimeConverter
+                                .format2digit(mLeave);
+                        }
+                    },
+
+                    visualizeGrid: function () {
+                        Grid.refresh();
+                    }
+                };
+
+                // Grid
+
+                var Grid = {
+
+                    gridData: [],
+
+                    columns: [{
+                            label: "Day",
+                            field: "dayIndex"
+                        },
+                        {
+                            label: "Time",
+                            field: "dayTime"
+                        }
+                    ],
+
+                    refresh: function () {
+                        var self = this;
+                        domConstruct.empty(gridDiv);
+
+                        this.gridData = TimeController.getCurrentMonthTimeList();
+
+                        // header
+                        var headerRow = this._createRow(gridDiv, true);
+                        var index = 0;
+                        this.columns.forEach(function (c) {
+                            self._createCell(c.label, index++, headerRow);
+                        });
+
+                        // rows
+                        this.gridData.forEach(function (data) {
+                            var row = self._createRow(gridDiv, false, data.isCurrent);
+                            domClass.add(row, "clickable");
+                            on(row, "click", function () {
+                                var value = prompt(data.isTotal ?
+                                    "Enter total required time for this month (hh:mm)" :
+                                    "Enter elapsed time for day " + data.dayIndex +
+                                    " (hh:mm)");
+                                data.isTotal ?
+                                    data.setNewMonthTimeFunc(value) :
+                                    data.isDept ?
+                                    data.setYearDeptFunc(value) :
+                                    data.setNewTimeFunc(value);
+                            });
+
+                            var index = 0;
+                            self.columns.forEach(function (c) {
+                                var label;
+                                var marker;
+                                if (c.field == "dayTime") {
+                                    label = TimeConverter.formatTotal(data[c.field],
+                                        "h:m:s");
+
+                                    if (data.isTotal) {
+                                        var completionObject = TimeController
+                                            .getCurrentMonthCompletion();
+                                        if (completionObject)
+                                            label += " / " + TimeConverter.formatTotal(
+                                                completionObject.timeNeeded, "h:m:s");
+                                    } else if (!data.isDept) {
+                                        var _8h = 8 * 3600000;
+                                        var _10h = 10 * 3600000;
+                                        marker = data[c.field] < _8h ? "red" : data[c
+                                            .field] > _10h ? "yellow" : "#7fff00";
+                                    }
+                                } else
+                                    label = data[c.field];
+
+                                self._createCell(label, index++, row, marker);
+                            });
+
+
+                        });
+                    },
+
+                    _createRow: function (node, isHeader, isCurrentDay) {
+                        return domConstruct.create("div", {
+                            "class": "gridRow" + (isHeader ? " gridHeader" : "") + (isCurrentDay ?
+                                " currentDay" : "")
+                        }, node);
+                    },
+
+                    _createCell: function (label, index, rowNode, marker) {
+                        var cellNode = domConstruct.create("div", {
+                            "class": "gridCell gridColumn" + index,
+                            innerHTML: label
+                        }, rowNode);
+                        if (marker) {
+                            cellNode.style.position = "relative";
+                            var markerNode = domConstruct.create("div", {
+                                "class": "gridCellMarker"
+                            }, cellNode);
+                            markerNode.style.backgroundColor = marker;
+                        }
+                    }
+                };
+
+                // Date Label
+
+                var DateLabel = {
+
+                    _labelClickHandle: null,
+
+                    update: function () {
+                        var self = this;
+                        var monthNames = ["January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"
+                        ];
+
+                        dateLabel.innerHTML = TimeController.getVisibleYear() + " " + monthNames[
+                            TimeController.getVisibleMonth() - 1];
+
+                        this._labelClickHandle = this._labelClickHandle || on(dateLabel, "click",
+                            function () {
+                                var value = prompt("Enter year:month as YYYY:MM");
+                                var values = value.split(":");
+                                var year = Number(values[0]) || -1;
+                                var month = Number(values[1]) || -1;
+
+                                DayTimer.stop();
+                                TimeController.setUserYearMonth(year, month);
+                                DayTimer.visualizeData();
+                                DayTimer.visualizeGrid();
+                                self.update();
+                            });
+                    }
+                };
+
+                // StatusController
+
+                var StatusController = {
+
+                    update: function () {
+                        var status = "";
+                        var ci = TimeController.getCurrentMonthCompletion();
+
+                        if (!ci)
+                            return;
+
+                        if (ci.completedRatio >= 1) {
+                            var cr = ci.completedRatio;
+                            if (ci < 1.05)
+                                status =
+                                "You've worked enough this month. Go and get some rest. You don't have to work anymore."
+                            if (ci < 1.10)
+                                status = "You've worked too much. Don't you think that's enough?"
+                            else
+                                status =
+                                "You've worked WAY TOOO much!!! Go and spend some time with your family!!!"
+                        } else {
+                            var totalDaysInMonth = TimeController.getNumDaysInCurrentMonth();
+                            var currentDay = new Date().getDate();
+                            var numWeekendDays = 0;
+                            for (var i = currentDay; i <= totalDaysInMonth; i++) {
+                                var d = new Date();
+                                d.setDate(i);
+                                if (d.getDay() == 0 || d.getDay() == 6)
+                                    numWeekendDays++;
+                            }
+                            var daysLeft = totalDaysInMonth - currentDay + 1 - numWeekendDays;
+                            var timeLeft = ci.timeNeeded - ci.total;
+                            var hs = TimeConverter.totalToParts(timeLeft).h;
+                            status = "You've got " + daysLeft + " days and " + hs +
+                                " hours to work, which makes it " + (hs / daysLeft).toFixed(2) +
+                                " hours a day.";
+
+                            // check if you are behind the schedule (include today)
+                            var numWorkingDaysPassed = 0;
+                            for (var i = 1; i <= currentDay; i++) {
+                                d = new Date();
+                                d.setDate(i);
+                                if (d.getDay() != 0 && d.getDay() != 6)
+                                    numWorkingDaysPassed++;
+                            }
+
+                            var behindSchedule = numWorkingDaysPassed * 8 * 3600000 - ci.total;
+                            if (behindSchedule > 0)
+                                status += "<br/>You are behind the schedule by " + (behindSchedule /
+                                    3600000).toFixed(2) + " hours";
+                        }
+
+                        //statusLabel.innerHTML = status;
+                    }
+                };
+
+                // Chart
+
+                var Chart = {
+                    update: function () {
+                        domConstruct.empty(chartDiv);
+
+                        chartDiv.style.left = "50px";
+                        chartDiv.style.right = "50px";
+                        chartDiv.style.height = "100px";
+                        const width = chartDiv.clientWidth;
+
+                        const axisLine = domConstruct.create("div", null, chartDiv);
+                        axisLine.style.cssText =
+                            "position:absolute;left:0;right:0;bottom:20px;border-bottom:1px solid white;";
+
+                        const ticks = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+                        const tickStep = width / (ticks.length - 1);
+                        ticks.forEach((hour, index) => {
+                            const axisLineTick = domConstruct.create("div", null, axisLine);
+                            axisLineTick.style.cssText =
+                                `position:absolute;left:${tickStep * index}px;top:0;border-left:1px solid white;height:10px;width:0`;
+
+                            const axisLineTickLabel = domConstruct.create("div", null, axisLine);
+                            axisLineTickLabel.innerHTML = `${TimeConverter
+                                .format2digit(hour)}:00`;
+                            axisLineTickLabel.style.cssText =
+                                `position:absolute;left:${tickStep * index - 50}px;top:10px;color:white;width:100px;text-align:center;`;
+                        })
+
+                        const dayInfo = TimeController.getCurrentDayInfo();
+                        dayInfo.points.forEach((point) => {
+                            var sd = new Date(point.start);
+                            var ed = new Date(point.end);
+
+                            function _toX(d) {
+                                return ((d.getHours() + d.getMinutes() / 60) - ticks[0]) / (ticks[
+                                    ticks.length - 1] - ticks[0]) * width;
+                            }
+
+                            const xFrom = _toX(sd);
+                            const xTo = _toX(ed);
+
+                            const rect = domConstruct.create("div", null, chartDiv);
+                            rect.style.cssText =
+                                `position:absolute;left:${xFrom}px;width:${xTo - xFrom}px;bottom:22px;height:50px;background-color:#0078D7`;
+
+                            /*
+                            const rectLabel = domConstruct.create("div", null, chartDiv);
+                            rectLabel.innerHTML = TimeConverter.formatTotal(point.end - point.start,
+                                "h:m:s");
+                            rectLabel.style.cssText =
+                                `position:absolute;left:${xFrom - 50}px;width:100px;bottom:82px;color:white`;
+                            */
+                        })
+
+                        chartDiv
+
+                    }
+                };
+
+                // TurnstileRequest
+
+                /*var TurnstileRequest = {
+                    getCurrentMonthTimeNeeded: function (callback) {
+                        // use XMLHttpRequest to check if a file exists
+                        xhr("http://vit/stat/Person.aspx").then(
+                            function (result) {
+                                console.log(result);
+                            },
+                            function (error) {
+                                console.log(error);
+                            });
+                    }
+                }*/
+
+                // Entry point
+
+                var defaultItem = {
+                    years: {
+                        "2016": {
+                            months: {
+                                "1": {
+                                    timeNeeded: TimeConverter.partsToTotal("176"),
+                                    days: {
+                                        "1": TimeConverter.partsToTotal("1:00:00")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var storageItem = localStorage.getItem("workTimer.yearsItem");
+                TimeController.fromJson(storageItem ? JSON.parse(storageItem) : defaultItem);
+                UserActionController.start();
+                DayTimer.setElapsedTime(TimeController.getCurrentDayInfo().elapsed);
+                DateLabel.update();
+                Grid.refresh();
+                Chart.update();
+                StatusController.update();
+                //TurnstileRequest.getCurrentMonthTimeNeeded();
+            });
+    </script>
+</head>
+
+<body style="background:#2f2f2f; ">
+    <style type="text/css">
+        body {
+            font-family: Calibri;
+        }
+
+        .timerDiv {
+            color: white;
+            font-family: latoregular;
+            font-size: 50px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .timerDivH {
+            font-size: 60px;
+            display: inline-block;
+        }
+
+        .timerDivRest {
+            display: inline-block;
+            margin-left: -15px;
+        }
+
+        .progressBarHolder {
+            width: 100%;
+            text-align: center;
+        }
+
+        .additionalInfoHolder {
+            width: 100%;
+            text-align: center;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .dayProgressBarContainer {
+            width: 300px;
+            height: 5px;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            display: inline-block;
+            margin-left: 4px;
+            background-color: rgba(100, 100, 100, 0.5);
+        }
+
+        .progressBarContainer {
+            width: 300px;
+            height: 30px;
+            background-color: gray;
+            display: inline-block;
+        }
+
+        .dayProgressBarCompleted {
+            background-color: #0078D7;
+            height: 5px;
+        }
+
+        .progressBarCompleted {
+            background-color: #0078D7;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+        }
+
+        .progressBarLabel {
+            color: white;
+            font-family: latoregular;
+            font-size: 20px;
+            text-align: center;
+            width: 300px;
+            height: 30px;
+            margin-top: -30px;
+        }
+
+        .computerImage {
+            width: 200px;
+            height: 200px;
+            background-size: contain;
+            position: absolute;
+            right: 50px;
+            top: 10px;
+            background-image: url("./images/computer3.png");
+        }
+
+        .gridDiv {
+            position: absolute;
+            left: 30px;
+            top: 60px;
+        }
+
+        .gridRow {
+            height: 25px;
+        }
+
+        .gridCell {
+            height: 14px;
+            line-height: 14px;
+            display: inline-block;
+            border: 1px solid white;
+            color: white;
+            padding: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+            min-width: 50px;
+        }
+
+        .gridCellMarker {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            position: absolute;
+            right: 5px;
+            top: 7px;
+        }
+
+        .gridHeader.gridRow {
+            height: 30px;
+        }
+
+        .gridHeader .gridCell {
+            height: 19px;
+            line-height: 19px;
+        }
+
+        .gridColumn0 {
+            width: 50px;
+        }
+
+        .gridColumn1 {
+            width: 150px;
+            margin-left: -1px;
+        }
+
+        .dateLabel {
+            position: absolute;
+            left: 30px;
+            top: 10px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .currentDay .gridCell {
+            color: yellow;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+
+        .statusLabel {
+            color: white;
+            font-size: 15px;
+            position: absolute;
+            left: 30px;
+            bottom: 50px;
+        }
+
+        .chartDiv {
+            position: absolute;
+            bottom: 50px;
+        }
+
+        /* Digital font */
+        @font-face {
+            font-family: 'latoregular';
+            src: url(data:application/x-font-woff;charset=utf-8;base64,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) format('woff'), url('lato-reg-webfont.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+
+    <div class="mainDiv">
+        <div class="timerDiv" id="timerDiv">
+            <div class="timerDivH" id="timerDivH">
+            </div>
+            <div class="timerDivRest" id="timerDivRest">
+            </div>
+        </div>
+
+        <div class="progressBarHolder">
+            <div class="dayProgressBarContainer" id="dayProgressBarContainer">
+                <div class="dayProgressBarCompleted" id="dayProgressBarCompleted"></div>
+            </div>
+            <br />
+            <div class="progressBarContainer" id="progressBarContainer">
+                <div class="progressBarCompleted" id="progressBarCompleted"></div>
+                <div class="progressBarLabel" id="progressBarLabel"></div>
+            </div>
+        </div>
+
+        <div class="additionalInfoHolder">
+            <div class="startedTodayInfo" id="startedTodayInfo"></div>
+        </div>
+
+        <div class="additionalInfoHolder">
+            <div class="whenLeaveInfo" id="whenLeaveInfo"></div>
+        </div>
+
+        <div class="computerImage" id="computerImage"></div>
+        <div class="gridDiv" id="gridDiv"></div>
+        <div class="dateLabel" id="dateLabel"></div>
+        <div class="statusLabel" id="statusLabel"></div>
+        <div class="chartDiv" id="chartDiv"></div>
+
+    </div>
+
+</body>
+
+</html>

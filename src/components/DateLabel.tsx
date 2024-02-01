@@ -14,10 +14,6 @@ var MONTH_NAMES = [
 ];
 
 function _formatDateLabel(year: number, month: number): string {
-  // dateLabel.innerHTML =
-  //   TimeController.getVisibleYear() +
-  //   " " +
-  //   MONTH_NAMES[TimeController.getVisibleMonth() - 1];
   return `${year} ${MONTH_NAMES[month - 1]}`;
 }
 
@@ -34,11 +30,6 @@ function DateLabel({ year, month, onSetNewDate }: DateLabelProps) {
     const year = Number(values[0]) || -1;
     const month = Number(values[1]) || -1;
     onSetNewDate(year, month);
-    // DayTimer.stop();
-    // TimeController.setUserYearMonth(year, month);
-    // DayTimer.visualizeData();
-    // DayTimer.visualizeGrid();
-    // self.update();
   }
 
   const dateLabel = _formatDateLabel(year, month);

@@ -1,69 +1,61 @@
-var Chart2 = {
-  update: function () {
-    domConstruct.empty(chartDiv);
+import { DayInfo } from "../utils/DayInfoUtil";
+import { format2digit } from "../utils/TimeConvertUtil";
+import "../css/Chart.css";
 
-    chartDiv.style.left = "50px";
-    chartDiv.style.right = "50px";
-    chartDiv.style.height = "100px";
-    const width = chartDiv.clientWidth;
+const TICKS = [
+  8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+];
 
-    const axisLine = domConstruct.create("div", null, chartDiv);
-    axisLine.style.cssText =
-      "position:absolute;left:0;right:0;bottom:20px;border-bottom:1px solid white;";
-
-    const ticks = [
-      8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-    ];
-    const tickStep = width / (ticks.length - 1);
-    ticks.forEach((hour, index) => {
-      const axisLineTick = domConstruct.create("div", null, axisLine);
-      axisLineTick.style.cssText = `position:absolute;left:${
-        tickStep * index
-      }px;top:0;border-left:1px solid white;height:10px;width:0`;
-
-      const axisLineTickLabel = domConstruct.create("div", null, axisLine);
-      axisLineTickLabel.innerHTML = `${TimeConverter.format2digit(hour)}:00`;
-      axisLineTickLabel.style.cssText = `position:absolute;left:${
-        tickStep * index - 50
-      }px;top:10px;color:white;width:100px;text-align:center;`;
-    });
-
-    const dayInfo = TimeController.getCurrentDayInfo();
-    dayInfo.points.forEach((point) => {
-      var sd = new Date(point.start);
-      var ed = new Date(point.end);
-
-      function _toX(d) {
-        return (
-          ((d.getHours() + d.getMinutes() / 60 - ticks[0]) /
-            (ticks[ticks.length - 1] - ticks[0])) *
-          width
-        );
-      }
-
-      const xFrom = _toX(sd);
-      const xTo = _toX(ed);
-
-      const rect = domConstruct.create("div", null, chartDiv);
-      rect.style.cssText = `position:absolute;left:${xFrom}px;width:${
-        xTo - xFrom
-      }px;bottom:22px;height:50px;background-color:#0078D7`;
-
-      /*
-            const rectLabel = domConstruct.create("div", null, chartDiv);
-            rectLabel.innerHTML = TimeConverter.formatTotal(point.end - point.start,
-                "h:m:s");
-            rectLabel.style.cssText =
-                `position:absolute;left:${xFrom - 50}px;width:100px;bottom:82px;color:white`;
-            */
-    });
-
-    chartDiv;
-  },
+type ChartProps = {
+  width: number;
+  dayInfo: DayInfo;
 };
 
-function Chart() {
-  return <div></div>;
+function Chart({ width, dayInfo }: ChartProps) {
+  const tickStep = width / (TICKS.length - 1);
+  const ticks = TICKS.map((hour, index) => {
+    return (
+      <div>
+        <div
+          className="axisLineTick"
+          style={{ left: tickStep * index + "px" }}
+        ></div>
+        <div
+          className="axisLineTickLabel"
+          style={{ left: tickStep * index - 50 + "px" }}
+        >{`${format2digit(hour)}:00`}</div>
+      </div>
+    );
+  });
+
+  const rects = dayInfo.points?.map((point) => {
+    var sd = new Date(point.start);
+    var ed = new Date(point.end);
+
+    function _toX(d: Date): number {
+      return (
+        ((d.getHours() + d.getMinutes() / 60 - TICKS[0]) /
+          (TICKS[TICKS.length - 1] - TICKS[0])) *
+        width
+      );
+    }
+
+    const xFrom = _toX(sd);
+    const xTo = _toX(ed);
+    return (
+      <div
+        className="chartRect"
+        style={{ left: xFrom + "px", width: xTo - xFrom + "px" }}
+      ></div>
+    );
+  });
+
+  return (
+    <div>
+      <div className="axisLine">{ticks}</div>
+      {rects}
+    </div>
+  );
 }
 
 export default Chart;

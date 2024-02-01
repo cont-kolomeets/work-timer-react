@@ -1,0 +1,33 @@
+.chart {
+}
+
+.axisLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  border-bottom: 1px solid white;
+}
+
+.axisLineTick {
+  position: absolute;
+  top: 0;
+  border-left: 1px solid white;
+  height: 10px;
+  width: 0;
+}
+
+.axisLineTickLabel {
+  position: absolute;
+  top: 10px;
+  color: white;
+  width: 100px;
+  text-align: center;
+}
+
+.chartRect {
+  position: absolute;
+  bottom: 22px;
+  height: 50px;
+  background-color: #0078d7;
+}

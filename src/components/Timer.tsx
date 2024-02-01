@@ -1,4 +1,5 @@
 import { formatTotal } from "../utils/TimeConvertUtil";
+import "../css/Timer.css";
 
 type TimerProps = {
   timeElapsed: number;

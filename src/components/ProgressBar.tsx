@@ -1,3 +1,5 @@
+import "../css/ProgressBar.css";
+
 type ProgressBarProps = {
   dayTimeElapsed: number;
   monthCompletionRatio: number;
