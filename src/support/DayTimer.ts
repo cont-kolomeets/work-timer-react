@@ -63,71 +63,71 @@ var DayTimer = {
     onTickSecond: function () {},
 
     visualizeData: function () {
-        timerDivH.innerHTML = TimeConverter.formatTotal(this.info.timeElapsed, "h") + ":";
-        timerDivRest.innerHTML = TimeConverter.formatTotal(this.info.timeElapsed,
-            "m:s:ms10");
+        // timerDivH.innerHTML = TimeConverter.formatTotal(this.info.timeElapsed, "h") + ":";
+        // timerDivRest.innerHTML = TimeConverter.formatTotal(this.info.timeElapsed,
+        //     "m:s:ms10");
 
-        // day completion
-        dayProgressBarCompleted.style["width"] = Math.min(100, this.info.timeElapsed / (8 *
-            3.6E6) * 100) + "%";
+        // // day completion
+        // dayProgressBarCompleted.style["width"] = Math.min(100, this.info.timeElapsed / (8 *
+        //     3.6E6) * 100) + "%";
 
-        // month completion
-        var monthCompletionInfo = TimeController.getCurrentMonthCompletion();
-        var percent = monthCompletionInfo ? monthCompletionInfo.completedRatio : 0;
-        progressBarCompleted.style["width"] = Math.min(100, percent * 100) + "%";
-        progressBarLabel.innerHTML = (percent * 100).toFixed(2) + "%";
+        // // month completion
+        // var monthCompletionInfo = TimeController.getCurrentMonthCompletion();
+        // var percent = monthCompletionInfo ? monthCompletionInfo.completedRatio : 0;
+        // progressBarCompleted.style["width"] = Math.min(100, percent * 100) + "%";
+        // progressBarLabel.innerHTML = (percent * 100).toFixed(2) + "%";
 
-        this._calcWhenStarted();
-        this._calcWhenToLeave();
+        // this._calcWhenStarted();
+        // this._calcWhenToLeave();
 
         this._updateDocumentHeader();
     },
 
-    _calcWhenStarted: function () {
-        const dayInfo = TimeController.getCurrentDayInfo();
-        if (!dayInfo.points.length) {
-            startedTodayInfo.innerHTML = "Hasn't started yet";
-        } else {
-            var started = new Date(dayInfo.points[0].start);
-            startedTodayInfo.innerHTML =
-                `Started today at ${started.getHours()}:${TimeConverter
-                .format2digit(started.getMinutes())}`;
-        }
-    },
+    // _calcWhenStarted: function () {
+    //     const dayInfo = TimeController.getCurrentDayInfo();
+    //     if (!dayInfo.points.length) {
+    //         startedTodayInfo.innerHTML = "Hasn't started yet";
+    //     } else {
+    //         var started = new Date(dayInfo.points[0].start);
+    //         startedTodayInfo.innerHTML =
+    //             `Started today at ${started.getHours()}:${TimeConverter
+    //             .format2digit(started.getMinutes())}`;
+    //     }
+    // },
 
-    _calcWhenToLeave: function () {
-        var date = new Date();
-        var elapsedInfo = TimeConverter.totalToParts(this.info.timeElapsed);
-        var hLeft = 8 - elapsedInfo.h;
-        var mLeft = 0;
-        if (elapsedInfo.m) {
-            hLeft--;
-            mLeft = 60 - elapsedInfo.m;
-        }
+    // _calcWhenToLeave: function () {
+    //     var date = new Date();
+    //     var elapsedInfo = TimeConverter.totalToParts(this.info.timeElapsed);
+    //     var hLeft = 8 - elapsedInfo.h;
+    //     var mLeft = 0;
+    //     if (elapsedInfo.m) {
+    //         hLeft--;
+    //         mLeft = 60 - elapsedInfo.m;
+    //     }
 
-        // add time for lunch if before 2 PM
-        if (date.getHours() < 14)
-            mLeft += 40;
+    //     // add time for lunch if before 2 PM
+    //     if (date.getHours() < 14)
+    //         mLeft += 40;
 
-        if (mLeft > 60) {
-            hLeft++;
-            mLeft -= 60;
-        }
+    //     if (mLeft > 60) {
+    //         hLeft++;
+    //         mLeft -= 60;
+    //     }
 
-        if (hLeft < 0) {
-            whenLeaveInfo.innerHTML = "You can leave now!"
-        } else {
-            var hLeave = date.getHours() + hLeft;
-            var mLeave = date.getMinutes() + mLeft;
-            if (mLeave > 60) {
-                hLeave++;
-                mLeave -= 60;
-            }
-            // update when to leave today
-            whenLeaveInfo.innerHTML = "You can leave at " + hLeave + ":" + TimeConverter
-                .format2digit(mLeave);
-        }
-    },
+    //     if (hLeft < 0) {
+    //         whenLeaveInfo.innerHTML = "You can leave now!"
+    //     } else {
+    //         var hLeave = date.getHours() + hLeft;
+    //         var mLeave = date.getMinutes() + mLeft;
+    //         if (mLeave > 60) {
+    //             hLeave++;
+    //             mLeave -= 60;
+    //         }
+    //         // update when to leave today
+    //         whenLeaveInfo.innerHTML = "You can leave at " + hLeave + ":" + TimeConverter
+    //             .format2digit(mLeave);
+    //     }
+    // },
 
     visualizeGrid: function () {
         Grid.refresh();

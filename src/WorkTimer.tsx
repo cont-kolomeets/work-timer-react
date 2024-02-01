@@ -1,4 +1,7 @@
 import AdditionalInfo from "./components/AdditionalInfo";
+import Chart from "./components/Chart";
+import DateLabel from "./components/DateLabel";
+import Grid from "./components/Grid";
 import ProgressBar from "./components/ProgressBar";
 import Timer from "./components/Timer";
 import "./css/WorkTimer.css";
@@ -15,14 +18,18 @@ function WorkTimer() {
 
   return (
     <div className="workTimerApp">
+      <div className="computerImage"></div>
       <Timer />
       <ProgressBar />
       <AdditionalInfo />
-      <div className="computerImage" id="computerImage"></div>
-      <div className="gridDiv" id="gridDiv"></div>
-      <div className="dateLabel" id="dateLabel"></div>
+      <div className="gridDiv">
+        <Grid />
+      </div>
+      <DateLabel />
       <div className="statusLabel" id="statusLabel"></div>
-      <div className="chartDiv" id="chartDiv"></div>
+      <div className="chartDiv">
+        <Chart />
+      </div>
     </div>
   );
 }

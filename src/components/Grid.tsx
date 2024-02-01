@@ -55,8 +55,7 @@ var Grid2 = {
             var completionObject = TimeController.getCurrentMonthCompletion();
             if (completionObject)
               label +=
-                " / " +
-                formatTotal(completionObject.timeNeeded, "h:m:s");
+                " / " + formatTotal(completionObject.timeNeeded, "h:m:s");
           } else if (!data.isDept) {
             var _8h = 8 * 3600000;
             var _10h = 10 * 3600000;
@@ -110,6 +109,8 @@ var Grid2 = {
   },
 };
 
-function Grid() {}
+function Grid() {
+  return <div></div>;
+}
 
 export default Grid;
