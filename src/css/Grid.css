@@ -1,0 +1,42 @@
+.gridRow {
+  height: 25px;
+}
+
+.gridCell {
+  height: 14px;
+  line-height: 14px;
+  display: inline-block;
+  border: 1px solid white;
+  color: white;
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-width: 50px;
+}
+
+.gridCellMarker {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  right: 5px;
+  top: 7px;
+}
+
+.gridHeader.gridRow {
+  height: 30px;
+}
+
+.gridHeader .gridCell {
+  height: 19px;
+  line-height: 19px;
+}
+
+.gridColumn0 {
+  width: 50px;
+}
+
+.gridColumn1 {
+  width: 150px;
+  margin-left: -1px;
+}

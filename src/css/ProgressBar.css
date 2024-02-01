@@ -1,0 +1,28 @@
+.progressBarHolder {
+  width: 100%;
+  text-align: center;
+}
+
+.progressBarContainer {
+  width: 300px;
+  height: 30px;
+  background-color: gray;
+  display: inline-block;
+}
+
+.progressBarCompleted {
+  background-color: #0078d7;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.progressBarLabel {
+  color: white;
+  font-family: latoregular;
+  font-size: 20px;
+  text-align: center;
+  width: 300px;
+  height: 30px;
+  margin-top: -30px;
+}
