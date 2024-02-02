@@ -1,4 +1,6 @@
-var MONTH_NAMES = [
+import "../css/DateLabel.css";
+
+const MONTH_NAMES = [
   "January",
   "February",
   "March",
@@ -35,7 +37,7 @@ function DateLabel({ year, month, onSetNewDate }: DateLabelProps) {
   const dateLabel = _formatDateLabel(year, month);
 
   return (
-    <div className="dateLabel" onClick={_clickHanler}>
+    <div className="wt-date-label" onClick={_clickHanler}>
       {dateLabel}
     </div>
   );

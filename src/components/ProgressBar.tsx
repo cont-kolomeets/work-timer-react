@@ -18,20 +18,20 @@ function ProgressBar({
   const monthProgressLabel = (monthCompletionRatio * 100).toFixed(2) + "%";
 
   return (
-    <div className="progressBarHolder">
-      <div className="dayProgressBarContainer">
+    <div className="wt-progress-bar">
+      <div className="wt-progress-bar__day-container">
         <div
-          className="dayProgressBarCompleted"
+          className="wt-progress-bar__day-completed"
           style={{ width: dayProgressWidth }}
         ></div>
       </div>
       <br />
-      <div className="progressBarContainer">
+      <div className="wt-progress-bar__container">
         <div
-          className="progressBarCompleted"
+          className="wt-progress-bar__completed"
           style={{ width: monthProgressWidth }}
         ></div>
-        <div className="progressBarLabel">{monthProgressLabel}</div>
+        <div className="wt-progress-bar__label">{monthProgressLabel}</div>
       </div>
     </div>
   );

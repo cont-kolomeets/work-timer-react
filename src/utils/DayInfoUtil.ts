@@ -1,13 +1,17 @@
 export type DayInfo = {
   elapsed: number;
-  firstStart?: number;
-  points?: { start: number; end: number }[];
+  points: { start: number; end: number }[];
+  firstStart?: number; // obsolete property from the old format
 };
 
+/**
+ * Ensures `dayInfo` has the correct latest format.
+ */
 export function toDayInfo(dayInfo: number | DayInfo): DayInfo {
   if (!dayInfo || typeof dayInfo === "number") {
     dayInfo = {
       elapsed: typeof dayInfo === "number" ? dayInfo : 0,
+      points: [],
     };
   }
 

@@ -1,20 +1,25 @@
 import { ReactNode } from "react";
 import { formatTotal } from "../utils/TimeConvertUtil";
 import "../css/Grid.css";
+import { DayInfo } from "../utils/DayInfoUtil";
+import { StateItemMonth, StateItemYear } from "../utils/StorageUtil";
 
-type GridData = {
-  isCurrent: boolean;
-  isTotal: boolean;
-  isDept: boolean;
-  dayIndex: number;
+export type GridData = {
+  dayIndex: number | string;
   dayTime: number;
+  isCurrent?: boolean;
+  isTotal?: boolean;
+  isDept?: boolean;
+  dayInfo?: DayInfo;
+  month?: StateItemMonth;
+  year?: StateItemYear;
 };
 
 type GridProps = {
   data: GridData[];
   monthCompletionObject: {
     timeNeeded: number;
-  };
+  } | null;
   onDataEdited(data: GridData, value: string): void;
 };
 
@@ -28,6 +33,12 @@ const COLUMNS = [
     field: "dayTime",
   },
 ];
+
+//--------------------------------------------------------------------------
+//
+// Row
+//
+//--------------------------------------------------------------------------
 
 function _createRow({
   content,
@@ -45,9 +56,9 @@ function _createRow({
   return (
     <div
       className={
-        "gridRow" +
-        (isHeader ? " gridHeader" : "") +
-        (isCurrentDay ? " currentDay" : "") +
+        "wt-grid-row" +
+        (isHeader ? " wt-grid-row_header" : "") +
+        (isCurrentDay ? " wt-grid-row_current-day" : "") +
         (rowClass ? " " + rowClass : "")
       }
       onClick={onClick}
@@ -56,6 +67,12 @@ function _createRow({
     </div>
   );
 }
+
+//--------------------------------------------------------------------------
+//
+// Cell
+//
+//--------------------------------------------------------------------------
 
 function _createCell({
   label,
@@ -70,7 +87,7 @@ function _createCell({
   if (markerColor) {
     markerNode = (
       <div
-        className="gridCellMarker"
+        className="wt-grid-row__cell-marker"
         style={{ backgroundColor: markerColor }}
       ></div>
     );
@@ -78,7 +95,7 @@ function _createCell({
 
   return (
     <div
-      className={"gridCell gridColumn" + index}
+      className={"wt-grid-row__cell wt-grid_column-" + index}
       style={{ position: "relative" }}
     >
       {label}
@@ -87,16 +104,32 @@ function _createCell({
   );
 }
 
-function Grid({ data, monthCompletionObject, onDataEdited }: GridProps) {
-  // header
+//--------------------------------------------------------------------------
+//
+// Header
+//
+//--------------------------------------------------------------------------
+
+function _createHeader(): ReactNode {
   let index = 0;
   const headerCells = COLUMNS.map((c) =>
     _createCell({ label: c.label, index: index++ })
   );
-  let headerRow = _createRow({ content: headerCells, isHeader: true });
+  return _createRow({ content: headerCells, isHeader: true });
+}
 
-  // rows
-  const rows = data.map((data) => {
+//--------------------------------------------------------------------------
+//
+// Rows
+//
+//--------------------------------------------------------------------------
+
+function _createRows({
+  data,
+  monthCompletionObject,
+  onDataEdited,
+}: GridProps): ReactNode[] {
+  return data.map((data) => {
     let index = 0;
     const cells = COLUMNS.map((c) => {
       let label: string;
@@ -113,9 +146,9 @@ function Grid({ data, monthCompletionObject, onDataEdited }: GridProps) {
           let _8h = 8 * 3600000;
           let _10h = 10 * 3600000;
           markerColor =
-            data[c.field] < _8h
+            data.dayTime < _8h
               ? "red"
-              : data[c.field] > _10h
+              : data.dayTime > _10h
               ? "yellow"
               : "#7fff00";
         }
@@ -128,7 +161,7 @@ function Grid({ data, monthCompletionObject, onDataEdited }: GridProps) {
     return _createRow({
       content: cells,
       isCurrentDay: data.isCurrent,
-      rowClass: "clickable",
+      rowClass: "wt-grid-row_clickable",
       onClick: () => {
         let value = prompt(
           data.isTotal
@@ -139,7 +172,17 @@ function Grid({ data, monthCompletionObject, onDataEdited }: GridProps) {
       },
     });
   });
+}
 
+//--------------------------------------------------------------------------
+//
+// Grid
+//
+//--------------------------------------------------------------------------
+
+function Grid({ data, monthCompletionObject, onDataEdited }: GridProps) {
+  let headerRow = _createHeader();
+  const rows = _createRows({ data, monthCompletionObject, onDataEdited });
   return (
     <div>
       {headerRow}

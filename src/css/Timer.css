@@ -1,4 +1,4 @@
-.timerDiv {
+.wt-timer {
   color: white;
   font-family: latoregular;
   font-size: 50px;
@@ -6,12 +6,12 @@
   text-align: center;
 }
 
-.timerDivH {
+.wt-timer__hours {
   font-size: 60px;
   display: inline-block;
 }
 
-.timerDivRest {
+.wt-timer__rest {
   display: inline-block;
   margin-left: -15px;
 }

@@ -1,3 +1,5 @@
+import "../css/AdditionalInfo.css";
+
 type AdditionalInfoProp = {
   startedMessage: string;
   whenLeaveMessage: string;
@@ -9,11 +11,11 @@ function AdditionalInfo({
 }: AdditionalInfoProp) {
   return (
     <div>
-      <div className="additionalInfoHolder">
-        <div className="startedTodayInfo">{startedMessage}</div>
+      <div className="wt-additional-info-block">
+        <div>{startedMessage}</div>
       </div>
-      <div className="additionalInfoHolder">
-        <div className="whenLeaveInfo">{whenLeaveMessage}</div>
+      <div className="wt-additional-info-block">
+        <div>{whenLeaveMessage}</div>
       </div>
     </div>
   );

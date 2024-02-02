@@ -1,18 +1,28 @@
-export type TimeInfo = {
+export type TimeInfo = Partial<{
   h: number;
   m: number;
   s: number;
   ms10: number;
-};
+}>;
 
+//--------------------------------------------------------------------------
+//
+// Total & parts
+//
+//--------------------------------------------------------------------------
+
+/**
+ * Splits the time to parts.
+ * @param total Time in ms.
+ */
 export function totalToParts(total: number) {
-  var h = Math.floor(total / 3600000);
+  let h = Math.floor(total / 3600000);
   total -= h * 3600000;
-  var m = Math.floor(total / 60000);
+  let m = Math.floor(total / 60000);
   total -= m * 60000;
-  var s = Math.floor(total / 1000);
+  let s = Math.floor(total / 1000);
   total -= s * 1000;
-  var ms10 = Math.floor(total / 10);
+  let ms10 = Math.floor(total / 10);
 
   return {
     h: h,
@@ -27,10 +37,10 @@ export function totalToParts(total: number) {
  * "h:m:s:ms10" => { h, m, s, ms10 } => 1000000
  */
 export function partsToTotal(objectOrString: TimeInfo | string): number {
-  var parts;
+  let parts;
   if (typeof objectOrString == "object") parts = objectOrString;
   else {
-    var ps = objectOrString.split(":");
+    let ps = objectOrString.split(":");
     parts = {
       h: Number(ps[0] || 0),
       m: Number(ps[1] || 0),
@@ -45,6 +55,12 @@ export function partsToTotal(objectOrString: TimeInfo | string): number {
     (parts.ms10 || 0) * 10
   );
 }
+
+//--------------------------------------------------------------------------
+//
+// Format
+//
+//--------------------------------------------------------------------------
 
 /**
  * @example
@@ -61,8 +77,8 @@ export function format2digit(value: number): string {
  * 100000 => "h:m:s" | "h:m:s:ms10"
  */
 export function formatTotal(total: number, format: string /* e.g. */) {
-  var parts = totalToParts(total);
-  var fs = format.split(":");
+  let parts = totalToParts(total);
+  let fs = format.split(":");
   return fs
     .map((f) => {
       return parts[f as keyof TimeInfo] || 0;

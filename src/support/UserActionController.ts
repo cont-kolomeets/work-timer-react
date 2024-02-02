@@ -1,20 +1,31 @@
 const DEFAULT_BG_COLOR = "black";
 
-const UserActionController = {
-  start: () => {
+class UserActionController {
+  start(): void {
     document.body.style.backgroundColor = DEFAULT_BG_COLOR;
-    document.body.addEventListener("keyup", (event) => {
-      if (event.keyCode === 32) {
-        TimeController.toggleTimer();
-        document.body.style.backgroundColor = DEFAULT_BG_COLOR;
-      }
-    });
-    document.body.addEventListener("keydown", (event) => {
-      if (event.keyCode === 32) {
-        document.body.style.backgroundColor = "#333333";
-      }
-    });
-  },
-};
+    document.body.addEventListener("keyup", this._onKeyUp.bind(this));
+    document.body.addEventListener("keydown", this._onKeyDown.bind(this));
+  }
+
+  stop(): void {
+    document.body.removeEventListener("keyup", this._onKeyUp.bind(this));
+    document.body.removeEventListener("keydown", this._onKeyDown.bind(this));
+  }
+
+  private _onKeyUp(event: KeyboardEvent): void {
+    if (event.key === "Enter") {
+      this.onToggleTimer();
+      document.body.style.backgroundColor = DEFAULT_BG_COLOR;
+    }
+  }
+
+  private _onKeyDown(event: KeyboardEvent): void {
+    if (event.key === "Enter") {
+      document.body.style.backgroundColor = "#333333";
+    }
+  }
+
+  onToggleTimer(): void {}
+}
 
 export default UserActionController;
