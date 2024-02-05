@@ -1,5 +1,5 @@
-import { DayInfo } from "../utils/DayInfoUtil";
-import { format2digit } from "../utils/TimeConvertUtil";
+import { DayInfo } from "../hooks/utils/DayInfoUtil";
+import { format2digit } from "../hooks/utils/TimeConvertUtil";
 import "../css/Chart.css";
 import { ReactNode } from "react";
 

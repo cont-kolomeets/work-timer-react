@@ -1,12 +1,12 @@
 import TimeController, { MonthCompletionInfo } from "./support/TimeController";
 import UserActionController from "./support/UserActionController";
-import { composeMonthStatusLabel } from "../utils/StatusUtil";
+import { composeMonthStatusLabel } from "./utils/StatusUtil";
 import {
   calcWhenStartedMessage,
   calcWhenToLeaveMessage,
-} from "../utils/StartLeaveUtil";
-import { updateDocumentHeader } from "../utils/DocumentUtil";
-import { DayInfo } from "../utils/DayInfoUtil";
+} from "./utils/StartLeaveUtil";
+import { updateDocumentHeader } from "./utils/DocumentUtil";
+import { DayInfo } from "./utils/DayInfoUtil";
 import { useEffect, useState, useMemo } from "react";
 import { GridData } from "../components/Grid";
 

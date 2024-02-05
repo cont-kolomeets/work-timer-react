@@ -1,4 +1,4 @@
-import { formatTotal } from "../utils/TimeConvertUtil";
+import { formatTotal } from "../hooks/utils/TimeConvertUtil";
 import "../css/Timer.css";
 
 type TimerProps = {

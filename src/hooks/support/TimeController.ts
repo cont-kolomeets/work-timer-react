@@ -1,11 +1,11 @@
 import { GridData } from "../../components/Grid";
-import { toDayInfo } from "../../utils/DayInfoUtil";
-import { partsToTotal } from "../../utils/TimeConvertUtil";
+import { toDayInfo } from "../utils/DayInfoUtil";
+import { partsToTotal } from "../utils/TimeConvertUtil";
 import {
   DEFAULT_STATE_ITEM,
   StateItem,
   StateItemMonth,
-} from "../../utils/StorageUtil";
+} from "../utils/StorageUtil";
 import DayTimer from "./DayTimer";
 
 export type MonthCompletionInfo = {
