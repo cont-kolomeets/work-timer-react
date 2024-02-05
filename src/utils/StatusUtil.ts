@@ -1,4 +1,4 @@
-import { MonthCompletionInfo } from "../support/TimeController";
+import { MonthCompletionInfo } from "../hooks/support/TimeController";
 import { totalToParts } from "./TimeConvertUtil";
 
 /**

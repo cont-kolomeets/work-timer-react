@@ -13,6 +13,8 @@ class DayTimer {
     this.timeElapsed = timeElapsed;
   }
 
+  private _secondPoint = 0;
+
   /**
    * @param timeElapsed Specify if you want to start the timer with some time already elapsed.
    */
@@ -23,21 +25,18 @@ class DayTimer {
     this.startTime = new Date().getTime();
     if (timeElapsed > 0) this.startTime -= timeElapsed;
 
-    let secondPoint = new Date().getTime();
-    this._intervalHandle = setInterval(
-      () => this._updateTimer(secondPoint),
-      33
-    );
-    this._updateTimer(secondPoint);
+    this._secondPoint = new Date().getTime();
+    this._intervalHandle = setInterval(() => this._updateTimer(), 33);
+    this._updateTimer();
   }
 
-  private _updateTimer(secondPoint: number): void {
+  private _updateTimer(): void {
     let currentTime = new Date().getTime();
     let delta = currentTime - this.startTime;
     this.timeElapsed = delta;
     this.onTickFrequent();
-    if (currentTime - secondPoint > 5000) {
-      secondPoint = currentTime;
+    if (currentTime - this._secondPoint > 5000) {
+      this._secondPoint = currentTime;
       this.onTickRare();
     }
   }

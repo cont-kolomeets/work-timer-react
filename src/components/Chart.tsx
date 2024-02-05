@@ -22,7 +22,7 @@ function _drawTicks(width: number): ReactNode[] {
   const tickStep = width / (TICKS.length - 1);
   return TICKS.map((hour, index) => {
     return (
-      <div>
+      <div key={hour}>
         <div
           className="wt-axis-line__tick"
           style={{ left: tickStep * index + "px" }}
@@ -60,6 +60,7 @@ function _drawRects(dayInfo: DayInfo, width: number): ReactNode[] | null {
       const xTo = _toX(ed);
       return (
         <div
+          key={xFrom + ";" + (xTo - xFrom)}
           className="wt-chart-rect"
           style={{ left: xFrom + "px", width: xTo - xFrom + "px" }}
         ></div>

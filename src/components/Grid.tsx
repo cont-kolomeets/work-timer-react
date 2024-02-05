@@ -41,12 +41,14 @@ const COLUMNS = [
 //--------------------------------------------------------------------------
 
 function _createRow({
+  rIndex,
   content,
   isHeader,
   isCurrentDay,
   rowClass,
   onClick,
 }: {
+  rIndex: number;
   content: ReactNode;
   isHeader?: boolean;
   isCurrentDay?: boolean;
@@ -55,6 +57,7 @@ function _createRow({
 }): ReactNode {
   return (
     <div
+      key={rIndex}
       className={
         "wt-grid-row" +
         (isHeader ? " wt-grid-row_header" : "") +
@@ -76,11 +79,11 @@ function _createRow({
 
 function _createCell({
   label,
-  index,
+  cIndex,
   markerColor,
 }: {
   label: string;
-  index: number;
+  cIndex: number;
   markerColor?: string | null;
 }): ReactNode {
   let markerNode: ReactNode;
@@ -95,7 +98,8 @@ function _createCell({
 
   return (
     <div
-      className={"wt-grid-row__cell wt-grid_column-" + index}
+      key={label}
+      className={"wt-grid-row__cell wt-grid_column-" + cIndex}
       style={{ position: "relative" }}
     >
       {label}
@@ -111,11 +115,10 @@ function _createCell({
 //--------------------------------------------------------------------------
 
 function _createHeader(): ReactNode {
-  let index = 0;
-  const headerCells = COLUMNS.map((c) =>
-    _createCell({ label: c.label, index: index++ })
+  const headerCells = COLUMNS.map((c, cIndex) =>
+    _createCell({ label: c.label, cIndex })
   );
-  return _createRow({ content: headerCells, isHeader: true });
+  return _createRow({ rIndex: 0, content: headerCells, isHeader: true });
 }
 
 //--------------------------------------------------------------------------
@@ -129,9 +132,8 @@ function _createRows({
   monthCompletionObject,
   onDataEdited,
 }: GridProps): ReactNode[] {
-  return data.map((data) => {
-    let index = 0;
-    const cells = COLUMNS.map((c) => {
+  return data.map((data, rIndex) => {
+    const cells = COLUMNS.map((c, cIndex) => {
       let label: string;
       let markerColor: string | null = null;
       if (c.field === "dayTime") {
@@ -155,13 +157,14 @@ function _createRows({
       } else {
         label = data.dayIndex + "";
       }
-      return _createCell({ label, index: index++, markerColor });
+      return _createCell({ label, cIndex, markerColor });
     });
 
     return _createRow({
       content: cells,
       isCurrentDay: data.isCurrent,
       rowClass: "wt-grid-row_clickable",
+      rIndex: rIndex + 1 /* header */,
       onClick: () => {
         let value = prompt(
           data.isTotal
