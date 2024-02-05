@@ -7,6 +7,8 @@ Press `Space` to start or stop the timer. If for some reason you forgot to start
 
 In the project directory, you can run:
 
-### `npm start`
-### `npm test`
-### `npm run build`
+#### `npm start`
+#### `npm test`
+#### `npm run build`
+
+## Screenshots
