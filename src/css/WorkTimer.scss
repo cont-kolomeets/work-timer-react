@@ -1,39 +1,9 @@
 body {
-  background: #2f2f2f;
+  background: #1e1e1e;
   font-family: Calibri;
 }
 
 .wt-app {
-}
-
-.wt-logo-image {
-  width: 200px;
-  height: 200px;
-  background-size: contain;
-  position: absolute;
-  right: 50px;
-  top: 10px;
-  background-image: url("./images/computer3.png");
-}
-
-.wt-grid-container {
-  position: absolute;
-  left: 30px;
-  top: 60px;
-}
-
-.wt-status-label {
-  color: white;
-  font-size: 15px;
-  position: absolute;
-  left: 30px;
-  bottom: 50px;
-}
-
-.wt-chart-container {
-  position: absolute;
-  bottom: 50px;
-  left: 50px;
 }
 
 /* Digital font */

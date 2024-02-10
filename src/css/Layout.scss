@@ -1,0 +1,23 @@
+.wt-stretched {
+  position: absolute;
+  inset: 0;
+}
+
+.wt-flex-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Horizontal alignment */
+
+.wt-flex-start {
+  justify-content: start;
+}
+
+.wt-flex-center {
+  justify-content: center;
+}
+
+.wt-flex-end {
+  justify-content: end;
+}
