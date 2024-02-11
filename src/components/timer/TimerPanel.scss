@@ -1,0 +1,19 @@
+.wt-timer-panel {
+  color: white;
+
+  .wt-timer-panel-label {
+    font-family: latoregular;
+    font-size: 100px;
+  }
+
+  .wt-timer-bottom-container {
+    position: absolute;
+    inset: 0;
+    top: auto;
+    height: 100px;
+
+    .wt-timer-toggle-button {
+      width: 150px;
+    }
+  }
+}
