@@ -1,12 +1,14 @@
+import "./MonthPanel.scss";
 import PanelTitle from "../shared/PanelTitle";
+import DaysGrid from "./DaysGrid/DaysGrid";
 
-function MonthPanel() {
+export default function MonthPanel() {
   return (
-    <div className="wt-panel">
-      <PanelTitle title="Days"></PanelTitle>
-      <div className="wt-panel-content"></div>
+    <div className="wt-panel wt-month-panel">
+      <PanelTitle title="Days" />
+      <div className="wt-panel-content">
+        <DaysGrid />
+      </div>
     </div>
   );
 }
-
-export default MonthPanel;

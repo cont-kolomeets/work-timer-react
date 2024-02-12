@@ -129,8 +129,8 @@ export function workIntervalsToNormalLatePercent(wi: number[][]): {
   // split to have for normal and late hours
   const _8am = 3600 * 1000 * 8;
   const _8pm = 3600 * 1000 * 20;
-  const normalWi: number[][] = [];
-  const lateWi: number[][] = [];
+  let normalWi: number[][] = [];
+  let lateWi: number[][] = [];
 
   let i = 0;
   while (i < wi.length) {
@@ -153,6 +153,10 @@ export function workIntervalsToNormalLatePercent(wi: number[][]): {
     i++;
   }
 
+  // normalize
+  normalWi = normalWi.map((i) => [i[0] - _8am, i[1] - _8am]);
+  lateWi = lateWi.map((i) => [i[0] - _8pm, i[1] - _8pm]);
+
   function _toPct(wi: number[][]): number[] {
     if (!wi.length) {
       return [];
@@ -163,7 +167,7 @@ export function workIntervalsToNormalLatePercent(wi: number[][]): {
     for (let i = 0; i < wi.length; i++) {
       pct.push(((wi[i][1] - wi[i][0]) / _12h) * 100); // work
       if (wi[i + 1]) {
-        pct.push(-((wi[i + i][0] - wi[i][1]) / _12h) * 100); // gap
+        pct.push(-((wi[i + 1][0] - wi[i][1]) / _12h) * 100); // gap
       }
     }
     return pct;
