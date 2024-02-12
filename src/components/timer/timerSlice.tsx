@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export type TimerState = {
+type TimerState = {
   running: boolean;
   /** Elapsed time. */
   time: number;

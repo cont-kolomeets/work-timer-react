@@ -12,7 +12,6 @@ export type SavedState_Year = {
 };
 
 export type SavedState_Month = {
-  timeNeeded: number;
   days: Record<number, SavedState_Day>;
   tasks: Record<number, SavedState_Task>;
 };
@@ -29,7 +28,6 @@ export type SavedState_Task = {
   id: string;
   issueNumber: number;
   label: string;
-  description: string;
   /** Time. Absolute milliseconds. */
   modified: number;
 };

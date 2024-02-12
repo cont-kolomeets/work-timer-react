@@ -3,6 +3,7 @@ import TasksPanel from "./components/tasks/TasksPanel";
 import TimerPanel from "./components/timer/TimerPanel";
 import "./css/Buttons.scss";
 import "./css/Layout.scss";
+import "./css/Spacings.scss";
 import "./css/WorkTimer.scss";
 
 function WorkTimer() {

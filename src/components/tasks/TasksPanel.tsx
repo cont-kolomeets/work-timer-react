@@ -1,5 +1,5 @@
-import "./TaskPanel.scss";
-import PanelTitle from "../shared/PanelTitle";
+import "./TasksPanel.scss";
+import PanelTitle from "../shared/PanelTitle/PanelTitle";
 
 export default function TasksPanel() {
   return (

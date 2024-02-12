@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { GridData } from "./DaysGrid";
 
-export type GridState = {
+type GridState = {
   data: GridData[];
 };
 

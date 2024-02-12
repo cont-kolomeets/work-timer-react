@@ -1,5 +1,5 @@
 import "./TaskDialog.scss";
-import PanelTitle from "../../shared/PanelTitle";
+import PanelTitle from "../../shared/PanelTitle/PanelTitle";
 
 export default function TaskDialog() {
   return (

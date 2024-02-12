@@ -1,22 +1,29 @@
-import { SavedState } from "../data/interfaces";
-
 type SupportedUrl =
   | "WorkTimerServer/GetSavedState"
-  | "WorkTimerServer/PutSavedState";
+  | "WorkTimerServer/PostSavedState"
+  | "WorkTimerServer/GetTasks"
+  | "WorkTimerServer/PostTasks";
 
 /**
  * Makes requests to our fake REST API.
  */
-export async function request<D, R>(
+export async function request<R>(
   url: SupportedUrl,
-  params: { data?: D; f: "json" }
+  params?: { data?: any; f: "json" }
 ): Promise<R> {
   const Server = (await import("../server/Server")).default;
   if (url === "WorkTimerServer/GetSavedState") {
-    return Server.getSavedState() as R;
+    return Server.getState() as R;
   }
-  if (url === "WorkTimerServer/PutSavedState") {
-    return Server.putSavedState(params.data as SavedState) as R;
+  if (url === "WorkTimerServer/PostSavedState") {
+    return Server.postState(params?.data) as R;
   }
+  if (url === "WorkTimerServer/GetTasks") {
+    return Server.getTasks(params?.data) as R;
+  }
+  if (url === "WorkTimerServer/PostTasks") {
+    return Server.postTasks(params?.data) as R;
+  }
+
   throw new Error("API method is not supported");
 }

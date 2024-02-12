@@ -1,5 +1,5 @@
 import "./MonthPanel.scss";
-import PanelTitle from "../shared/PanelTitle";
+import PanelTitle from "../shared/PanelTitle/PanelTitle";
 import DaysGrid from "./DaysGrid/DaysGrid";
 
 export default function MonthPanel() {

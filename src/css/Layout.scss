@@ -8,6 +8,14 @@
   align-items: center;
 }
 
+.wt-flex-spacer {
+  flex-grow: 1;
+}
+
+.wt-flex-no-shrink {
+  flex-shrink: 0;
+}
+
 /* Horizontal alignment */
 
 .wt-flex-start {
