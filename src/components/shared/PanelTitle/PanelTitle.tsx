@@ -5,5 +5,5 @@ type PanelTitleProps = {
 };
 
 export default function PanelTitle({ title }: PanelTitleProps) {
-  return <div className="wt-panel-title">{title}</div>;
+  return <div className="wt-panel-title wt-pad-8">{title}</div>;
 }
