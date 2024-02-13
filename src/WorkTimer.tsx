@@ -5,6 +5,8 @@ import "./css/Buttons.scss";
 import "./css/Layout.scss";
 import "./css/Spacings.scss";
 import "./css/WorkTimer.scss";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-icons/font/bootstrap-icons.scss";
 
 function WorkTimer() {
   return (

@@ -8,7 +8,6 @@ function HoursChart() {
   const { normal, late } = workIntervalsToNormalLatePercent(
     useSelector(getIntervals)
   );
-  console.log(normal);
   return (
     <>
       {_12HoursChart(normal, true)}

@@ -1,6 +1,8 @@
 body {
-  background: #1e1e1e;
-  font-family: Calibri;
+  overflow: hidden;
+  --bs-body-color: white;
+  --bs-body-font-family: Calibri;
+  --bs-body-bg: #1e1e1e;
 }
 
 .wt-app {

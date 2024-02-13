@@ -1,0 +1,50 @@
+.wt-panel-side-header {
+  background-color: #403b33;
+  color: white;
+  align-items: center;
+
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 40px;
+
+  &.left {
+    right: -40px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+
+    .header-text-container {
+      width: 0px;
+      display: flex;
+      justify-content: flex-start;
+
+      .header-text {
+        transform: rotate(90deg);
+        transform-origin: 0 center;
+      }
+    }
+  }
+
+  &.right {
+    left: -40px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    .header-text-container {
+      width: 0px;
+      display: flex;
+      justify-content: flex-end;
+
+      .header-text {
+        transform: rotate(-90deg);
+        transform-origin: 100% center;
+      }
+    }
+  }
+
+  .open-button {
+    font-size: 20px;
+    line-height: 10px;
+    cursor: pointer;
+  }
+}

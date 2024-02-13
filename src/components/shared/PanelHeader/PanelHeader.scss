@@ -1,6 +1,12 @@
-.wt-panel-title {
+.wt-panel-header {
   background-color: #403b33;
   color: white;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
+
+  .close-button {
+    font-size: 20px;
+    line-height: 10px;
+    cursor: pointer;
+  }
 }

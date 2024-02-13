@@ -23,7 +23,6 @@ export default function GridCell({
 
   return (
     <div
-      key={label}
       className={"wt-flex-row wt-grid-row__cell wt-grid_column-" + cIndex}
       style={{ position: "relative" }}
     >

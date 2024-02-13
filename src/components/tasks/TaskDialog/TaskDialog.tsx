@@ -1,10 +1,10 @@
 import "./TaskDialog.scss";
-import PanelTitle from "../../shared/PanelTitle/PanelTitle";
+import PanelHeader from "../../shared/PanelHeader/PanelHeader";
 
 export default function TaskDialog() {
   return (
     <div className="wt-task-dialog">
-      <PanelTitle title="Add task"></PanelTitle>
+      <PanelHeader title="Add task" onClose={() => {}}></PanelHeader>
     </div>
   );
 }

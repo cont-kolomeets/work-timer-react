@@ -32,9 +32,11 @@ const COLUMNS = [
 
 function _createHeader(): ReactNode {
   return (
-    <GridRow rIndex={0} isHeader={true}>
+    <GridRow key={0} isHeader={true}>
       {COLUMNS.map((c, cIndex) => {
-        return <GridCell label={c.label} cIndex={cIndex}></GridCell>;
+        return (
+          <GridCell key={c.label} label={c.label} cIndex={cIndex}></GridCell>
+        );
       })}
     </GridRow>
   );
@@ -69,14 +71,14 @@ function _createRows(data: GridData[]): ReactNode[] {
       }
 
       return (
-        <GridCell label={label} cIndex={cIndex} markerColor={markerColor} />
+        <GridCell key={label} label={label} cIndex={cIndex} markerColor={markerColor} />
       );
     });
 
     return (
       <GridRow
         rowClass="wt-grid-row_clickable"
-        rIndex={rIndex + 1 /* header */}
+        key={rIndex + 1 /* header */}
         isCurrentDay={data.isCurrent}
         onClick={() => {}}
       >

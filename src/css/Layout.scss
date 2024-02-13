@@ -3,9 +3,18 @@
   inset: 0;
 }
 
+.wt-relative {
+  position: relative;
+}
+
 .wt-flex-row {
   display: flex;
   align-items: center;
+}
+
+.wt-flex-column {
+  display: flex;
+  flex-direction: column;
 }
 
 .wt-flex-spacer {

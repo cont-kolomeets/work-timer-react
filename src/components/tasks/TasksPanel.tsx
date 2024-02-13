@@ -1,11 +1,11 @@
 import "./TasksPanel.scss";
-import PanelTitle from "../shared/PanelTitle/PanelTitle";
+import Panel from "../shared/Panel/Panel";
+import TasksList from "./TasksList.tsx/TasksList";
 
 export default function TasksPanel() {
   return (
-    <div className="wt-panel wt-tasks-panel">
-      <PanelTitle title="Tasks"></PanelTitle>
-      <div className="wt-panel-content"></div>
-    </div>
+    <Panel className="wt-tasks-panel" title="Tasks" side="right">
+      <TasksList />
+    </Panel>
   );
 }

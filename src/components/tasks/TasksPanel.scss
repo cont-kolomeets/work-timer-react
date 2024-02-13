@@ -1,2 +1,65 @@
 .wt-tasks-panel {
+  position: absolute;
+  right: -600px;
+  top: 0px;
+  bottom: 0px;
+  width: 600px;
+}
+
+.wt-tasks-panel.hidden {
+  animation: wt-tasks-panel-hide 1s forwards;
+
+  .wt-panel-side-header {
+    animation: wt-tasks-panel-header-show 1s forwards;
+  }
+}
+
+.wt-tasks-panel.shown {
+  animation: wt-tasks-panel-show 1s forwards;
+
+  .wt-panel-side-header {
+    animation: wt-tasks-panel-header-hide 1s forwards;
+  }
+}
+
+@keyframes wt-tasks-panel-show {
+  0% {
+    right: -600px;
+  }
+  100% {
+    right: 0;
+  }
+}
+
+@keyframes wt-tasks-panel-hide {
+  0% {
+    right: 0;
+  }
+  100% {
+    right: -600px;
+  }
+}
+
+@keyframes wt-tasks-panel-header-show {
+  0% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes wt-tasks-panel-header-hide {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }

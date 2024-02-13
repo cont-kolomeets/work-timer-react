@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 
 type GridRowProps = {
-  rIndex: number;
   isHeader?: boolean;
   isCurrentDay?: boolean;
   rowClass?: string;
@@ -10,7 +9,6 @@ type GridRowProps = {
 };
 
 export default function GridRow({
-  rIndex,
   isHeader,
   isCurrentDay,
   rowClass,
@@ -18,7 +16,6 @@ export default function GridRow({
 }: GridRowProps) {
   return (
     <div
-      key={rIndex}
       className={
         "wt-flex-row wt-grid-row" +
         (isHeader ? " wt-grid-row_header" : "") +
