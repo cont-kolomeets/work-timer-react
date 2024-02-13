@@ -1,4 +1,4 @@
-import { setTime } from "../components/timer/timerSlice";
+import { setTime } from "../components/TimerPanel/store/timerSlice";
 import AppStore from "../store/AppStore";
 
 class TimeModelClass {

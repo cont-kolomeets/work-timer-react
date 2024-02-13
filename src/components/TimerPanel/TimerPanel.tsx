@@ -1,6 +1,6 @@
 import "./TimerPanel.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { getTime, isRunning, toggleTimer } from "./timerSlice";
+import { getTime, isRunning, toggleTimer } from "./store/timerSlice";
 import { formatTotal } from "../../utils/TimeConvertUtil";
 import HoursChart from "./HoursChart";
 

@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { getIntervals } from "./timerSlice";
+import { getIntervals } from "./store/timerSlice";
 import { workIntervalsToNormalLatePercent } from "../../utils/TimeConvertUtil";
 
 const FILL_COLOR = "#f89c10";

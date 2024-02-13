@@ -1,5 +1,5 @@
 import Loader from "../../shared/Loader/Loader";
-import { selectTaskIds } from "../tasksSlice";
+import { selectTaskIds } from "../store/tasksSlice";
 import TaskCard from "./TaskCard";
 import "./TasksList.scss";
 import { useSelector } from "react-redux";

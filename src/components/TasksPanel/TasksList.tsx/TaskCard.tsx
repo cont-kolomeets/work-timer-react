@@ -1,5 +1,5 @@
 import { formatDate } from "../../../utils/TimeConvertUtil";
-import { selectTaskById, removeTask, updateTask } from "../tasksSlice";
+import { selectTaskById, removeTask, updateTask } from "../store/tasksSlice";
 import "./TaskCard.scss";
 import { useSelector, useDispatch } from "react-redux";
 

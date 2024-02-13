@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GridData } from "./DaysGrid";
+import { GridData } from "../DaysGrid";
 
 type GridState = {
   data: GridData[];

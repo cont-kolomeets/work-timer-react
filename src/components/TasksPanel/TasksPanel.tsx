@@ -1,7 +1,7 @@
 import "./TasksPanel.scss";
 import Panel from "../shared/Panel/Panel";
 import TasksList from "./TasksList.tsx/TasksList";
-import { fetchTasks } from "./tasksSlice";
+import { fetchTasks } from "./store/tasksSlice";
 import AppStore from "../../store/AppStore";
 import TasksToolbar from "./TasksToolbar";
 

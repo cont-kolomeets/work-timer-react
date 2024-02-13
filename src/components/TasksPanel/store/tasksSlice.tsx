@@ -4,8 +4,8 @@ import {
   createAsyncThunk,
   createEntityAdapter,
 } from "@reduxjs/toolkit";
-import { SavedState_Task } from "../../model/interfaces";
-import { request } from "../../utils/RequestUtil";
+import { SavedState_Task } from "../../../model/interfaces";
+import { request } from "../../../utils/RequestUtil";
 
 const taskAdaper = createEntityAdapter<SavedState_Task>();
 

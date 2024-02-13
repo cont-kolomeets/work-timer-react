@@ -4,7 +4,7 @@ import GridRow from "./GridRow";
 import GridCell from "./GridCell";
 import { useSelector } from "react-redux";
 import { formatTotal } from "../../../utils/TimeConvertUtil";
-import { getData } from "./gridSlice";
+import { getData } from "./store/gridSlice";
 
 export type GridData = {
   dayIndex: number | string;

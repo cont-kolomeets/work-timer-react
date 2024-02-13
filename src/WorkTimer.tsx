@@ -1,6 +1,6 @@
-import MonthPanel from "./components/month/MonthPanel";
-import TasksPanel from "./components/tasks/TasksPanel";
-import TimerPanel from "./components/timer/TimerPanel";
+import MonthPanel from "./components/MonthPanel/MonthPanel";
+import TasksPanel from "./components/TasksPanel/TasksPanel";
+import TimerPanel from "./components/TimerPanel/TimerPanel";
 import "./css/Buttons.scss";
 import "./css/Layout.scss";
 import "./css/Spacings.scss";
