@@ -8,6 +8,7 @@ type PanelProps = {
   side: "left" | "right";
   className: string;
   children: ReactNode;
+  onShown?(): void;
 };
 
 export default function Panel({
@@ -15,17 +16,19 @@ export default function Panel({
   side,
   className,
   children,
+  onShown,
 }: PanelProps) {
-  const [shown, setShown] = useState(true);
+  const [shown, setShown] = useState<"" | "shown" | "hidden">("");
   const _closePanel = () => {
-    setShown(false);
+    setShown("hidden");
   };
   const _openPanel = () => {
-    setShown(true);
+    setShown("shown");
+    onShown?.();
   };
 
   return (
-    <div className={`wt-panel  ${className}${shown ? " shown" : " hidden"}`}>
+    <div className={`wt-panel  ${className} ${shown}`}>
       <PanelHeader title={title} onClose={_closePanel} />
       <PanelSideHeader title={title} side={side} onOpen={_openPanel} />
       <div className="wt-panel-content wt-pad-12">{children}</div>

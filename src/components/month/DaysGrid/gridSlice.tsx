@@ -10,7 +10,13 @@ type GridAction = {
 };
 
 const initialState: GridState = {
-  data: [],
+  data: [
+    {
+      dayIndex: 1,
+      dayTime: 0,
+      isCurrent: true
+    }
+  ],
 };
 
 const gridSlice = createSlice({

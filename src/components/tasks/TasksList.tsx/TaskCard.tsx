@@ -34,14 +34,14 @@ export default function TaskCard({ id }: TaskCardProps) {
         <div className="wt-task-card__issue">#{issueNumber}</div>
         <div className="wt-flex-spacer"></div>
         <div className="wt-task-card__modified">{formatDate(modified)}</div>
-        <div
-          className="wt-margin-inline-start-12 wt-task-card__editButton"
+        <i
+          className="bi bi-pencil-square wt-task-card__editButton wt-margin-inline-start-12"
           onClick={_editTask}
-        ></div>
-        <div
-          className="wt-margin-inline-start-12 wt-task-card__deleteButton"
+        ></i>
+        <i
+          className="bi bi-trash-fill wt-task-card__deleteButton wt-margin-inline-start-12"
           onClick={_deleteTask}
-        ></div>
+        ></i>
       </div>
       <div className="wt-flex-row wt-margin-block-12">
         <div className="wt-task-card__label">{label}</div>

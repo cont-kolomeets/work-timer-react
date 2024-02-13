@@ -1,4 +1,3 @@
-import { fetchTasks } from "../components/tasks/tasksSlice";
 import { setTime } from "../components/timer/timerSlice";
 import AppStore from "../store/AppStore";
 
@@ -8,7 +7,7 @@ class TimeModelClass {
       AppStore.dispatch(setTime(AppStore.getState().timer.time + 1000));
     }, 1000);
 
-    AppStore.dispatch(fetchTasks());
+    //AppStore.dispatch(fetchTasks());
   }
 }
 

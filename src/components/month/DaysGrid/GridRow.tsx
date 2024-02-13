@@ -13,6 +13,7 @@ export default function GridRow({
   isCurrentDay,
   rowClass,
   onClick,
+  children
 }: GridRowProps) {
   return (
     <div
@@ -23,6 +24,6 @@ export default function GridRow({
         (rowClass ? " " + rowClass : "")
       }
       onClick={onClick}
-    ></div>
+    >{children}</div>
   );
 }

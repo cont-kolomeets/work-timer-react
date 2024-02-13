@@ -1,34 +1,25 @@
 .wt-days-grid {
-  display: grid;
-  grid-template-columns: 50px 1fr;
-  color: white;
-
   .wt-grid-row {
-    height: 25px;
+    display: grid;
+    grid-template-columns: 50px 1fr;
 
     .wt-grid-row__cell {
-      height: 14px;
-      border: 1px solid white;
       padding: 4px;
       padding-inline: 12px;
-      min-width: 50px;
 
       .wt-grid-row__cell-marker {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        position: absolute;
-        right: 5px;
-        top: 7px;
       }
     }
-  }
 
-  .wt-grid-row.wt-grid-row_header {
-    height: 30px;
+    &.wt-grid-row_header {
+      background-color: #2c2e2e;
+    }
 
-    .wt-grid-row__cell {
-      height: 19px;
+    &:not(.wt-grid-row_header) {
+      border-bottom: 1px solid #262626;
     }
   }
 

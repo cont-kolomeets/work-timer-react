@@ -16,7 +16,7 @@ export default function GridCell({
     markerNode = (
       <div
         className="wt-grid-row__cell-marker"
-        style={{ backgroundColor: markerColor }}
+        style={{ border: `2px solid ${markerColor}` }}
       ></div>
     );
   }
@@ -26,7 +26,7 @@ export default function GridCell({
       className={"wt-flex-row wt-grid-row__cell wt-grid_column-" + cIndex}
       style={{ position: "relative" }}
     >
-      {label}
+      <div className="wt-flex-spacer">{label}</div>
       {markerNode}
     </div>
   );

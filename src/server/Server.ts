@@ -1,4 +1,5 @@
 import { SavedState, SavedState_Task } from "../model/interfaces";
+import { nanoid } from "nanoid";
 
 const KEY = "workTimer.savedState";
 
@@ -13,7 +14,28 @@ class ServerClass {
     const json: SavedState = storageItem
       ? JSON.parse(storageItem)
       : {
-          years: {},
+          years: {
+            2024: {
+              months: {
+                2: {
+                  tasks: [
+                    {
+                      id: nanoid(8),
+                      issueNumber: 1000,
+                      label: "Create work timer app 1",
+                      modified: Date.now()
+                    },
+                    {
+                      id: nanoid(8),
+                      issueNumber: 2000,
+                      label: "Create work timer app 2",
+                      modified: Date.now()
+                    },
+                  ],
+                },
+              },
+            },
+          },
         };
     return json;
   }
@@ -32,6 +54,9 @@ class ServerClass {
     month: number;
   }): Promise<Record<number, SavedState_Task>> {
     const state = await this.getState();
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
     return state.years[year]?.months?.[month]?.tasks || [];
   }
 

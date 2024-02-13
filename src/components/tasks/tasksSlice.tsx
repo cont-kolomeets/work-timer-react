@@ -16,7 +16,7 @@ const initialState = taskAdaper.getInitialState({
 export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
   return request<Record<number, SavedState_Task>>("WorkTimerServer/GetTasks", {
     f: "json",
-    data: { year: 0, month: 0 },
+    data: { year: 2024, month: 2 },
   });
 });
 
@@ -25,7 +25,7 @@ export const saveTasks = createAsyncThunk(
   async (tasks: Record<number, SavedState_Task>) => {
     return request<void>("WorkTimerServer/PostTasks", {
       f: "json",
-      data: { year: 0, month: 0, tasks },
+      data: { year: 2024, month: 2, tasks },
     });
   }
 );

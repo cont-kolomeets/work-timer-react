@@ -6,6 +6,14 @@
   margin-block: 12px;
 }
 
+.wt-margin-block-start-12 {
+  margin-block-start: 12px;
+}
+
+.wt-margin-block-end-12 {
+  margin-block-end: 12px;
+}
+
 .wt-margin-inline-start-12 {
   margin-inline-start: 12px;
 }
@@ -14,10 +22,36 @@
   margin-inline-end: 12px;
 }
 
+// Padding
+
 .wt-pad-8 {
   padding: 8px;
 }
 
 .wt-pad-12 {
   padding: 12px;
+}
+
+.wt-pad-block-8 {
+  padding-block: 8px;
+}
+
+.wt-pad-block-12 {
+  padding-block: 12px;
+}
+
+.wt-pad-block-start-12 {
+  padding-block-start: 12px;
+}
+
+.wt-pad-block-end-12 {
+  padding-block-end: 12px;
+}
+
+.wt-pad-inline-start-12 {
+  padding-inline-start: 12px;
+}
+
+.wt-pad-inline-end-12 {
+  padding-inline-end: 12px;
 }
