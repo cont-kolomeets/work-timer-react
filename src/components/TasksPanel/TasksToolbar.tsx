@@ -1,13 +1,20 @@
 import { useState } from "react";
 import "./TasksToolbar.scss";
 import TaskDialog from "./TaskDialog/TaskDialog";
+import { useDispatch } from "react-redux";
+import { addTask } from "./store/tasksSlice";
 
 export default function TasksToolbar() {
   const [addDialogShown, setAddDialogShown] = useState(false);
+  const dispatch = useDispatch();
 
   const addDialog = addDialogShown ? (
     <TaskDialog
-      onClose={() => {
+      task={null}
+      onSave={(task) => {
+        dispatch(addTask(task));
+      }}
+      onClosed={() => {
         setAddDialogShown(false);
       }}
     ></TaskDialog>

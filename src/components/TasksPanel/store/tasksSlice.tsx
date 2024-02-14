@@ -9,9 +9,11 @@ import { request } from "../../../utils/RequestUtil";
 
 const taskAdaper = createEntityAdapter<SavedState_Task>();
 
-const initialState = taskAdaper.getInitialState({
-  status: "idle",
-});
+const initialState = taskAdaper.getInitialState<{ status: "idle" | "loading" }>(
+  {
+    status: "idle",
+  }
+);
 
 export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
   return request<Record<number, SavedState_Task>>("WorkTimerServer/GetTasks", {

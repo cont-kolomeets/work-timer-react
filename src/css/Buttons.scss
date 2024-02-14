@@ -5,6 +5,12 @@
   color: white;
   cursor: pointer;
   border: none;
+  min-width: 100px;
+}
+
+.wt-round-button_disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .wt-action-button {
