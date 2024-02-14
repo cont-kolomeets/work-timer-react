@@ -16,11 +16,11 @@ export default function PanelSideHeader({
       <i
         className={`bi bi-chevron-double-${
           side === "left" ? "right" : "left"
-        } open-button`}
+        } wt-action-button wt-panel-side-header__open-button`}
         onClick={onOpen}
       ></i>
       <div className="header-text-container">
-        <div className="header-text">{title}</div>
+        <div className="header-text-container__header-text">{title}</div>
       </div>
     </div>
   );

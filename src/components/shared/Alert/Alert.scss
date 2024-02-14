@@ -1,2 +1,23 @@
 .wt-alert {
+  position: absolute;
+  top: -200px;
+  left: 30%;
+  right: 30%;
+  background-color: white;
+  color: black;
+  border-radius: 12px;
+
+  .wt-alert__title {
+    font-weight: bold;
+  }
+
+  &.hidden {
+    top: -200px;
+    transition: 1s;
+  }
+
+  &.shown {
+    top: 50px;
+    transition: 1s;
+  }
 }

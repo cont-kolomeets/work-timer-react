@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getTime, isRunning, toggleTimer } from "./store/timerSlice";
 import { formatTotal } from "../../utils/TimeConvertUtil";
 import HoursChart from "./HoursChart";
+import showGreetingsAlert from "./store/showGreetingsAlert";
 
 function TimerPanel() {
   const formattedTime = formatTotal(useSelector(getTime), "h:m:s");
@@ -10,6 +11,7 @@ function TimerPanel() {
   const dispatch = useDispatch();
 
   const _toggleTimer = () => {
+    !running && showGreetingsAlert();
     dispatch(toggleTimer());
   };
 

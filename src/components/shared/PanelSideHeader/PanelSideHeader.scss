@@ -17,7 +17,7 @@
       display: flex;
       justify-content: flex-start;
 
-      .header-text {
+      .header-text-container__header-text {
         transform: rotate(90deg);
         transform-origin: 0 center;
       }
@@ -34,14 +34,14 @@
       display: flex;
       justify-content: flex-end;
 
-      .header-text {
+      .header-text-container__header-text {
         transform: rotate(-90deg);
         transform-origin: 100% center;
       }
     }
   }
 
-  .open-button {
+  .wt-panel-side-header__open-button {
     font-size: 20px;
     line-height: 10px;
     cursor: pointer;

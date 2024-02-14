@@ -31,7 +31,7 @@ export default function Panel({
     <div className={`wt-panel  ${className} ${shown}`}>
       <PanelHeader title={title} onClose={_closePanel} />
       <PanelSideHeader title={title} side={side} onOpen={_openPanel} />
-      <div className="wt-panel-content wt-pad-12">{children}</div>
+      <div className="wt-panel__content wt-pad-12">{children}</div>
     </div>
   );
 }
