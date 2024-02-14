@@ -1,10 +1,14 @@
 import "./TaskDialog.scss";
-import PanelHeader from "../../shared/PanelHeader/PanelHeader";
+import Dialog from "../../shared/Dialog/Dialog";
 
-export default function TaskDialog() {
+type TaskDialogProps = {
+  onClose(): void;
+};
+
+export default function TaskDialog({ onClose }: TaskDialogProps) {
   return (
-    <div className="wt-task-dialog">
-      <PanelHeader title="Add task" onClose={() => {}}></PanelHeader>
-    </div>
+    <Dialog title="Add task" className="wt-task-dialog" onClose={onClose}>
+      Hello
+    </Dialog>
   );
 }

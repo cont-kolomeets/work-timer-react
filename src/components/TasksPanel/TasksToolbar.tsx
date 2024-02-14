@@ -1,7 +1,21 @@
+import { useState } from "react";
 import "./TasksToolbar.scss";
+import TaskDialog from "./TaskDialog/TaskDialog";
 
 export default function TasksToolbar() {
-  const _addNewTask = () => {};
+  const [addDialogShown, setAddDialogShown] = useState(false);
+
+  const addDialog = addDialogShown ? (
+    <TaskDialog
+      onClose={() => {
+        setAddDialogShown(false);
+      }}
+    ></TaskDialog>
+  ) : null;
+
+  const _addNewTask = () => {
+    setAddDialogShown(true);
+  };
 
   const _createReport = () => {};
 
@@ -14,6 +28,7 @@ export default function TasksToolbar() {
       <button className="wt-round-button" onClick={_createReport}>
         Create report
       </button>
+      {addDialog}
     </div>
   );
 }

@@ -1,7 +1,24 @@
-.wt-dialog {
-  display: flex;
-  flex-direction: column;
-}
+.wt-dialog-bg {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
 
-.wt-dialog-content {
+  .wt-dialog {
+    .wt-dialog__content {
+      background-color: #1e1e1e;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      min-width: 300px;
+      min-height: 100px;
+    }
+  }
+
+  &.hidden {
+    opacity: 0;
+    transition: 0.5s;
+  }
+
+  &.shown {
+    opacity: 1;
+    transition: 0.5s;
+  }
 }

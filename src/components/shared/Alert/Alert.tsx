@@ -8,18 +8,18 @@ type AlertProps = {
 };
 
 export default function Alert({ title, message, onClose }: AlertProps) {
-  const [shown, setShown] = useState<"" | "shown" | "hidden">("");
+  const [display, setDisplay] = useState<"" | "shown" | "hidden">("");
   const _closeAlert = () => {
-    setShown("hidden"); // will trigger the animation
+    setDisplay("hidden"); // will trigger the animation
     setTimeout(() => onClose(), 1000); // will notify the parent
   };
 
   setTimeout(() => {
-    setShown((state) => state === "" ? "shown" : state); // will trigger the animation
+    setDisplay((state) => state === "" ? "shown" : state); // will trigger the animation
   });
 
   return (
-    <div className={`wt-flex-row wt-flex-center wt-alert ${shown}`}>
+    <div className={`wt-flex-row wt-flex-center wt-alert ${display}`}>
       <div className="wt-flex-spacer wt-pad-12">
         <div className="wt-margin-block-12 wt-alert__title">{title}</div>
         <div className="wt-margin-block-12">{message}</div>
