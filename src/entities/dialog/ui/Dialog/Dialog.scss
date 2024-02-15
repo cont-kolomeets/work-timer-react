@@ -11,14 +11,26 @@
       min-height: 100px;
     }
   }
+}
 
-  &.hidden {
-    opacity: 0;
-    transition: 0.5s;
-  }
+.wt-dialog-bg-enter {
+  opacity: 0;
+}
 
-  &.shown {
-    opacity: 1;
-    transition: 0.5s;
-  }
+.wt-dialog-bg-enter-active {
+  opacity: 1;
+  transition: 0.5s;
+}
+
+.wt-dialog-bg-enter-done {
+  opacity: 1;
+}
+
+.wt-dialog-bg-exit {
+  opacity: 1;
+}
+
+.wt-dialog-bg-exit-active {
+  opacity: 0;
+  transition: 0.5s;
 }
