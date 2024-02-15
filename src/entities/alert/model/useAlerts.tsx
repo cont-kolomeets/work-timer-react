@@ -12,7 +12,7 @@ export function useAlerts() {
         key={a.id} // unique key to avoid re-rendering
         title={a.title}
         message={a.message}
-        onClose={() => {
+        onClosed={() => {
           dispatch(hideAlert(a.id)); // will update the store and re-render the components that listen to it
         }}
       />

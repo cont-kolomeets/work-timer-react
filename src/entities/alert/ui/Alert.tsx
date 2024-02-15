@@ -1,32 +1,54 @@
-import { useState } from "react";
-import "./Alert.module.scss";
+import { useEffect, useRef, useState } from "react";
+import { CSSTransition } from "react-transition-group";
+import "./Alert.scss";
 
 type AlertProps = {
   title: string;
   message: string;
-  onClose(): void;
+  onClosed(): void;
 };
 
-export function Alert({ title, message, onClose }: AlertProps) {
-  const [display, setDisplay] = useState<"" | "shown" | "hidden">("");
-  const _closeAlert = () => {
-    setDisplay("hidden"); // will trigger the animation
-    setTimeout(() => onClose(), 1000); // will notify the parent
-  };
+export function Alert({ title, message, onClosed }: AlertProps) {
+  const [display, setDisplay] = useState(false);
+  const nodeRef = useRef(null);
 
-  setTimeout(() => {
-    setDisplay((state) => (state === "" ? "shown" : state)); // will trigger the animation
-  });
+  useEffect(() => {
+    setTimeout(() => {
+      setDisplay(true);
+    }, 100);
+  }, []);
 
   return (
-    <div className={`wt-flex-row wt-flex-center wt-alert ${display}`}>
-      <div className="wt-flex-spacer wt-pad-12">
-        <div className="wt-margin-block-12 wt-alert__title">{title}</div>
-        <div className="wt-margin-block-12">{message}</div>
-      </div>
-      <div className="wt-pad-12">
-        <i className="bi bi-x wt-action-button" onClick={_closeAlert}></i>
-      </div>
-    </div>
+    <>
+      <CSSTransition
+        in={display}
+        nodeRef={nodeRef}
+        timeout={1000}
+        classNames="wt-alert"
+        unmountOnExit
+        onEntered={() => {
+          setTimeout(() => {
+            setDisplay(false);
+          }, 5000);
+        }}
+        onExited={() => onClosed()}
+      >
+        <div
+          ref={nodeRef}
+          className={`wt-flex-row wt-flex-center wt-alert ${display}`}
+        >
+          <div className="wt-flex-spacer wt-pad-12">
+            <div className="wt-margin-block-12 wt-alert__title">{title}</div>
+            <div className="wt-margin-block-12">{message}</div>
+          </div>
+          <div className="wt-pad-12">
+            <i
+              className="bi bi-x wt-action-button"
+              onClick={() => setDisplay(false)}
+            ></i>
+          </div>
+        </div>
+      </CSSTransition>
+    </>
   );
 }

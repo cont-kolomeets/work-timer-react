@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { nanoid } from "@reduxjs/toolkit";
 import { SavedState, SavedState_Task } from "../model/interfaces";
 
 const KEY = "workTimer.savedState";
