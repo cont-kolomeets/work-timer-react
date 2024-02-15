@@ -1,3 +1,4 @@
+import { Action } from "../Action/Action";
 import "./PanelHeader.scss";
 
 type PanelTitleProps = {
@@ -10,10 +11,11 @@ export function PanelHeader({ title, onClose }: PanelTitleProps) {
     <div className="wt-panel-header wt-pad-8 wt-flex-row">
       {title}
       <div className="wt-flex-spacer"></div>
-      <i
-        className="bi bi-x wt-action-button wt-panel-header__close-button"
+      <Action
+        name="x"
+        className="wt-panel-header__close-button"
         onClick={onClose}
-      ></i>
+      />
     </div>
   );
 }

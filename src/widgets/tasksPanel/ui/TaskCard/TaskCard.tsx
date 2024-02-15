@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../../../shared/lib";
+import { Action } from "../../../../shared/ui/Action/Action";
 import { removeTask, selectTaskById, updateTask } from "../../model/tasksSlice";
 import { TaskDialog } from "../TaskDialog/TaskDialog";
 import "./TaskCard.scss";
@@ -41,14 +42,16 @@ export function TaskCard({ id }: TaskCardProps) {
         <div className="wt-task-card__issue">#{issueNumber}</div>
         <div className="wt-flex-spacer"></div>
         <div className="wt-task-card__modified">{formatDate(modified)}</div>
-        <i
-          className="bi bi-pencil-square wt-task-card__editButton wt-margin-inline-start-12"
+        <Action
+          name="pencil-square"
+          className="wt-margin-inline-start-12"
           onClick={_editTask}
-        ></i>
-        <i
-          className="bi bi-trash-fill wt-task-card__deleteButton wt-margin-inline-start-12"
+        />
+        <Action
+          name="trash-fill"
+          className="wt-margin-inline-start-12"
           onClick={_deleteTask}
-        ></i>
+        />
       </div>
       <div className="wt-flex-row wt-margin-block-12">
         <div className="wt-task-card__label">{label}</div>

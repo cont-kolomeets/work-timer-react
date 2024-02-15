@@ -1,4 +1,5 @@
 import { useFadeInOutTransition } from "../../../shared/model";
+import { Action } from "../../../shared/ui/Action/Action";
 import "./Alert.scss";
 
 type AlertProps = {
@@ -17,10 +18,7 @@ export function Alert({ title, message, onClosed }: AlertProps) {
             <div className="wt-margin-block-12">{message}</div>
           </div>
           <div className="wt-pad-12">
-            <i
-              className="bi bi-x wt-action-button"
-              onClick={() => closeAlert()}
-            ></i>
+            <Action name="x" onClick={closeAlert} />
           </div>
         </div>
       );

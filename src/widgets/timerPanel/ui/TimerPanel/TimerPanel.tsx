@@ -18,6 +18,7 @@ export function TimerPanel() {
   return (
     <div className="wt-stretched wt-flex-row wt-flex-center wt-timer-panel">
       <HoursChart />
+
       <div className="wt-timer-panel-label">{formattedTime}</div>
       <div className="wt-flex-row wt-flex-center wt-timer-bottom-container">
         <button

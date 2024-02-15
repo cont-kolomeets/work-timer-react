@@ -1,3 +1,4 @@
+import { Action } from "../Action/Action";
 import "./PanelSideHeader.scss";
 
 type PanelTitleProps = {
@@ -6,19 +7,14 @@ type PanelTitleProps = {
   onOpen(): void;
 };
 
-export function PanelSideHeader({
-  title,
-  side,
-  onOpen,
-}: PanelTitleProps) {
+export function PanelSideHeader({ title, side, onOpen }: PanelTitleProps) {
   return (
     <div className={`wt-panel-side-header wt-pad-8 wt-flex-column ${side}`}>
-      <i
-        className={`bi bi-chevron-double-${
-          side === "left" ? "right" : "left"
-        } wt-action-button wt-panel-side-header__open-button`}
+      <Action
+        name={side === "left" ? "chevron-double-right" : "chevron-double-left"}
+        className="wt-panel-side-header__open-button"
         onClick={onOpen}
-      ></i>
+      />
       <div className="header-text-container">
         <div className="header-text-container__header-text">{title}</div>
       </div>
