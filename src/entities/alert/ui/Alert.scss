@@ -17,19 +17,19 @@
 }
 
 .wt-alert-enter-active {
-  top: 50px;
-  transition: 1s;
+  top: 25px;
+  transition: 0.5s;
 }
 
 .wt-alert-enter-done {
-  top: 50px;
+  top: 25px;
 }
 
 .wt-alert-exit {
-  top: 50px;
+  top: 25px;
 }
 
 .wt-alert-exit-active {
   top: -200px;
-  transition: 1s;
+  transition: 0.5s;
 }

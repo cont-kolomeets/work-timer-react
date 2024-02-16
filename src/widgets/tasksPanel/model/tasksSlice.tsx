@@ -1,4 +1,5 @@
 import {
+  PayloadAction,
   createAsyncThunk,
   createEntityAdapter,
   createSelector,
@@ -36,17 +37,17 @@ const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    updateTask: (state, action: { payload: SavedState_Task }) => {
+    updateTask: (state, action: PayloadAction<SavedState_Task>) => {
       const { id, issueNumber, label, modified } = action.payload;
       const task = state.entities[id];
       task.issueNumber = issueNumber;
       task.label = label;
       task.modified = modified;
     },
-    addTask: (state, action) => {
+    addTask: (state, action: PayloadAction<SavedState_Task>) => {
       taskAdaper.addOne(state, action);
     },
-    removeTask: (state, action) => {
+    removeTask: (state, action: PayloadAction<string>) => {
       taskAdaper.removeOne(state, action);
     },
   },

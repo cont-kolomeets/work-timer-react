@@ -9,15 +9,19 @@ type IconName =
 export function Action({
   name,
   className,
+  size,
   onClick,
 }: {
   name: IconName;
   className?: string;
+  size?: number | string;
   onClick(): void;
 }) {
   return (
     <i
-      className={`bi bi-${name} wt-action-button ${className || ""}`}
+      className={`bi bi-${name} wt-clickable wt-action-button-${size || 20} ${
+        className || ""
+      }`}
       onClick={onClick}
     ></i>
   );

@@ -5,6 +5,10 @@ import { showAlert } from "../../../entities/alert/model/alertSlice";
 let numCalls = 0;
 
 export function showGreetingsAlert() {
+  if (appStore.getState().alert.stack.length) {
+    return;
+  }
+
   const isAm = new Date().getHours() < 12;
 
   appStore.dispatch(

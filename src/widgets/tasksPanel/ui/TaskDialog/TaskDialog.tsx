@@ -2,6 +2,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
 import { SavedState_Task } from "../../../../shared/model";
+import { Button } from "../../../../shared/ui";
 import "./TaskDialog.scss";
 
 type TaskDialogProps = {
@@ -33,28 +34,25 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
         return (
           <>
             <div className="wt-task-dialog-settings">
-              <div className="wt-margin-block-12">
+              <div className="wt-m-b-12">
                 <div>Issue #:</div>
                 <input
-                  className="wt-task-dialog-settings__issue"
                   value={issueNumber || ""}
                   onChange={(event) => setIssueNumber(+event.target.value)}
                 ></input>
               </div>
-              <div className="wt-margin-block-12">
+              <div className="wt-m-b-12">
                 <div>Label:</div>
                 <textarea
-                  className="wt-task-dialog-settings__label"
                   value={taskLabel}
                   onChange={(event) => setTaskLabel(event.target.value)}
                 ></textarea>
               </div>
             </div>
-            <div className="wt-flex-row wt-flex-end wt-margin-block-12">
-              <button
-                className={`wt-round-button wt-timer-toggle-button ${
-                  canSave ? "" : "wt-round-button_disabled"
-                }`}
+            <div className="wt-flex-row wt-flex-end wt-m-b-12">
+              <Button
+                className="wt-timer-toggle-button"
+                disabled={!canSave}
                 onClick={() => {
                   onSave({
                     id: task?.id || nanoid(8),
@@ -66,7 +64,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
                 }}
               >
                 Save
-              </button>
+              </Button>
             </div>
           </>
         );

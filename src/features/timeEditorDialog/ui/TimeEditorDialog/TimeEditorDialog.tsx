@@ -1,5 +1,66 @@
+import { useEffect, useState } from "react";
+import { Dialog } from "../../../../entities/dialog";
+import { partsToTotal, totalToParts } from "../../../../shared/lib";
+import { Button } from "../../../../shared/ui";
 import "./TimeEditorDialog.scss";
 
-export function TimeEditorDialog() {
-    return <div className="wt-time-editor-dialog"></div>;
-  }
+type TimeEditorDialogProps = {
+  time: number;
+  onSave(time: number): void;
+  onClosed(): void;
+};
+
+export function TimeEditorDialog({
+  time,
+  onSave,
+  onClosed,
+}: TimeEditorDialogProps) {
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+
+  useEffect(() => {
+    const ps = totalToParts(time);
+    setHours(ps.h);
+    setMinutes(ps.m);
+  }, [time]);
+
+  return (
+    <Dialog
+      title="Edit time"
+      className="wt-time-editor-dialog"
+      onClosed={onClosed}
+      children={(closeDialog) => {
+        return (
+          <>
+            <div className="wt-flex-row">
+              <div className="wt-m-12">Hours</div>
+              <div className="wt-12">
+                <input
+                  value={hours + ""}
+                  onChange={(event) => setHours(+event.target.value)}
+                ></input>
+              </div>
+              <div className="wt-m-12">Minutes</div>
+              <div className="wt-m-12">
+                <input
+                  value={minutes + ""}
+                  onChange={(event) => setMinutes(+event.target.value)}
+                ></input>
+              </div>
+            </div>
+            <div className="wt-flex-row wt-flex-end wt-m-b-12">
+              <Button
+                onClick={() => {
+                  onSave(partsToTotal({ h: hours, m: minutes }));
+                  closeDialog();
+                }}
+              >
+                Save
+              </Button>
+            </div>
+          </>
+        );
+      }}
+    />
+  );
+}

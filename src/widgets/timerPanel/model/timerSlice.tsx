@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 type TimerState = {
   running: boolean;
@@ -6,10 +6,6 @@ type TimerState = {
   time: number;
   /** [start, end] */
   workIntervals: number[][];
-};
-
-type TimerAction = {
-  payload: number;
 };
 
 const initialState: TimerState = {
@@ -29,7 +25,10 @@ const timerSlice = createSlice({
     toggleTimer: (state) => {
       state.running = !state.running;
     },
-    setTime: (state, action: TimerAction) => {
+    stopTimer: (state) => {
+      state.running = false;
+    },
+    setTime: (state, action: PayloadAction<number>) => {
       state.time = action.payload;
     },
   },
@@ -40,6 +39,6 @@ const timerSlice = createSlice({
   },
 });
 
-export const { toggleTimer, setTime } = timerSlice.actions;
+export const { toggleTimer, stopTimer, setTime } = timerSlice.actions;
 export const { isRunning, getTime, getIntervals } = timerSlice.selectors;
 export const timerSliderReducer = timerSlice.reducer;

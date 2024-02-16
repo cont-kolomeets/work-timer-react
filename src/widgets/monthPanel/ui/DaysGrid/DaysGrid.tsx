@@ -1,11 +1,12 @@
-import "./DaysGrid.scss";
-import { ReactNode } from "react";
-import { useSelector } from "react-redux";
-import { GridRow } from "../GridRow/GridRow";
-import { GridCell } from "../GridCell/GridCell";
-import { GridData } from "../../model/interfaces";
-import { getData } from "../../model/gridSlice";
+import { ReactNode, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import { formatTotal } from "../../../../shared/lib";
+import { getMonthData, updateDayData } from "../../model/gridSlice";
+import { GridDayData } from "../../model/interfaces";
+import { GridCell } from "../GridCell/GridCell";
+import { GridRow } from "../GridRow/GridRow";
+import "./DaysGrid.scss";
 
 const COLUMNS = [
   {
@@ -29,7 +30,12 @@ function _createHeader(): ReactNode {
     <GridRow key={0} isHeader={true}>
       {COLUMNS.map((c, cIndex) => {
         return (
-          <GridCell key={c.label} label={c.label} cIndex={cIndex}></GridCell>
+          <GridCell
+            key={c.label}
+            label={c.label}
+            cIndex={cIndex}
+            isHeader={true}
+          ></GridCell>
         );
       })}
     </GridRow>
@@ -42,26 +48,25 @@ function _createHeader(): ReactNode {
 //
 //--------------------------------------------------------------------------
 
-function _createRows(data: GridData[]): ReactNode[] {
+function _createRows(
+  data: GridDayData[],
+  onEditTime: (data: GridDayData) => void
+): ReactNode[] {
   return data.map((data, rIndex) => {
     const cells = COLUMNS.map((c, cIndex) => {
       let label: string;
       let markerColor: string | null = null;
       if (c.field === "dayTime") {
-        label = formatTotal(data.dayTime, "h:m:s");
+        label = formatTotal(data.time, "h:m:s");
 
         if (!data.isDept) {
           let _8h = 8 * 3600000;
           let _10h = 10 * 3600000;
           markerColor =
-            data.dayTime < _8h
-              ? "red"
-              : data.dayTime > _10h
-              ? "yellow"
-              : "#7fff00";
+            data.time < _8h ? "red" : data.time > _10h ? "yellow" : "#7fff00";
         }
       } else {
-        label = data.dayIndex + "";
+        label = data.index + "";
       }
 
       return (
@@ -69,14 +74,17 @@ function _createRows(data: GridData[]): ReactNode[] {
           key={label}
           label={label}
           cIndex={cIndex}
+          isHeader={false}
           markerColor={markerColor}
+          onEditTime={() => {
+            onEditTime(data);
+          }}
         />
       );
     });
 
     return (
       <GridRow
-        rowClass="wt-grid-row_clickable"
         key={rIndex + 1 /* header */}
         isCurrentDay={data.isCurrent}
         onClick={() => {}}
@@ -94,14 +102,31 @@ function _createRows(data: GridData[]): ReactNode[] {
 //--------------------------------------------------------------------------
 
 export function DaysGrid() {
-  const data = useSelector(getData);
+  const monthData = useSelector(getMonthData);
+  const [editedData, setEditedData] = useState<GridDayData | null>(null);
+  const dispatch = useDispatch();
+
+  const { editDialog, setEditDialogShown } = useTimeEditorDialog({
+    time: editedData?.time || 0,
+    onSetTime: (time) => {
+      if (editedData) {
+        const newData = { ...editedData };
+        newData.time = time;
+        dispatch(updateDayData(newData));
+      }
+    },
+  });
 
   const headerRow = _createHeader();
-  const rows = _createRows(data);
+  const rows = _createRows(monthData, (data) => {
+    setEditedData(data);
+    setEditDialogShown(true);
+  });
   return (
     <div className="wt-days-grid">
       {headerRow}
       {rows}
+      {editDialog}
     </div>
   );
 }

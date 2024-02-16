@@ -7,18 +7,18 @@
 }
 
 .wt-month-panel.hidden {
-  animation: wt-month-panel-hide 1s forwards;
+  animation: wt-month-panel-hide 0.5s forwards;
 
   .wt-panel-side-header {
-    animation: wt-month-panel-header-show 1s forwards;
+    animation: wt-month-panel-header-show 0.5s forwards;
   }
 }
 
 .wt-month-panel.shown {
-  animation: wt-month-panel-show 1s forwards;
+  animation: wt-month-panel-show 0.5s forwards;
 
   .wt-panel-side-header {
-    animation: wt-month-panel-header-hide 1s forwards;
+    animation: wt-month-panel-header-hide 0.5s forwards;
   }
 }
 

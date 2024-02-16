@@ -1,6 +1,6 @@
-export type GridData = {
-  dayIndex: number | string;
-  dayTime: number;
+export type GridDayData = {
+  index: number | string;
+  time: number;
   isCurrent?: boolean;
   isDept?: boolean;
 };

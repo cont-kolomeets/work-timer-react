@@ -7,18 +7,18 @@
 }
 
 .wt-tasks-panel.hidden {
-  animation: wt-tasks-panel-hide 1s forwards;
+  animation: wt-tasks-panel-hide 0.5s forwards;
 
   .wt-panel-side-header {
-    animation: wt-tasks-panel-header-show 1s forwards;
+    animation: wt-tasks-panel-header-show 0.5s forwards;
   }
 }
 
 .wt-tasks-panel.shown {
-  animation: wt-tasks-panel-show 1s forwards;
+  animation: wt-tasks-panel-show 0.5s forwards;
 
   .wt-panel-side-header {
-    animation: wt-tasks-panel-header-hide 1s forwards;
+    animation: wt-tasks-panel-header-hide 0.5s forwards;
   }
 }
 

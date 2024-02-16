@@ -1,19 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { GridData } from "./interfaces";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { GridDayData } from "./interfaces";
 
 type GridState = {
-  data: GridData[];
-};
-
-type GridAction = {
-  payload: GridData[];
+  data: GridDayData[];
 };
 
 const initialState: GridState = {
   data: [
     {
-      dayIndex: 1,
-      dayTime: 0,
+      index: 1,
+      time: 0,
       isCurrent: true,
     },
   ],
@@ -23,15 +19,21 @@ const gridSlice = createSlice({
   name: "grid",
   initialState,
   reducers: {
-    setData: (state, action: GridAction) => {
+    setMonthData: (state, action: PayloadAction<GridDayData[]>) => {
       state.data = action.payload;
+    },
+    updateDayData: (state, action: PayloadAction<GridDayData>) => {
+      const data = state.data.find(
+        (data) => data.index === action.payload.index
+      );
+      data && (data.time = action.payload.time);
     },
   },
   selectors: {
-    getData: (state) => state.data,
+    getMonthData: (state) => state.data,
   },
 });
 
-export const { setData } = gridSlice.actions;
-export const { getData } = gridSlice.selectors;
+export const { setMonthData, updateDayData } = gridSlice.actions;
+export const { getMonthData } = gridSlice.selectors;
 export const gridSliceReducer = gridSlice.reducer;
