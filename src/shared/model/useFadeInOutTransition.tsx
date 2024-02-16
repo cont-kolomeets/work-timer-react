@@ -26,24 +26,27 @@ export function useFadeInOutTransition({
     }, 100);
   }, []);
 
-  return (
-    <>
-      <CSSTransition
-        in={display}
-        nodeRef={nodeRef}
-        timeout={timeout}
-        classNames={classNames}
-        unmountOnExit
-        onEntered={() => {
-          autoHideTimeout &&
-            setTimeout(() => {
-              setDisplay(false);
-            }, autoHideTimeout);
-        }}
-        onExited={() => onClosed()}
-      >
-        {content(nodeRef, () => setDisplay(false))}
-      </CSSTransition>
-    </>
-  );
+  return {
+    content: (
+      <>
+        <CSSTransition
+          in={display}
+          nodeRef={nodeRef}
+          timeout={timeout}
+          classNames={classNames}
+          unmountOnExit
+          onEntered={() => {
+            autoHideTimeout &&
+              setTimeout(() => {
+                setDisplay(false);
+              }, autoHideTimeout);
+          }}
+          onExited={() => onClosed()}
+        >
+          {content(nodeRef, () => setDisplay(false))}
+        </CSSTransition>
+      </>
+    ),
+    setDisplay,
+  };
 }

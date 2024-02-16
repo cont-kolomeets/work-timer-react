@@ -15,7 +15,7 @@ export function Action({
   name: IconName;
   className?: string;
   size?: number | string;
-  onClick(): void;
+  onClick?(): void;
 }) {
   return (
     <i

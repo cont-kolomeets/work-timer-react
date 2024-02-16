@@ -60,14 +60,22 @@ const tasksSlice = createSlice({
       state.status = "idle";
     });
   },
+  selectors: {
+    getAllTasks: (state) => {
+      return Object.values(state.entities);
+    },
+    getTaskById: (state, id: string) => {
+      return state.entities[id];
+    },
+    getLoadingStatus: (state) => state.status,
+  },
 });
 
 export const { updateTask, addTask, removeTask } = tasksSlice.actions;
+export const { getAllTasks, getTaskById, getLoadingStatus } =
+  tasksSlice.selectors;
 
-export const { selectAll: selectTasks, selectById: selectTaskById } =
-  taskAdaper.getSelectors((state: any) => state.tasks);
-
-export const selectTaskIds = createSelector(selectTasks, (tasks) =>
+export const selectTaskIds = createSelector(getAllTasks, (tasks) =>
   tasks.map((task) => task.id)
 );
 

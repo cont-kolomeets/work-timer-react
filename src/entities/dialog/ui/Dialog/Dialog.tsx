@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { useFadeInOutTransition } from "../../../../shared/model";
+import {
+  useFadeInOutTransition,
+  useOnDocumentKeyUp,
+} from "../../../../shared/model";
 import { PanelHeader } from "../../../../shared/ui";
 import "./Dialog.scss";
 
@@ -12,7 +15,7 @@ type DialogProps = {
 };
 
 export function Dialog({ title, className, children, onClosed }: DialogProps) {
-  return useFadeInOutTransition({
+  const { content, setDisplay } = useFadeInOutTransition({
     content: (refNode, closeDialog) => {
       const dialog: ReactNode = (
         <div
@@ -33,4 +36,11 @@ export function Dialog({ title, className, children, onClosed }: DialogProps) {
     onClosed,
     timeout: 500,
   });
+
+  useOnDocumentKeyUp({
+    key: "Escape",
+    onKeyUp: () => setDisplay(false),
+  });
+
+  return content;
 }

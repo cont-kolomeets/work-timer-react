@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { Loader } from "../../../../shared/ui";
-import { selectTaskIds } from "../../model/tasksSlice";
+import { getLoadingStatus, selectTaskIds } from "../../model/tasksSlice";
 import { TaskCard } from "../TaskCard/TaskCard";
 import "./TasksList.scss";
 
 export function TasksList() {
   const taskIds = useSelector(selectTaskIds);
-  const loadingStatus = useSelector((state: any) => state.tasks.status);
+  const loadingStatus = useSelector(getLoadingStatus);
 
   if (loadingStatus === "loading") {
     return <Loader />;

@@ -37,6 +37,11 @@ export function TimerPanel() {
     setEditDialogShown(true);
   };
 
+  // useOnDocumentKeyUp({
+  //   key: " ",
+  //   onKeyUp: () => _toggleTimer(),
+  // });
+
   return (
     <div className="wt-stretched wt-flex-row wt-flex-center wt-timer-panel">
       <HoursChart />

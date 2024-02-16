@@ -1,6 +1,6 @@
+import { ReactNode, useState } from "react";
 import { PanelHeader, PanelSideHeader } from "../../../../shared/ui";
 import "./Panel.scss";
-import { ReactNode, useState } from "react";
 
 type PanelProps = {
   title: string;
@@ -28,7 +28,11 @@ export function Panel({
 
   return (
     <div className={`wt-panel  ${className} ${shown}`}>
-      <PanelHeader title={title} onClose={_closePanel} />
+      <PanelHeader
+        title={title}
+        onTitleClick={_closePanel}
+        onClose={_closePanel}
+      />
       <PanelSideHeader title={title} side={side} onOpen={_openPanel} />
       <div className="wt-panel__content wt-pad-12">{children}</div>
     </div>

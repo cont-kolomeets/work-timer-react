@@ -27,5 +27,5 @@ export function Alert({ title, message, onClosed }: AlertProps) {
     onClosed,
     timeout: 500,
     autoHideTimeout: 2000,
-  });
+  }).content;
 }
