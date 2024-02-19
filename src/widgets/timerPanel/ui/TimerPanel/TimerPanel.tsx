@@ -1,46 +1,43 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import { formatTotal } from "../../../../shared/lib";
 import { Action, Button } from "../../../../shared/ui";
-import { showGreetingsAlert } from "../../model/showGreetingsAlert";
-import {
-  getTime,
-  isRunning,
-  setTime,
-  stopTimer,
-  toggleTimer,
-} from "../../model/timerSlice";
+import { timerModel } from "../../model/timerModel";
+import { useShowGreetingsAlert } from "../../model/useShowGreetingsAlert";
 import { HoursChart } from "../HoursChart/HoursChart";
 import "./TimerPanel.scss";
 
 export function TimerPanel() {
-  const time = useSelector(getTime);
-  const running = useSelector(isRunning);
-  const dispatch = useDispatch();
+  const time = useAppSelector(timerModel.selectors.getTime);
+  const running = useAppSelector(timerModel.selectors.isRunning);
+  const dispatch = useAppDispatch();
+  const { tryShow } = useShowGreetingsAlert();
 
   const _toggleTimer = () => {
-    !running && showGreetingsAlert();
-    dispatch(toggleTimer());
-  };
-
-  const _saveTime = (time: number) => {
-    dispatch(setTime(time));
+    !running && tryShow();
+    dispatch(timerModel.actions.toggleTimer());
   };
 
   const { editDialog, setEditDialogShown } = useTimeEditorDialog({
     time,
-    onSetTime: _saveTime,
+    onSetTime: (time) => {
+      dispatch(timerModel.actions.setTime(time));
+    },
   });
 
   const _editTime = () => {
-    dispatch(stopTimer()); // need to stop before editing
+    dispatch(timerModel.actions.stopTimer()); // need to stop before editing
     setEditDialogShown(true);
   };
 
-  // useOnDocumentKeyUp({
-  //   key: " ",
-  //   onKeyUp: () => _toggleTimer(),
-  // });
+  useEffect(() => {
+    function _toggleTimer(event: KeyboardEvent) {
+      event.key === " " && workTimerModel.toggleTimer();
+    }
+    document.body.addEventListener("keyup", _toggleTimer);
+    return () => document.body.removeEventListener("keyup", _toggleTimer);
+  }, []);
 
   return (
     <div className="wt-stretched wt-flex-row wt-flex-center wt-timer-panel">

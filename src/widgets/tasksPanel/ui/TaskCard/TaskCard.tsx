@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { formatDate } from "../../../../shared/lib";
 import { Action } from "../../../../shared/ui";
-import { getTaskById, removeTask } from "../../model/tasksSlice";
+import { tasksModel, tasksModelSelectors } from "../../model/tasksModel";
 import { useTaskDialog } from "../../model/useTaskDialog";
 import "./TaskCard.scss";
 
@@ -10,9 +10,11 @@ type TaskCardProps = {
 };
 
 export function TaskCard({ id }: TaskCardProps) {
-  const task = useSelector((state: any) => getTaskById(state, id));
+  const task = useAppSelector((state) =>
+    tasksModelSelectors.selectTaskById(state, id)
+  );
   const { issueNumber, label, modified } = task;
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { editDialog, setEditDialogShown } = useTaskDialog({ task });
 
   function _editTask(): void {
@@ -20,7 +22,7 @@ export function TaskCard({ id }: TaskCardProps) {
   }
 
   function _deleteTask(): void {
-    dispatch(removeTask(id));
+    dispatch(tasksModel.actions.removeTask(id));
   }
 
   return (

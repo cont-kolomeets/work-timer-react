@@ -1,13 +1,15 @@
-import { appStore } from "../../../../app/appStore";
+import { useAppDispatch } from "../../../../app/hooks";
 import { Panel } from "../../../../entities/panel";
-import { fetchTasks } from "../../model/tasksSlice";
+import { tasksModel } from "../../model/tasksModel";
 import { TasksList } from "../TasksList.tsx/TasksList";
 import { TasksToolbar } from "../TasksToolbar/TasksToolbar";
 import "./TasksPanel.scss";
 
 export function TasksPanel() {
+  const dispatch = useAppDispatch();
+
   const _loadTasks = () => {
-    appStore.dispatch(fetchTasks());
+    dispatch(tasksModel.actions.fetchTasks);
   };
 
   return (

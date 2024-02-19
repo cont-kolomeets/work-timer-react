@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import { formatTotal } from "../../../../shared/lib";
 import { getMonthData, updateDayData } from "../../model/gridSlice";
@@ -102,9 +102,9 @@ function _createRows(
 //--------------------------------------------------------------------------
 
 export function DaysGrid() {
-  const monthData = useSelector(getMonthData);
+  const monthData = useAppSelector(getMonthData);
   const [editedData, setEditedData] = useState<GridDayData | null>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { editDialog, setEditDialogShown } = useTimeEditorDialog({
     time: editedData?.time || 0,

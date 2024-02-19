@@ -1,12 +1,12 @@
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../../app/hooks";
 import { workIntervalsToNormalLatePercent } from "../../../../shared/lib";
-import { getIntervals } from "../../model/timerSlice";
+import { timerModel } from "../../model/timerModel";
 
 const FILL_COLOR = "#f89c10";
 
 export function HoursChart() {
   const { normal, late } = workIntervalsToNormalLatePercent(
-    useSelector(getIntervals)
+    useAppSelector(timerModel.selectors.getIntervals)
   );
   return (
     <>

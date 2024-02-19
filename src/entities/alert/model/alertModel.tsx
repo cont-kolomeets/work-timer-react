@@ -26,15 +26,13 @@ const alertSlice = createSlice({
     },
   },
   selectors: {
-    getAlertById: (state, id: string) => {
-      return state.stack.find((a) => a.id === id);
-    },
-    getAllAlerts: (state) => {
-      return state.stack;
-    },
+    getShownAlerts: (state) => state.stack,
+    getNumShownAlerts: (state) => state.stack.length,
   },
 });
 
-export const { showAlert, hideAlert } = alertSlice.actions;
-export const { getAlertById, getAllAlerts } = alertSlice.selectors;
-export const alertSliceReducer = alertSlice.reducer;
+export const alertModel = {
+  reducer: alertSlice.reducer,
+  actions: alertSlice.actions,
+  selectors: alertSlice.selectors,
+};

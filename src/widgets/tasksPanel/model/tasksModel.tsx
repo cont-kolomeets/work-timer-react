@@ -2,9 +2,9 @@ import {
   PayloadAction,
   createAsyncThunk,
   createEntityAdapter,
-  createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
+import { RootState } from "../../../app/types";
 import { request } from "../../../shared/api";
 import { SavedState_Task } from "../../../shared/model";
 
@@ -16,14 +16,14 @@ const initialState = taskAdaper.getInitialState<{ status: "idle" | "loading" }>(
   }
 );
 
-export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
+const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
   return request<Record<number, SavedState_Task>>("WorkTimerServer/GetTasks", {
     f: "json",
     data: { year: 2024, month: 2 },
   });
 });
 
-export const saveTasks = createAsyncThunk(
+const saveTasks = createAsyncThunk(
   "tasks/saveTasks",
   async (tasks: Record<number, SavedState_Task>) => {
     return request<void>("WorkTimerServer/PostTasks", {
@@ -61,22 +61,29 @@ const tasksSlice = createSlice({
     });
   },
   selectors: {
-    getAllTasks: (state) => {
-      return Object.values(state.entities);
-    },
-    getTaskById: (state, id: string) => {
-      return state.entities[id];
-    },
     getLoadingStatus: (state) => state.status,
   },
 });
 
-export const { updateTask, addTask, removeTask } = tasksSlice.actions;
-export const { getAllTasks, getTaskById, getLoadingStatus } =
-  tasksSlice.selectors;
+const selectAllTaskIds = taskAdaper.getSelectors(
+  (state: RootState) => state.tasks
+).selectIds;
 
-export const selectTaskIds = createSelector(getAllTasks, (tasks) =>
-  tasks.map((task) => task.id)
-);
+const selectTaskById = taskAdaper.getSelectors(
+  (state: RootState) => state.tasks
+).selectById;
 
-export const tasksSliceReducer = tasksSlice.reducer;
+export const tasksModelSelectors = {
+  selectAllTaskIds,
+  selectTaskById,
+  getLoaingStatus: tasksSlice.selectors.getLoadingStatus,
+};
+
+export const tasksModel = {
+  reducer: tasksSlice.reducer,
+  actions: {
+    ...tasksSlice.actions,
+    fetchTasks,
+    saveTasks,
+  },
+};

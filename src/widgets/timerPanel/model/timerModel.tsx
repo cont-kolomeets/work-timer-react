@@ -39,6 +39,8 @@ const timerSlice = createSlice({
   },
 });
 
-export const { toggleTimer, stopTimer, setTime } = timerSlice.actions;
-export const { isRunning, getTime, getIntervals } = timerSlice.selectors;
-export const timerSliderReducer = timerSlice.reducer;
+export const timerModel = {
+  reducer: timerSlice.reducer,
+  actions: timerSlice.actions,
+  selectors: timerSlice.selectors,
+};
