@@ -1,19 +1,19 @@
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { formatDate } from "../../../../shared/lib";
 import { Action } from "../../../../shared/ui";
-import { tasksModel, tasksModelSelectors } from "../../model/tasksModel";
+import { tasksModel } from "../../model/tasksModel";
 import { useTaskDialog } from "../../model/useTaskDialog";
 import "./TaskCard.scss";
 
 type TaskCardProps = {
-  id: string;
+  id: number;
 };
 
 export function TaskCard({ id }: TaskCardProps) {
   const task = useAppSelector((state) =>
-    tasksModelSelectors.selectTaskById(state, id)
+    tasksModel.selectors.selectTaskById(state, id)
   );
-  const { issueNumber, label, modified } = task;
+  const { issue, label, modified } = task;
   const dispatch = useAppDispatch();
   const { editDialog, setEditDialogShown } = useTaskDialog({ task });
 
@@ -28,7 +28,7 @@ export function TaskCard({ id }: TaskCardProps) {
   return (
     <div className="wt-task-card">
       <div className="wt-flex-row wt-m-b-12">
-        <div className="wt-task-card__issue">#{issueNumber}</div>
+        <div className="wt-task-card__issue">#{issue}</div>
         <div className="wt-flex-spacer"></div>
         <div className="wt-task-card__modified">{formatDate(modified)}</div>
         <Action

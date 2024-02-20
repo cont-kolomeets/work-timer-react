@@ -186,3 +186,25 @@ export function workIntervalsToNormalLatePercent(wi: number[][]): {
     late: _toPct(lateWi),
   };
 }
+
+//--------------------------------------------------------------------------
+//
+// Date
+//
+//--------------------------------------------------------------------------
+
+/**
+ * @param d If not passed, the current time is used.
+ */
+export function get1BasedDate(d?: Date): {
+  y: number;
+  m: number;
+  d: number;
+} {
+  d = d || new Date();
+  return {
+    y: d.getFullYear(),
+    m: d.getMonth() + 1,
+    d: d.getDate(),
+  };
+}

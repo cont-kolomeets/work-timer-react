@@ -1,12 +1,12 @@
 import { useAppSelector } from "../../../../app/hooks";
 import { Loader } from "../../../../shared/ui";
-import { tasksModelSelectors } from "../../model/tasksModel";
+import { tasksModel } from "../../model/tasksModel";
 import { TaskCard } from "../TaskCard/TaskCard";
 import "./TasksList.scss";
 
 export function TasksList() {
-  const taskIds = useAppSelector(tasksModelSelectors.selectAllTaskIds);
-  const loadingStatus = useAppSelector(tasksModelSelectors.getLoaingStatus);
+  const taskIds = useAppSelector(tasksModel.selectors.selectAllTaskIds);
+  const loadingStatus = useAppSelector(tasksModel.selectors.getLoadingStatus);
 
   if (loadingStatus === "loading") {
     return <Loader />;

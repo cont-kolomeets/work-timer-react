@@ -5,31 +5,55 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../../app/types";
-import { request } from "../../../shared/api";
-import { SavedState_Task } from "../../../shared/model";
+import { SavedState_Task, client } from "../../../shared/api";
+import { get1BasedDate } from "../../../shared/lib";
 
-const taskAdaper = createEntityAdapter<SavedState_Task>();
+const taskAdaper = createEntityAdapter<SavedState_Task, number>({
+  selectId: (data) => data.issue,
+});
 
-const initialState = taskAdaper.getInitialState<{ status: "idle" | "loading" }>(
-  {
-    status: "idle",
+const initialState = taskAdaper.getInitialState<{
+  status: "idle" | "loading";
+  year: number;
+  month: number;
+}>({
+  status: "idle",
+  year: get1BasedDate().y,
+  month: get1BasedDate().m,
+});
+
+const fetchTasks = createAsyncThunk("tasks/fetchTasks", async (_, api) => {
+  const { year, month } = (api.getState() as RootState).tasks;
+  const result = await client.getTasks({
+    year,
+    month,
+  });
+  return result;
+});
+
+const removeTask = createAsyncThunk(
+  "tasks/removeTask",
+  async (taskId: number, api) => {
+    const { year, month } = (api.getState() as RootState).tasks;
+    await client.removeTask({
+      year,
+      month,
+      taskId,
+    });
+    return taskId;
   }
 );
 
-const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
-  return request<Record<number, SavedState_Task>>("WorkTimerServer/GetTasks", {
-    f: "json",
-    data: { year: 2024, month: 2 },
-  });
-});
-
-const saveTasks = createAsyncThunk(
-  "tasks/saveTasks",
-  async (tasks: Record<number, SavedState_Task>) => {
-    return request<void>("WorkTimerServer/PostTasks", {
-      f: "json",
-      data: { year: 2024, month: 2, tasks },
+const updateTask = createAsyncThunk(
+  "tasks/removeTask",
+  async (task: SavedState_Task, api) => {
+    const { year, month } = (api.getState() as RootState).tasks;
+    const result = await client.updateTask({
+      year,
+      month,
+      task,
     });
+    return result;
   }
 );
 
@@ -37,26 +61,51 @@ const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
-    updateTask: (state, action: PayloadAction<SavedState_Task>) => {
-      const { id, issueNumber, label, modified } = action.payload;
-      const task = state.entities[id];
-      task.issueNumber = issueNumber;
-      task.label = label;
-      task.modified = modified;
-    },
-    addTask: (state, action: PayloadAction<SavedState_Task>) => {
-      taskAdaper.addOne(state, action);
-    },
-    removeTask: (state, action: PayloadAction<string>) => {
-      taskAdaper.removeOne(state, action);
+    setDate: (
+      state,
+      action: PayloadAction<{ year: number; month: number }>
+    ) => {
+      state.year = action.payload.year;
+      state.month = action.payload.month;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchTasks.pending, (state, action) => {
+    // fetchTasks
+
+    builder.addCase(fetchTasks.pending, (state) => {
       state.status = "loading";
     });
     builder.addCase(fetchTasks.fulfilled, (state, action) => {
-      taskAdaper.setAll(state, action);
+      taskAdaper.setAll(state, action.payload);
+      state.status = "idle";
+    });
+    builder.addCase(fetchTasks.rejected, (state) => {
+      state.status = "idle";
+    });
+
+    // removeTask
+
+    builder.addCase(removeTask.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(removeTask.fulfilled, (state, action) => {
+      taskAdaper.removeOne(state, action.payload);
+      state.status = "idle";
+    });
+    builder.addCase(removeTask.rejected, (state) => {
+      state.status = "idle";
+    });
+
+    // updateTask
+
+    builder.addCase(updateTask.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(updateTask.fulfilled, (state, action) => {
+      taskAdaper.setOne(state, action);
+      state.status = "idle";
+    });
+    builder.addCase(updateTask.rejected, (state) => {
       state.status = "idle";
     });
   },
@@ -73,17 +122,18 @@ const selectTaskById = taskAdaper.getSelectors(
   (state: RootState) => state.tasks
 ).selectById;
 
-export const tasksModelSelectors = {
-  selectAllTaskIds,
-  selectTaskById,
-  getLoaingStatus: tasksSlice.selectors.getLoadingStatus,
-};
-
 export const tasksModel = {
-  reducer: tasksSlice.reducer,
   actions: {
     ...tasksSlice.actions,
     fetchTasks,
-    saveTasks,
+    removeTask,
+    updateTask,
+  },
+  selectors: {
+    ...tasksSlice.selectors,
+    selectAllTaskIds,
+    selectTaskById,
   },
 };
+
+export const tasksModelReducer = tasksSlice.reducer;

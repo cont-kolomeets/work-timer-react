@@ -1,6 +1,5 @@
 export type GridDayData = {
-  index: number | string;
+  /** For dept = -1. */
+  index: number;
   time: number;
-  isCurrent?: boolean;
-  isDept?: boolean;
 };

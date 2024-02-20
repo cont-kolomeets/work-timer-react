@@ -32,7 +32,8 @@ const alertSlice = createSlice({
 });
 
 export const alertModel = {
-  reducer: alertSlice.reducer,
   actions: alertSlice.actions,
   selectors: alertSlice.selectors,
 };
+
+export const alertModelReducer = alertSlice.reducer;

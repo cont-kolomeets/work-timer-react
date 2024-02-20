@@ -1,8 +1,9 @@
 import { ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
-import { formatTotal } from "../../../../shared/lib";
-import { getMonthData, updateDayData } from "../../model/gridSlice";
+import { formatTotal, get1BasedDate } from "../../../../shared/lib";
+import { Loader } from "../../../../shared/ui";
+import { gridModel } from "../../model/gridModel";
 import { GridDayData } from "../../model/interfaces";
 import { GridCell } from "../GridCell/GridCell";
 import { GridRow } from "../GridRow/GridRow";
@@ -59,7 +60,7 @@ function _createRows(
       if (c.field === "dayTime") {
         label = formatTotal(data.time, "h:m:s");
 
-        if (!data.isDept) {
+        if (data.index === -1) {
           let _8h = 8 * 3600000;
           let _10h = 10 * 3600000;
           markerColor =
@@ -71,7 +72,7 @@ function _createRows(
 
       return (
         <GridCell
-          key={label}
+          key={data.index}
           label={label}
           cIndex={cIndex}
           isHeader={false}
@@ -86,7 +87,7 @@ function _createRows(
     return (
       <GridRow
         key={rIndex + 1 /* header */}
-        isCurrentDay={data.isCurrent}
+        isCurrentDay={data.index === get1BasedDate().d}
         onClick={() => {}}
       >
         {cells}
@@ -102,7 +103,9 @@ function _createRows(
 //--------------------------------------------------------------------------
 
 export function DaysGrid() {
-  const monthData = useAppSelector(getMonthData);
+  const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
+  const monthData = useAppSelector(gridModel.selectors.selectMonthData);
+  //const dept = useAppSelector(gridModelSelectors.selectDept);
   const [editedData, setEditedData] = useState<GridDayData | null>(null);
   const dispatch = useAppDispatch();
 
@@ -112,10 +115,14 @@ export function DaysGrid() {
       if (editedData) {
         const newData = { ...editedData };
         newData.time = time;
-        dispatch(updateDayData(newData));
+        dispatch(gridModel.actions.editGridData(newData));
       }
     },
   });
+
+  if (loadingStatus === "loading") {
+    return <Loader />;
+  }
 
   const headerRow = _createHeader();
   const rows = _createRows(monthData, (data) => {

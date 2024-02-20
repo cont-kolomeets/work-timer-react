@@ -40,7 +40,8 @@ const timerSlice = createSlice({
 });
 
 export const timerModel = {
-  reducer: timerSlice.reducer,
   actions: timerSlice.actions,
   selectors: timerSlice.selectors,
 };
+
+export const timerModelReducer = timerSlice.reducer;

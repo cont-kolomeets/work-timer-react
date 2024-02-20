@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { alertModel } from "../entities/alert";
-import { gridSliceReducer } from "../widgets/monthPanel";
-import { tasksModel } from "../widgets/tasksPanel";
-import { timerModel } from "../widgets/timerPanel";
+import { alertModelReducer } from "../entities/alert";
+import { gridModelReducer } from "../widgets/monthPanel";
+import { tasksModelReducer } from "../widgets/tasksPanel";
+import { timerModelReducer } from "../widgets/timerPanel";
 
 export const appStore = configureStore({
   reducer: {
-    timer: timerModel.reducer,
-    grid: gridSliceReducer,
-    tasks: tasksModel.reducer,
-    alert: alertModel.reducer,
+    timer: timerModelReducer,
+    grid: gridModelReducer,
+    tasks: tasksModelReducer,
+    alert: alertModelReducer,
   },
 });

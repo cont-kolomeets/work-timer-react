@@ -1,2 +1,2 @@
+export { gridModelReducer } from "./model/gridModel";
 export { MonthPanel } from "./ui/MonthPanel/MonthPanel";
-export { gridSliceReducer } from "./model/gridSlice";

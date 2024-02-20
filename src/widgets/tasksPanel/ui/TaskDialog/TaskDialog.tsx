@@ -1,7 +1,6 @@
-import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
-import { SavedState_Task } from "../../../../shared/model";
+import { SavedState_Task } from "../../../../shared/api";
 import { Button } from "../../../../shared/ui";
 import "./TaskDialog.scss";
 
@@ -17,7 +16,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
   const [canSave, setCanSave] = useState(false);
 
   useEffect(() => {
-    setIssueNumber(task?.issueNumber || null);
+    setIssueNumber(task?.issue || null);
     setTaskLabel(task?.label || "");
   }, [task]);
 
@@ -55,8 +54,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
                 disabled={!canSave}
                 onClick={() => {
                   onSave({
-                    id: task?.id || nanoid(8),
-                    issueNumber: issueNumber as number,
+                    issue: issueNumber as number,
                     label: taskLabel,
                     modified: Date.now(),
                   });
