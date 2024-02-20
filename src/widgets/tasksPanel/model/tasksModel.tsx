@@ -45,7 +45,7 @@ const removeTask = createAsyncThunk(
 );
 
 const updateTask = createAsyncThunk(
-  "tasks/removeTask",
+  "tasks/updateTask",
   async (task: SavedState_Task, api) => {
     const { year, month } = (api.getState() as RootState).tasks;
     const result = await client.updateTask({

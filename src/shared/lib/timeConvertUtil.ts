@@ -89,7 +89,7 @@ export function formatDate(modified: number): string {
   const d = new Date();
   d.setTime(modified);
   return `${d.getFullYear()}/${format2digit(d.getMonth() + 1)}/${format2digit(
-    d.getDay() + 1
+    d.getDate()
   )}`;
 }
 

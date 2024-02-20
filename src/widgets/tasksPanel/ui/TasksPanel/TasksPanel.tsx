@@ -9,7 +9,7 @@ export function TasksPanel() {
   const dispatch = useAppDispatch();
 
   const _loadTasks = () => {
-    dispatch(tasksModel.actions.fetchTasks);
+    dispatch(tasksModel.actions.fetchTasks());
   };
 
   return (

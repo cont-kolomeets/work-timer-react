@@ -8,16 +8,22 @@ import {
 
 const KEY = "workTimer.savedState";
 
+localStorage.removeItem(KEY); // remove for testing
+
 const DEFAULT_STATE: SavedState = {
   years: {
     2024: {
       months: {
-        2: {
+        [new Date().getMonth() + 1]: {
           days: {
-            1: {
+            [new Date().getDate()]: {
               index: 1,
               time: 100000,
-              workIntervals: [],
+              workIntervals: [
+                [3600 * 1000 * 8, 3600 * 1000 * 12],
+                [3600 * 1000 * 13, 3600 * 1000 * 15],
+                [3600 * 1000 * 20, 3600 * 1000 * 23],
+              ],
             },
           },
           tasks: [
@@ -40,6 +46,8 @@ const DEFAULT_STATE: SavedState = {
 
 /**
  * Fake REST API. Stores the saved state.
+ * Returns copies of objects.
+ * Copies data when writing.
  */
 class ServerClass {
   //--------------------------------------------------------------------------
@@ -56,7 +64,28 @@ class ServerClass {
     month: number;
   }): Promise<Record<number, SavedState_Day>> {
     const { m } = await this._provideMonth({ year, month });
-    return m.days;
+    return JSON.parse(JSON.stringify(m.days));
+  }
+
+  async getDayData({
+    year,
+    month,
+    day,
+  }: {
+    year: number;
+    month: number;
+    day: number;
+  }): Promise<SavedState_Day> {
+    const { m } = await this._provideMonth({ year, month });
+    return JSON.parse(
+      JSON.stringify(
+        m.days[day] || {
+          index: day,
+          time: 0,
+          workIntervals: [],
+        }
+      )
+    );
   }
 
   async updateDay({
@@ -70,8 +99,8 @@ class ServerClass {
   }): Promise<SavedState_Day> {
     const { state, m } = await this._provideMonth({ year, month });
     const { index } = dayInfo as SavedState_Day;
-    m.days[index] = Object.assign(m.days[index] || {}, dayInfo);
-    await this._postState(state);
+    m.days[index] = { ...m.days[index], ...dayInfo };
+    this._postState(state);
     return m.days[index];
   }
 
@@ -89,7 +118,7 @@ class ServerClass {
     month: number;
   }): Promise<Record<number, SavedState_Task>> {
     const { m } = await this._provideMonth({ year, month });
-    return m.tasks;
+    return JSON.parse(JSON.stringify(m.tasks));
   }
 
   async removeTask({
@@ -103,7 +132,7 @@ class ServerClass {
   }): Promise<void> {
     const { state, m } = await this._provideMonth({ year, month });
     delete m.tasks[taskId];
-    await this._postState(state);
+    this._postState(state);
   }
 
   async updateTask({
@@ -116,8 +145,8 @@ class ServerClass {
     task: SavedState_Task;
   }): Promise<SavedState_Task> {
     const { state, m } = await this._provideMonth({ year, month });
-    m.tasks[task.issue] = task;
-    await this._postState(state);
+    m.tasks[task.issue] = { ...task };
+    this._postState(state);
     return task;
   }
 
@@ -141,7 +170,7 @@ class ServerClass {
   }): Promise<void> {
     const { state, y } = await this._provideMonth({ year, month: 1 });
     y.dept = dept;
-    await this._postState(state);
+    this._postState(state);
   }
 
   //--------------------------------------------------------------------------
@@ -184,10 +213,9 @@ class ServerClass {
   private _postH: number | null = null;
   private _pendingPostState: SavedState | null = null;
 
-  private async _postState(data: SavedState): Promise<void> {
+  private _postState(data: SavedState): void {
     this._pendingPostState = data;
     clearTimeout(this._postH as number);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     this._postH = setTimeout(() => {
       localStorage.setItem(KEY, JSON.stringify(this._pendingPostState));
     }, 5000) as any;

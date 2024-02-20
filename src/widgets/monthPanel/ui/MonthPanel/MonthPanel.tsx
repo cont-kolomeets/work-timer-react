@@ -8,7 +8,7 @@ export function MonthPanel() {
   const dispatch = useAppDispatch();
 
   const _loadData = () => {
-    dispatch(gridModel.actions.fetchGridData);
+    dispatch(gridModel.actions.fetchGridData());
   };
 
   return (

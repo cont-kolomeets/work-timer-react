@@ -13,6 +13,10 @@ export const client = {
     return (await _connectToServer()).getMonthData(params);
   },
 
+  getDayData: async (params: { year: number; month: number; day: number }) => {
+    return (await _connectToServer()).getDayData(params);
+  },
+
   updateDay: async (params: {
     year: number;
     month: number;

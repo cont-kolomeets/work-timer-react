@@ -1,3 +1,4 @@
+export { updateDocumentHeader } from "./documentUtil";
 export {
   format2digit,
   formatDate,

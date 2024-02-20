@@ -49,11 +49,18 @@ function _createHeader(): ReactNode {
 //
 //--------------------------------------------------------------------------
 
-function _createRows(
-  data: GridDayData[],
-  onEditTime: (data: GridDayData) => void
-): ReactNode[] {
-  return data.map((data, rIndex) => {
+function _createRows({
+  data,
+  dept,
+  onEditTime,
+  onEditDept,
+}: {
+  data: GridDayData[];
+  dept: number;
+  onEditTime(data: GridDayData): void;
+  onEditDept(): void;
+}): ReactNode[] {
+  const dataRows = data.map((data, rIndex) => {
     const cells = COLUMNS.map((c, cIndex) => {
       let label: string;
       let markerColor: string | null = null;
@@ -72,7 +79,7 @@ function _createRows(
 
       return (
         <GridCell
-          key={data.index}
+          key={data.index + "-" + cIndex}
           label={label}
           cIndex={cIndex}
           isHeader={false}
@@ -88,12 +95,36 @@ function _createRows(
       <GridRow
         key={rIndex + 1 /* header */}
         isCurrentDay={data.index === get1BasedDate().d}
-        onClick={() => {}}
       >
         {cells}
       </GridRow>
     );
   });
+
+  // dept
+
+  const cells = COLUMNS.map((c, cIndex) => {
+    let label: string;
+    if (c.field === "dayTime") {
+      label = formatTotal(dept, "h:m:s");
+    } else {
+      label = "Dept";
+    }
+    return (
+      <GridCell
+        key={"dept-" + cIndex}
+        label={label}
+        cIndex={cIndex}
+        isHeader={false}
+        onEditTime={() => {
+          onEditDept();
+        }}
+      />
+    );
+  });
+  dataRows.push(<GridRow key="dept">{cells}</GridRow>);
+
+  return dataRows;
 }
 
 //--------------------------------------------------------------------------
@@ -102,12 +133,9 @@ function _createRows(
 //
 //--------------------------------------------------------------------------
 
-export function DaysGrid() {
-  const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
-  const monthData = useAppSelector(gridModel.selectors.selectMonthData);
-  //const dept = useAppSelector(gridModelSelectors.selectDept);
-  const [editedData, setEditedData] = useState<GridDayData | null>(null);
+function useEditDialog() {
   const dispatch = useAppDispatch();
+  const [editedData, setEditedData] = useState<GridDayData | null>(null);
 
   const { editDialog, setEditDialogShown } = useTimeEditorDialog({
     time: editedData?.time || 0,
@@ -120,14 +148,31 @@ export function DaysGrid() {
     },
   });
 
+  return {
+    editDialog,
+    editData: (data: GridDayData) => {
+      setEditedData(data);
+      setEditDialogShown(true);
+    },
+  };
+}
+
+export function DaysGrid() {
+  const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
+  const monthData = useAppSelector(gridModel.selectors.selectMonthData);
+  const dept = useAppSelector(gridModel.selectors.selectDept);
+  const { editDialog, editData } = useEditDialog();
+
   if (loadingStatus === "loading") {
     return <Loader />;
   }
 
   const headerRow = _createHeader();
-  const rows = _createRows(monthData, (data) => {
-    setEditedData(data);
-    setEditDialogShown(true);
+  const rows = _createRows({
+    data: monthData,
+    dept,
+    onEditTime: editData,
+    onEditDept: () => {},
   });
   return (
     <div className="wt-days-grid">
