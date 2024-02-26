@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
 import { Button } from "../../../../shared/ui";
-import "./TimeEditorDialog.scss";
+import "./DateEditorDialog.scss";
 
 type DateEditorDialogProps = {
   year: number;
@@ -30,6 +30,16 @@ export function DateEditorDialog({
       className="wt-time-editor-dialog"
       onClosed={onClosed}
       children={(closeDialog) => {
+        const _handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+          event.key === "Enter" && _save();
+        };
+
+        const _save = () => {
+          onSave(y, m);
+
+          closeDialog();
+        };
+
         return (
           <>
             <div className="wt-flex-row">
@@ -38,6 +48,7 @@ export function DateEditorDialog({
                 <input
                   value={y + ""}
                   onChange={(event) => setYear(+event.target.value)}
+                  onKeyUp={_handleEnter}
                 ></input>
               </div>
               <div className="wt-m-12">Minutes</div>
@@ -45,18 +56,12 @@ export function DateEditorDialog({
                 <input
                   value={m + ""}
                   onChange={(event) => setMonth(+event.target.value)}
+                  onKeyUp={_handleEnter}
                 ></input>
               </div>
             </div>
             <div className="wt-flex-row wt-flex-end wt-m-b-12">
-              <Button
-                onClick={() => {
-                  onSave(y, m);
-                  closeDialog();
-                }}
-              >
-                Save
-              </Button>
+              <Button onClick={_save}>Save</Button>
             </div>
           </>
         );

@@ -2,8 +2,13 @@ import { ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { useDateEditorDialog } from "../../../../features/timeEditorDialog/model/useDateEditorDialog";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
-import { formatTotal, get1BasedDate } from "../../../../shared/lib";
+import {
+  format2digit,
+  formatTotal,
+  get1BasedDate,
+} from "../../../../shared/lib";
 import { Action, Loader } from "../../../../shared/ui";
+import { timerModel } from "../../../timerPanel/model/timerModel";
 import { gridModel } from "../../model/gridModel";
 import { GridDayData } from "../../model/interfaces";
 import { GridCell } from "../GridCell/GridCell";
@@ -140,12 +145,13 @@ function _useEditTimeDialog() {
 
   const { editDialog, setEditDialogShown } = useTimeEditorDialog({
     time: editedData?.time || 0,
-    onSetTime: (time) => {
+    onSetTime: async (time) => {
       if (editedData) {
         const newData = { ...editedData };
         newData.time = time;
         dispatch(gridModel.actions.updateData(newData));
-        dispatch(gridModel.actions.postGridData(newData));
+        await dispatch(gridModel.actions.postGridData(newData));
+        dispatch(timerModel.actions.fetchTime());
       }
     },
   });
@@ -154,6 +160,7 @@ function _useEditTimeDialog() {
     editDialog,
     editData: (data: GridDayData) => {
       setEditedData(data);
+      dispatch(timerModel.actions.stopTimer());
       setEditDialogShown(true);
     },
   };
@@ -174,6 +181,7 @@ function _useEditDeptDialog() {
   return {
     editDialog,
     editDept: (dept: number) => {
+      dispatch(timerModel.actions.stopTimer());
       setEditedDept(dept);
       setEditDialogShown(true);
     },
@@ -189,14 +197,48 @@ function _useEditDateDialog() {
     month: editedDate.month,
     onSetDate: (year, month) => {
       dispatch(gridModel.actions.setDate({ year, month }));
+      dispatch(gridModel.actions.fetchGridData());
     },
   });
 
   return {
     editDialog,
     editDate: (year: number, month: number) => {
+      dispatch(timerModel.actions.stopTimer());
       setEditedDate({ year, month });
       setEditDialogShown(true);
+    },
+  };
+}
+
+function _useChangeMonth() {
+  const dispatch = useAppDispatch();
+  return {
+    changeMonth: (
+      year: number,
+      month: number,
+      type: "prev" | "next" | "reset"
+    ) => {
+      dispatch(timerModel.actions.stopTimer());
+      if (type === "reset") {
+        dispatch(gridModel.actions.resetDate());
+      } else {
+        if (type === "next") {
+          month++;
+          if (month > 12) {
+            month = 1;
+            year++;
+          }
+        } else {
+          month--;
+          if (month === 0) {
+            month = 12;
+            year--;
+          }
+        }
+        dispatch(gridModel.actions.setDate({ year, month }));
+      }
+      dispatch(gridModel.actions.fetchGridData());
     },
   };
 }
@@ -210,6 +252,7 @@ export function DaysGrid() {
   const { editDialog: editTimeDialog, editData } = _useEditTimeDialog();
   const { editDialog: editDeptDialog, editDept } = _useEditDeptDialog();
   const { editDialog: editDateDialog, editDate } = _useEditDateDialog();
+  const { changeMonth } = _useChangeMonth();
 
   if (loadingStatus === "loading") {
     return <Loader />;
@@ -224,14 +267,35 @@ export function DaysGrid() {
   });
   return (
     <div className="wt-days-grid">
-      <div
-        className="wt-flex-row wt-m-b-end-12 wt-clickable wt-days-grid__date"
-        onClick={() => {
-          editDate(year, month);
-        }}
-      >
-        <div>{`${year}.${month}`}</div>
-        <Action name="pencil" size="16" className="wt-m-i-start-12" />
+      <div className="wt-flex-row wt-m-b-end-12 wt-clickable wt-days-grid__date">
+        <Action
+          name="chevron-left"
+          size="16"
+          className="wt-m-i-start-12"
+          onClick={() => changeMonth(year, month, "prev")}
+        />
+        <div
+          className=" wt-flex-row wt-flex-center wt-flex-spacer"
+          onClick={() => editDate(year, month)}
+        >{`${year}.${format2digit(month)}`}</div>
+        <Action
+          name="pencil"
+          size="16"
+          className="wt-m-i-start-12"
+          onClick={() => editDate(year, month)}
+        />
+        <Action
+          name="arrow-clockwise"
+          size="16"
+          className="wt-m-i-start-12"
+          onClick={() => changeMonth(year, month, "reset")}
+        />
+        <Action
+          name="chevron-right"
+          size="16"
+          className="wt-m-i-start-12"
+          onClick={() => changeMonth(year, month, "next")}
+        />
       </div>
       {headerRow}
       {rows}

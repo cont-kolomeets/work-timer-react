@@ -1,3 +1,4 @@
+import { get1BasedDate } from "../../lib";
 import {
   SavedState,
   SavedState_Day,
@@ -7,17 +8,20 @@ import {
 } from "../interfaces";
 
 const KEY = "workTimer.savedState";
+const SEVER_LATENCY = 500; // ms
 
 localStorage.removeItem(KEY); // remove for testing
 
+// for testing
+const { d, m, y } = get1BasedDate();
 const DEFAULT_STATE: SavedState = {
   years: {
-    2024: {
+    [y]: {
       months: {
-        [new Date().getMonth() + 1]: {
+        [m]: {
           days: {
-            [new Date().getDate()]: {
-              index: 1,
+            [d]: {
+              index: d,
               time: 100000,
               workIntervals: [
                 [3600 * 1000 * 8, 3600 * 1000 * 12],
@@ -26,18 +30,20 @@ const DEFAULT_STATE: SavedState = {
               ],
             },
           },
-          tasks: [
-            {
+          tasks: {
+            1000: {
               issue: 1000,
               label: "Create work timer app 1",
+              time: 1e7,
               modified: Date.now(),
             },
-            {
+            2000: {
               issue: 2000,
               label: "Create work timer app 2",
+              time: 2e7,
               modified: Date.now(),
             },
-          ],
+          },
         },
       },
     },
@@ -199,7 +205,7 @@ class ServerClass {
   private _cachedState: SavedState | null = null;
 
   private async _getState(): Promise<SavedState> {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, SEVER_LATENCY));
     if (this._cachedState) {
       return this._cachedState;
     }

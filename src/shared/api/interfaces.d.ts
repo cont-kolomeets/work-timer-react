@@ -33,6 +33,8 @@ export type SavedState_Task = {
   issue: number;
   /** Issue label. */
   label: string;
+  /** Time spent on the task. */
+  time: number;
   /** Time. Absolute milliseconds. */
   modified: number;
 };

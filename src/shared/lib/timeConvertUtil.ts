@@ -71,12 +71,10 @@ export function format2digit(value: number): string {
   return (value < 10 ? "0" : "") + value;
 }
 
-/**
- * @param format "h:m:s" | "h:m:s:ms10"
- * @example
- * 100000 => "h:m:s" | "h:m:s:ms10"
- */
-export function formatTotal(total: number, format: string /* e.g. */) {
+export function formatTotal(
+  total: number,
+  format: "h:m:s" | "h:m" | "h:m:s:ms10"
+) {
   let parts = totalToParts(total);
   return format
     .split(":")

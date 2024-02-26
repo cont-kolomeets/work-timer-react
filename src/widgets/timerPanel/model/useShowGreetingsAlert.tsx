@@ -9,7 +9,7 @@ export function useShowGreetingsAlert() {
   const numShownAlerts = useAppSelector(alertModel.selectors.getNumShownAlerts);
 
   return {
-    tryShow: () => {
+    showGreetings: () => {
       if (numShownAlerts) {
         return;
       }

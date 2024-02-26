@@ -1,22 +1,26 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import { formatTotal } from "../../../../shared/lib";
-import { Action, Button } from "../../../../shared/ui";
+import { useOnDocumentKeyUp } from "../../../../shared/model";
+import { Action, Button, Loader } from "../../../../shared/ui";
+import { gridModel } from "../../../monthPanel/model/gridModel";
 import DayTimer from "../../model/DayTimer";
 import { timerModel } from "../../model/timerModel";
 import { useShowGreetingsAlert } from "../../model/useShowGreetingsAlert";
 import { HoursChart } from "../HoursChart/HoursChart";
 import "./TimerPanel.scss";
 
-function useEditDialog(time: number) {
+function _useEditDialog(time: number) {
   const dispatch = useAppDispatch();
 
   const { editDialog, setEditDialogShown } = useTimeEditorDialog({
     time,
-    onSetTime: (time) => {
+    onSetTime: async (time) => {
       dispatch(timerModel.actions.setTime(time));
-      dispatch(timerModel.actions.postTime(time));
+      await dispatch(timerModel.actions.postTime(time));
+      dispatch(gridModel.actions.resetDate());
+      dispatch(gridModel.actions.fetchGridData());
     },
   });
 
@@ -31,23 +35,25 @@ function useEditDialog(time: number) {
   };
 }
 
-function useDayTimer(time: number, running: boolean) {
+function _useDayTimer(time: number, running: boolean) {
   const dispatch = useAppDispatch();
 
-  const dayTimer = useMemo(() => new DayTimer(), []);
-  dayTimer.onTickFrequent = () => {
-    dispatch(timerModel.actions.setTime(dayTimer.time));
+  const dayTimer = useRef(new DayTimer());
+  dayTimer.current.onTickFrequent = () => {
+    dispatch(timerModel.actions.setTime(dayTimer.current.time));
   };
-  dayTimer.onTickRare = () => {
-    dispatch(timerModel.actions.postTime(dayTimer.time));
+  dayTimer.current.onTickRare = async () => {
+    dispatch(gridModel.actions.resetDate());
+    await dispatch(timerModel.actions.postTime(dayTimer.current.time));
+    dispatch(gridModel.actions.fetchGridData());
   };
 
   useEffect(() => {
-    if (running && !dayTimer.isRunning) {
-      dayTimer.start(time);
+    if (running && !dayTimer.current.isRunning) {
+      dayTimer.current.start(time);
       console.log("dayTimer.start");
-    } else if (!running && dayTimer.isRunning) {
-      dayTimer.stop();
+    } else if (!running && dayTimer.current.isRunning) {
+      dayTimer.current.stop();
       console.log("dayTimer.stop");
     }
   }, [time, running, dayTimer]);
@@ -57,21 +63,28 @@ export function TimerPanel() {
   const dispatch = useAppDispatch();
   const time = useAppSelector(timerModel.selectors.getTime);
   const running = useAppSelector(timerModel.selectors.isRunning);
-  const { tryShow } = useShowGreetingsAlert();
+  const loadingStatus = useAppSelector(timerModel.selectors.getLoadingStatus);
+  const { showGreetings } = useShowGreetingsAlert();
 
   // load time from the server the first time
   useEffect(() => {
     dispatch(timerModel.actions.fetchTime());
   }, [dispatch]);
 
-  useDayTimer(time, running);
+  _useDayTimer(time, running);
 
-  const _toggleTimer = () => {
-    !running && tryShow();
+  const { editDialog, editTime } = _useEditDialog(time);
+
+  const _toggleTimer = useCallback(() => {
+    !running && showGreetings();
     dispatch(timerModel.actions.toggleTimer());
-  };
+  }, [dispatch, running, showGreetings]);
 
-  const { editDialog, editTime } = useEditDialog(time);
+  useOnDocumentKeyUp({ key: " ", onKeyUp: _toggleTimer });
+
+  if (loadingStatus === "loading") {
+    return <Loader />;
+  }
 
   return (
     <div className="wt-stretched wt-flex-row wt-flex-center wt-timer-panel">

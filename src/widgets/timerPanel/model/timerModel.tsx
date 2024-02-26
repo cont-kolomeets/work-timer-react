@@ -8,12 +8,14 @@ type TimerState = {
   time: number;
   /** [start, end] */
   workIntervals: number[][];
+  loadingStatus: "idle" | "loading";
 };
 
 const initialState: TimerState = {
   running: false,
   time: 0,
   workIntervals: [],
+  loadingStatus: "idle",
 };
 
 const fetchTime = createAsyncThunk("timer/fetchTime", async () => {
@@ -55,17 +57,23 @@ const timerSlice = createSlice({
   },
   extraReducers: (builder) => {
     // fetchTime
+    builder.addCase(fetchTime.pending, (state, action) => {
+      state.loadingStatus = "loading";
+    });
     builder.addCase(fetchTime.fulfilled, (state, action) => {
       state.time = action.payload.time;
       state.workIntervals = action.payload.workIntervals;
+      state.loadingStatus = "idle";
     });
-    // postTime
-    builder.addCase(postTime.fulfilled, (state, action) => {});
+    builder.addCase(fetchTime.rejected, (state, action) => {
+      state.loadingStatus = "idle";
+    });
   },
   selectors: {
     isRunning: (state) => state.running,
     getTime: (state) => state.time,
     getIntervals: (state) => state.workIntervals,
+    getLoadingStatus: (state) => state.loadingStatus,
   },
 });
 

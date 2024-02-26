@@ -60,6 +60,10 @@ const gridSlice = createSlice({
   name: "grid",
   initialState,
   reducers: {
+    resetDate: (state) => {
+      state.year = get1BasedDate().y;
+      state.month = get1BasedDate().m;
+    },
     setDate: (
       state,
       action: PayloadAction<{ year: number; month: number }>

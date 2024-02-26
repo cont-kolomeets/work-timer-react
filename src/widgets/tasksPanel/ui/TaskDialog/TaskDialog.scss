@@ -7,4 +7,9 @@
       grid-template-columns: 100px 1fr;
     }
   }
+
+  .wt-task-dialog-settings-2 {
+    display: grid;
+    grid-template-columns: 100px 270px 1fr 100px 270px;
+  }
 }

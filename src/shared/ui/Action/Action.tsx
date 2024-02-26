@@ -1,10 +1,13 @@
 type IconName =
   | "x"
+  | "chevron-left"
+  | "chevron-right"
   | "chevron-double-left"
   | "chevron-double-right"
   | "pencil-square"
   | "trash-fill"
-  | "pencil";
+  | "pencil"
+  | "arrow-clockwise";
 
 export function Action({
   name,

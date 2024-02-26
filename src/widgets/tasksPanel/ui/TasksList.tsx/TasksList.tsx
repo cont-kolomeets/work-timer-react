@@ -12,6 +12,12 @@ export function TasksList() {
     return <Loader />;
   }
 
+  if (!taskIds.length) {
+    return (
+      <div className="wt-flex-row wt-flex-center wt-h-100pct">No tasks yet</div>
+    );
+  }
+
   return (
     <div className="wt-tasks-list">
       {taskIds.map((id) => {

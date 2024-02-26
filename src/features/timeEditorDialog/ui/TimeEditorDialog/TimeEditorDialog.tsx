@@ -30,6 +30,15 @@ export function TimeEditorDialog({
       className="wt-time-editor-dialog"
       onClosed={onClosed}
       children={(closeDialog) => {
+        const _handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+          event.key === "Enter" && _save();
+        };
+
+        const _save = () => {
+          onSave(partsToTotal({ h: hours, m: minutes }));
+          closeDialog();
+        };
+
         return (
           <>
             <div className="wt-flex-row">
@@ -38,6 +47,7 @@ export function TimeEditorDialog({
                 <input
                   value={hours + ""}
                   onChange={(event) => setHours(+event.target.value)}
+                  onKeyUp={_handleEnter}
                 ></input>
               </div>
               <div className="wt-m-12">Minutes</div>
@@ -45,18 +55,12 @@ export function TimeEditorDialog({
                 <input
                   value={minutes + ""}
                   onChange={(event) => setMinutes(+event.target.value)}
+                  onKeyUp={_handleEnter}
                 ></input>
               </div>
             </div>
             <div className="wt-flex-row wt-flex-end wt-m-b-12">
-              <Button
-                onClick={() => {
-                  onSave(partsToTotal({ h: hours, m: minutes }));
-                  closeDialog();
-                }}
-              >
-                Save
-              </Button>
+              <Button onClick={_save}>Save</Button>
             </div>
           </>
         );

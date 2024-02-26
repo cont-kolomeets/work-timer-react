@@ -13,7 +13,7 @@ export function useOnDocumentKeyUp({
     }
     document.body.addEventListener("keyup", _onKeyUp);
     return () => {
-      window.removeEventListener("keyup", _onKeyUp);
+      document.body.removeEventListener("keyup", _onKeyUp);
     };
   }, [key, onKeyUp]);
 }

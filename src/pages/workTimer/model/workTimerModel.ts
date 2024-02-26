@@ -1,20 +1,13 @@
-// class TimeModel {
-//   initialize(): void {
-//     setInterval(() => {
-//       if (appStore.getState().timer.running) {
-//         appStore.dispatch(setTime(appStore.getState().timer.time + 1000));
-//       }
-//     }, 1000);
+import { PayloadAction } from "@reduxjs/toolkit";
 
-//     //AppStore.dispatch(fetchTasks());
-//   }
-// }
-
-const fetchData = () => {};
-
-const toggleTimer = () => {};
+function syncTime(): PayloadAction<void> {
+  return { type: "sync-time", payload: void 0 };
+}
 
 export const workTimerModel = {
-  fetchData,
-  toggleTimer,
+  actions: {
+    syncTime,
+  },
 };
+
+export function workTimerReducer(state: any, action: any): void {}
