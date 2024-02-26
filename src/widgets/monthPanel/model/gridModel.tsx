@@ -5,7 +5,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../../app/types";
-import { client } from "../../../shared/api";
+import { SavedState_Day, client } from "../../../shared/api";
 import { get1BasedDate } from "../../../shared/lib";
 import { GridDayData } from "./interfaces";
 
@@ -33,11 +33,11 @@ const fetchGridData = createAsyncThunk("grid/fetchGridData", async (_, api) => {
   return { monthData: result[0], dept: result[1] };
 });
 
-const editGridData = createAsyncThunk(
-  "grid/editGridData",
+const postGridData = createAsyncThunk(
+  "grid/postGridData",
   async (data: GridDayData, api) => {
     const { year, month } = (api.getState() as RootState).grid;
-    const result = client.updateDay({
+    await client.updateDay({
       year,
       month,
       dayInfo: {
@@ -45,12 +45,11 @@ const editGridData = createAsyncThunk(
         time: data.time,
       },
     });
-    return result;
   }
 );
 
-const editDept = createAsyncThunk(
-  "grid/editDept",
+const postDept = createAsyncThunk(
+  "grid/postDept",
   async (dept: number, api) => {
     const { year } = (api.getState() as RootState).grid;
     await client.updateDept({ year, dept });
@@ -68,6 +67,17 @@ const gridSlice = createSlice({
       state.year = action.payload.year;
       state.month = action.payload.month;
     },
+    updateData: (
+      state,
+      action: PayloadAction<Pick<SavedState_Day, "index" | "time">>
+    ) => {
+      const updatedDay = action.payload;
+      const data = state.data.find((data) => data.index === updatedDay.index);
+      data && (data.time = updatedDay.time);
+    },
+    updateDept: (state, action: PayloadAction<number>) => {
+      state.dept = action.payload;
+    },
   },
   extraReducers: (builder) => {
     // fetchGridData
@@ -84,21 +94,6 @@ const gridSlice = createSlice({
     builder.addCase(fetchGridData.rejected, (state) => {
       state.data = [];
       state.dept = 0;
-      state.status = "idle";
-    });
-
-    // editGridData
-
-    builder.addCase(editGridData.pending, (state) => {
-      state.status = "loading";
-    });
-    builder.addCase(editGridData.fulfilled, (state, action) => {
-      const updatedDay = action.payload;
-      const data = state.data.find((data) => data.index === updatedDay.index);
-      data && (data.time = updatedDay.time);
-      state.status = "idle";
-    });
-    builder.addCase(editGridData.rejected, (state) => {
       state.status = "idle";
     });
   },
@@ -123,8 +118,8 @@ export const gridModel = {
   actions: {
     ...gridSlice.actions,
     fetchGridData,
-    editGridData,
-    editDept,
+    postGridData,
+    postDept,
   },
   selectors: {
     ...gridSlice.selectors,

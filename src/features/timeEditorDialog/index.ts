@@ -1,1 +1,1 @@
-export { TimeEditorDialog } from "./ui/TimeEditorDialog/TimeEditorDialog";
+export { TimeEditorDialog as TimeEditorDialog } from "./ui/TimeEditorDialog/TimeEditorDialog";

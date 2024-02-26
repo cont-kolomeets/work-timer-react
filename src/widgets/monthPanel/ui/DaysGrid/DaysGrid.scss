@@ -1,4 +1,10 @@
 .wt-days-grid {
+  .wt-days-grid__date {
+    font-size: 30px;
+    font-weight: bold;
+    font-family: Comic Sans MS;
+  }
+
   .wt-grid-row {
     display: grid;
     grid-template-columns: 50px 1fr;
@@ -14,20 +20,16 @@
       }
     }
 
-    &.wt-grid-row_header {
+    &.wt-grid-row--header {
       background-color: #2c2e2e;
     }
 
-    &:not(.wt-grid-row_header) {
+    &:not(.wt-grid-row--header) {
       border-bottom: 1px solid #262626;
     }
   }
 
-  .wt-grid-row_current-day .wt-grid-row__cell {
+  .wt-grid-row--current-day .wt-grid-row__cell {
     color: yellow;
-  }
-
-  .wt-grid_column-1 {
-    margin-left: -1px;
   }
 }

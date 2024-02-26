@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import { TimeEditorDialog } from "../ui/TimeEditorDialog/TimeEditorDialog";
 
 export function useTimeEditorDialog({
@@ -9,18 +9,18 @@ export function useTimeEditorDialog({
   onSetTime(time: number): void;
 }) {
   const [editDialogShown, setEditDialogShown] = useState(false);
-  const savedTime = useMemo(() => ({ value: -1 }), []);
+  const savedTime = useRef(-1);
 
   const editDialog = editDialogShown ? (
     <TimeEditorDialog
       time={time}
       onSave={(time) => {
-        savedTime.value = time;
+        savedTime.current = time;
       }}
       onClosed={() => {
         setEditDialogShown(false);
-        savedTime.value !== -1 && onSetTime(savedTime.value);
-        savedTime.value = -1;
+        savedTime.current !== -1 && onSetTime(savedTime.current);
+        savedTime.current = -1;
       }}
     ></TimeEditorDialog>
   ) : null;

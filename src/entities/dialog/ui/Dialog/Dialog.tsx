@@ -34,7 +34,7 @@ export function Dialog({ title, className, children, onClosed }: DialogProps) {
     },
     classNames: "wt-dialog-bg",
     onClosed,
-    timeout: 500,
+    timeout: 250,
   });
 
   useOnDocumentKeyUp({

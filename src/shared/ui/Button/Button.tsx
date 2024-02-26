@@ -14,7 +14,7 @@ export function Button({
   return (
     <button
       className={`wt-round-button ${
-        !disabled ? "" : "wt-round-button_disabled"
+        !disabled ? "" : "wt-round-button--disabled"
       } ${className || ""}`}
       onClick={onClick}
     >

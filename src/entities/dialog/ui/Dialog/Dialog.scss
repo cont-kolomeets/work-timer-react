@@ -19,7 +19,7 @@
 
 .wt-dialog-bg-enter-active {
   opacity: 1;
-  transition: 0.5s;
+  transition: 0.25s;
 }
 
 .wt-dialog-bg-enter-done {
@@ -32,5 +32,5 @@
 
 .wt-dialog-bg-exit-active {
   opacity: 0;
-  transition: 0.5s;
+  transition: 0.25s;
 }

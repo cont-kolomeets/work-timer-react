@@ -17,8 +17,8 @@ export function GridRow({
     <div
       className={
         "wt-flex-row wt-grid-row" +
-        (isHeader ? " wt-grid-row_header" : "") +
-        (isCurrentDay ? " wt-grid-row_current-day" : "") +
+        (isHeader ? " wt-grid-row--header" : "") +
+        (isCurrentDay ? " wt-grid-row--current-day" : "") +
         (rowClass ? " " + rowClass : "")
       }
     >

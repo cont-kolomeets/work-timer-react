@@ -1,8 +1,9 @@
 import { ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useDateEditorDialog } from "../../../../features/timeEditorDialog/model/useDateEditorDialog";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import { formatTotal, get1BasedDate } from "../../../../shared/lib";
-import { Loader } from "../../../../shared/ui";
+import { Action, Loader } from "../../../../shared/ui";
 import { gridModel } from "../../model/gridModel";
 import { GridDayData } from "../../model/interfaces";
 import { GridCell } from "../GridCell/GridCell";
@@ -133,7 +134,7 @@ function _createRows({
 //
 //--------------------------------------------------------------------------
 
-function useEditDialog() {
+function _useEditTimeDialog() {
   const dispatch = useAppDispatch();
   const [editedData, setEditedData] = useState<GridDayData | null>(null);
 
@@ -143,7 +144,8 @@ function useEditDialog() {
       if (editedData) {
         const newData = { ...editedData };
         newData.time = time;
-        dispatch(gridModel.actions.editGridData(newData));
+        dispatch(gridModel.actions.updateData(newData));
+        dispatch(gridModel.actions.postGridData(newData));
       }
     },
   });
@@ -157,11 +159,57 @@ function useEditDialog() {
   };
 }
 
+function _useEditDeptDialog() {
+  const dispatch = useAppDispatch();
+  const [editedDept, setEditedDept] = useState(0);
+
+  const { editDialog, setEditDialogShown } = useTimeEditorDialog({
+    time: editedDept,
+    onSetTime: (time) => {
+      dispatch(gridModel.actions.updateDept(time));
+      dispatch(gridModel.actions.postDept(time));
+    },
+  });
+
+  return {
+    editDialog,
+    editDept: (dept: number) => {
+      setEditedDept(dept);
+      setEditDialogShown(true);
+    },
+  };
+}
+
+function _useEditDateDialog() {
+  const dispatch = useAppDispatch();
+  const [editedDate, setEditedDate] = useState({ year: 0, month: 0 });
+
+  const { editDialog, setEditDialogShown } = useDateEditorDialog({
+    year: editedDate.year,
+    month: editedDate.month,
+    onSetDate: (year, month) => {
+      dispatch(gridModel.actions.setDate({ year, month }));
+    },
+  });
+
+  return {
+    editDialog,
+    editDate: (year: number, month: number) => {
+      setEditedDate({ year, month });
+      setEditDialogShown(true);
+    },
+  };
+}
+
 export function DaysGrid() {
   const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
   const monthData = useAppSelector(gridModel.selectors.selectMonthData);
   const dept = useAppSelector(gridModel.selectors.selectDept);
-  const { editDialog, editData } = useEditDialog();
+  const year = useAppSelector(gridModel.selectors.getYear);
+  const month = useAppSelector(gridModel.selectors.getMonth);
+  const { editDialog: editTimeDialog, editData } = _useEditTimeDialog();
+  const { editDialog: editDeptDialog, editDept } = _useEditDeptDialog();
+  const { editDialog: editDateDialog, editDate } = _useEditDateDialog();
 
   if (loadingStatus === "loading") {
     return <Loader />;
@@ -172,13 +220,24 @@ export function DaysGrid() {
     data: monthData,
     dept,
     onEditTime: editData,
-    onEditDept: () => {},
+    onEditDept: () => editDept(dept),
   });
   return (
     <div className="wt-days-grid">
+      <div
+        className="wt-flex-row wt-m-b-end-12 wt-clickable wt-days-grid__date"
+        onClick={() => {
+          editDate(year, month);
+        }}
+      >
+        <div>{`${year}.${month}`}</div>
+        <Action name="pencil" size="16" className="wt-m-i-start-12" />
+      </div>
       {headerRow}
       {rows}
-      {editDialog}
+      {editTimeDialog}
+      {editDeptDialog}
+      {editDateDialog}
     </div>
   );
 }
