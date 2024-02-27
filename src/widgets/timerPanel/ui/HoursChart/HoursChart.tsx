@@ -113,19 +113,6 @@ function _12HoursChart(
             />
           );
         })}
-
-        <path d={`M${width / 2} -10 v10`} strokeWidth="1" stroke="white" />
-        <path
-          d={`M${width} ${height / 2} h10`}
-          strokeWidth="1"
-          stroke="white"
-        />
-        <path
-          d={`M${width / 2} ${height} v10`}
-          strokeWidth="1"
-          stroke="white"
-        />
-        <path d={`M-10 ${height / 2} h10`} strokeWidth="1" stroke="white" />
       </svg>
     </div>
   );

@@ -96,7 +96,10 @@ export function TimerPanel({
     <div className="wt-stretched wt-flex-row wt-flex-center wt-timer-panel">
       <HoursChart />
 
-      <div className="wt-flex-row wt-relative">
+      <div
+        className="wt-flex-row wt-relative"
+        style={{ opacity: running ? "1" : "0.3" }}
+      >
         <div className="wt-clickable wt-timer-panel-label" onClick={editTime}>
           {formatTotal(time, "h:m:s")}
         </div>

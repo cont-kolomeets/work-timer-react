@@ -104,12 +104,14 @@ export function simplifyWorkIntervals(wi: number[][]): number[][] {
     return wi;
   }
   const newWi: number[][] = [];
+  wi = JSON.parse(JSON.stringify(wi));
+  wi.sort((i1, i2) => i1[0] - i2[0]);
   let cur = wi[0];
   newWi.push(cur);
   let i = 1;
   while (i < wi.length) {
     // if the difference is less than 5 minutes
-    if (Math.abs(wi[i][0] - cur[1]) < 300_000) {
+    if (wi[i][0] < cur[1] || wi[i][0] - cur[1] < 300_000) {
       // merge
       cur[1] = Math.max(cur[1], wi[i][1]);
     } else {

@@ -60,9 +60,7 @@ const timerSlice = createSlice({
     setInterval: (state, action: PayloadAction<number[]>) => {
       state.workIntervals = state.workIntervals || [];
       state.workIntervals.push(action.payload);
-      state.workIntervals = simplifyWorkIntervals(
-        JSON.parse(JSON.stringify(state.workIntervals))
-      );
+      state.workIntervals = simplifyWorkIntervals(state.workIntervals);
     },
   },
   extraReducers: (builder) => {
@@ -82,7 +80,7 @@ const timerSlice = createSlice({
   selectors: {
     isRunning: (state) => state.running,
     getTime: (state) => state.time,
-    getIntervals: (state) => JSON.parse(JSON.stringify(state.workIntervals)),
+    getIntervals: (state) => state.workIntervals,
     getLoadingStatus: (state) => state.loadingStatus,
   },
 });

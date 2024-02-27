@@ -9,7 +9,7 @@ import {
 const KEY = "workTimer.savedState";
 const SEVER_LATENCY = 250; // ms
 
-localStorage.removeItem(KEY); // remove for testing
+//localStorage.removeItem(KEY); // remove for testing
 
 // for testing
 //const { d, m, y } = get1BasedDate();
@@ -207,7 +207,6 @@ class ServerClass {
   private async _getState(): Promise<SavedState> {
     await new Promise((resolve) => setTimeout(resolve, SEVER_LATENCY));
     if (this._cachedState) {
-      console.log(this._cachedState);
       return this._cachedState;
     }
     let storageItem = localStorage.getItem(KEY);
