@@ -39,7 +39,7 @@ export function TaskCard({ id }: TaskCardProps) {
           onClick={_editTask}
         />
         <Action
-          name="trash-fill"
+          name="trash"
           className="wt-m-i-start-12"
           onClick={_deleteTask}
         />

@@ -5,7 +5,7 @@ type IconName =
   | "chevron-double-left"
   | "chevron-double-right"
   | "pencil-square"
-  | "trash-fill"
+  | "trash"
   | "pencil"
   | "arrow-clockwise";
 
