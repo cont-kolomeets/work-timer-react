@@ -1,3 +1,4 @@
+import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
 import { SavedState_Task } from "../../../../shared/api";
@@ -12,14 +13,16 @@ type TaskDialogProps = {
 };
 
 export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
-  const [issueNumber, setIssueNumber] = useState<number | null>(null);
+  const [taskId, setTaskId] = useState("");
+  const [taskLink, setTaskLink] = useState("");
   const [taskLabel, setTaskLabel] = useState("");
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [canSave, setCanSave] = useState(false);
 
   useEffect(() => {
-    setIssueNumber(task?.issue || null);
+    setTaskId(task?.id || nanoid(8));
+    setTaskLink(task?.link || "");
     setTaskLabel(task?.label || "");
     const ps = totalToParts(task?.time || 0);
     setHours(ps.h);
@@ -27,8 +30,8 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
   }, [task]);
 
   useEffect(() => {
-    setCanSave(!!(issueNumber && taskLabel && (minutes || hours)));
-  }, [issueNumber, taskLabel, minutes, hours]);
+    setCanSave(!!(taskLink && taskLabel && (minutes || hours)));
+  }, [taskLink, taskLabel, minutes, hours]);
 
   return (
     <Dialog
@@ -42,7 +45,8 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
 
         const _save = () => {
           onSave({
-            issue: issueNumber as number,
+            id: taskId,
+            link: taskLink,
             label: taskLabel,
             time: partsToTotal({ h: hours, m: minutes }),
             modified: Date.now(),
@@ -54,10 +58,10 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
           <>
             <div className="wt-task-dialog-settings">
               <div className="wt-m-b-12">
-                <div>Issue #:</div>
+                <div>Issue:</div>
                 <input
-                  value={issueNumber || ""}
-                  onChange={(event) => setIssueNumber(+event.target.value)}
+                  value={taskLink || ""}
+                  onChange={(event) => setTaskLink(event.target.value)}
                   onKeyUp={_handleEnter}
                 ></input>
               </div>

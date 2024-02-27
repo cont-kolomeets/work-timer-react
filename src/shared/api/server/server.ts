@@ -133,7 +133,7 @@ class ServerClass {
   }: {
     year: number;
     month: number;
-    taskId: number;
+    taskId: string;
   }): Promise<void> {
     const { state, m } = await this._provideMonth({ year, month });
     delete m.tasks[taskId];
@@ -150,7 +150,7 @@ class ServerClass {
     task: SavedState_Task;
   }): Promise<SavedState_Task> {
     const { state, m } = await this._provideMonth({ year, month });
-    m.tasks[task.issue] = { ...task };
+    m.tasks[task.id] = { ...task };
     this._postState(state);
     return task;
   }

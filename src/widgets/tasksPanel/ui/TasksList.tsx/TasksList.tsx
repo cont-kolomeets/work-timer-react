@@ -21,7 +21,7 @@ export function TasksList() {
   return (
     <div className="wt-tasks-list">
       {taskIds.map((id) => {
-        return <TaskCard key={id} id={id} />;
+        return <TaskCard key={id} taskId={id} />;
       })}
     </div>
   );

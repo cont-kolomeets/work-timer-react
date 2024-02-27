@@ -46,7 +46,7 @@ export const client = {
   removeTask: async (params: {
     year: number;
     month: number;
-    taskId: number;
+    taskId: string;
   }) => {
     return (await _connectToServer()).removeTask(params);
   },

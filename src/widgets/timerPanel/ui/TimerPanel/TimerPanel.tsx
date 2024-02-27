@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
-import { formatTotal } from "../../../../shared/lib";
+import { formatTotal, updateDocumentHeader } from "../../../../shared/lib";
 import { useOnDocumentKeyUp } from "../../../../shared/model";
 import { Action, Button, Loader } from "../../../../shared/ui";
 import DayTimer from "../../model/DayTimer";
@@ -53,10 +53,10 @@ function _useDayTimer(
   useEffect(() => {
     if (running && !dayTimer.current.isRunning) {
       dayTimer.current.start(time);
-      console.log("dayTimer.start");
+      updateDocumentHeader(true);
     } else if (!running && dayTimer.current.isRunning) {
       dayTimer.current.stop();
-      console.log("dayTimer.stop");
+      updateDocumentHeader(false);
     }
   }, [time, running, dayTimer]);
 }

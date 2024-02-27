@@ -16,7 +16,7 @@ export type SavedState_Month = {
   /** Day index (1-based) => Day. */
   days: Record<number, SavedState_Day>;
   /** Task issue number => Task. */
-  tasks: Record<number, SavedState_Task>;
+  tasks: Record<string, SavedState_Task>;
 };
 
 export type SavedState_Day = {
@@ -29,11 +29,13 @@ export type SavedState_Day = {
 };
 
 export type SavedState_Task = {
-  /** Issue number. */
-  issue: number;
+  /** Unique id. */
+  id: string;
+  /** Link to issue in the repo. */
+  link: string;
   /** Issue label. */
   label: string;
-  /** Time spent on the task. */
+  /** Time spent on the task. Relative milliseconds. */
   time: number;
   /** Time. Absolute milliseconds. */
   modified: number;

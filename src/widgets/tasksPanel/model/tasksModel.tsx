@@ -8,8 +8,8 @@ import { RootState } from "../../../app/types";
 import { SavedState_Task, client } from "../../../shared/api";
 import { get1BasedDate } from "../../../shared/lib";
 
-const taskAdaper = createEntityAdapter<SavedState_Task, number>({
-  selectId: (data) => data.issue,
+const taskAdaper = createEntityAdapter<SavedState_Task, string>({
+  selectId: (data) => data.id,
 });
 
 const initialState = taskAdaper.getInitialState<{
@@ -33,7 +33,7 @@ const fetchTasks = createAsyncThunk("tasks/fetchTasks", async (_, api) => {
 
 const removeTask = createAsyncThunk(
   "tasks/removeTask",
-  async (taskId: number, api) => {
+  async (taskId: string, api) => {
     const { year, month } = (api.getState() as RootState).tasks;
     await client.removeTask({
       year,
@@ -118,6 +118,10 @@ const selectAllTaskIds = taskAdaper.getSelectors(
   (state: RootState) => state.tasks
 ).selectIds;
 
+const selectAllTasks = taskAdaper.getSelectors(
+  (state: RootState) => state.tasks
+).selectAll;
+
 const selectTaskById = taskAdaper.getSelectors(
   (state: RootState) => state.tasks
 ).selectById;
@@ -133,6 +137,7 @@ export const tasksModel = {
     ...tasksSlice.selectors,
     selectAllTaskIds,
     selectTaskById,
+    selectAllTasks,
   },
 };
 

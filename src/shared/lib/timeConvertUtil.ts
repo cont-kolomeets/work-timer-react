@@ -83,12 +83,11 @@ export function formatTotal(
     .join(":");
 }
 
-export function formatDate(modified: number): string {
+export function formatDate(modified: number, format: "y/m/d" | "y/m"): string {
   const d = new Date();
   d.setTime(modified);
-  return `${d.getFullYear()}/${format2digit(d.getMonth() + 1)}/${format2digit(
-    d.getDate()
-  )}`;
+  const result = `${d.getFullYear()}/${format2digit(d.getMonth() + 1)}`;
+  return format === "y/m" ? result : `${result}/${format2digit(d.getDate())}`;
 }
 
 //--------------------------------------------------------------------------
