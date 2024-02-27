@@ -1,6 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../../app/types";
 import { client } from "../../../shared/api";
-import { get1BasedDate } from "../../../shared/lib";
+import { get1BasedDate, simplifyWorkIntervals } from "../../../shared/lib";
 
 type TimerState = {
   running: boolean;
@@ -28,14 +29,16 @@ const fetchTime = createAsyncThunk("timer/fetchTime", async () => {
   return result;
 });
 
-const postTime = createAsyncThunk("timer/postTime", async (time: number) => {
+const postTime = createAsyncThunk("timer/postTime", async (_, api) => {
   const date = get1BasedDate();
+  const state = (api.getState() as RootState).timer;
   const result = await client.updateDay({
     year: date.y,
     month: date.m,
     dayInfo: {
       index: date.d,
-      time,
+      time: state.time,
+      workIntervals: state.workIntervals,
     },
   });
   return result;
@@ -53,6 +56,13 @@ const timerSlice = createSlice({
     },
     setTime: (state, action: PayloadAction<number>) => {
       state.time = action.payload;
+    },
+    setInterval: (state, action: PayloadAction<number[]>) => {
+      state.workIntervals = state.workIntervals || [];
+      state.workIntervals.push(action.payload);
+      state.workIntervals = simplifyWorkIntervals(
+        JSON.parse(JSON.stringify(state.workIntervals))
+      );
     },
   },
   extraReducers: (builder) => {
@@ -72,7 +82,7 @@ const timerSlice = createSlice({
   selectors: {
     isRunning: (state) => state.running,
     getTime: (state) => state.time,
-    getIntervals: (state) => state.workIntervals,
+    getIntervals: (state) => JSON.parse(JSON.stringify(state.workIntervals)),
     getLoadingStatus: (state) => state.loadingStatus,
   },
 });

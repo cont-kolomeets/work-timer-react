@@ -17,7 +17,7 @@ function _useEditDialog(time: number, onTimeUpdated: (time: number) => void) {
     time,
     onSetTime: async (time) => {
       dispatch(timerModel.actions.setTime(time));
-      await dispatch(timerModel.actions.postTime(time));
+      await dispatch(timerModel.actions.postTime());
       onTimeUpdated(time);
     },
   });
@@ -43,9 +43,10 @@ function _useDayTimer(
   const dayTimer = useRef(new DayTimer());
   dayTimer.current.onTickFrequent = () => {
     dispatch(timerModel.actions.setTime(dayTimer.current.time));
+    dispatch(timerModel.actions.setInterval(dayTimer.current.interval.slice()));
   };
   dayTimer.current.onTickRare = async () => {
-    await dispatch(timerModel.actions.postTime(time));
+    await dispatch(timerModel.actions.postTime());
     onTimeUpdated(time);
   };
 

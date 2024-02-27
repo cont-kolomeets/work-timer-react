@@ -8,7 +8,7 @@ export type SavedState = {
 export type SavedState_Year = {
   /** Month index (1-based) => Month. */
   months: Record<number, SavedState_Month>;
-  /** The amount of dept. Milliseconds. */
+  /** The amount of dept. Relative milliseconds. */
   dept?: number;
 };
 
@@ -22,9 +22,9 @@ export type SavedState_Month = {
 export type SavedState_Day = {
   /** 1-based. */
   index: number;
-  /** Time elapsed for this day. Milliseconds. */
+  /** Time elapsed for this day. Relative milliseconds. */
   time: number;
-  /** [start, end]. Absolute milliseconds. */
+  /** [start, end]. Milliseconds, relative to the 0:00 of this day. */
   workIntervals: number[][];
 };
 

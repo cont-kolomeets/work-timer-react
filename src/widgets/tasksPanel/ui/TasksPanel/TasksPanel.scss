@@ -1,9 +1,9 @@
 .wt-tasks-panel {
   position: absolute;
-  right: -600px;
+  right: -400px;
   top: 0px;
   bottom: 0px;
-  width: 600px;
+  width: 400px;
 }
 
 .wt-tasks-panel.hidden {
@@ -24,7 +24,7 @@
 
 @keyframes wt-tasks-panel-show {
   0% {
-    right: -600px;
+    right: -400px;
   }
   100% {
     right: 0;
@@ -36,7 +36,7 @@
     right: 0;
   }
   100% {
-    right: -600px;
+    right: -400px;
   }
 }
 

@@ -10,13 +10,17 @@ export function HoursChart() {
   );
   return (
     <>
-      {_12HoursChart(normal, true)}
-      {late.length ? _12HoursChart(late, false) : null}
+      {_12HoursChart(normal, true, !late.length)}
+      {late.length ? _12HoursChart(late, false, true) : null}
     </>
   );
 }
 
-function _12HoursChart(percentage: number[], isInner: boolean) {
+function _12HoursChart(
+  percentage: number[],
+  isInner: boolean,
+  showTicks: boolean
+) {
   const size = isInner ? 500 : 560;
   const height = size;
   const width = size;
@@ -52,12 +56,19 @@ function _12HoursChart(percentage: number[], isInner: boolean) {
       );
   });
 
+  const mins = [];
+  if (showTicks) {
+    for (let i = 0; i < 12 * 6; i++) {
+      mins.push(i);
+    }
+  }
+
   return (
     <div className="wt-stretched wt-flex-row wt-flex-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height={height}
-        viewBox={`0 0 ${width} ${height}`}
+        viewBox={`-16 -16 ${width + 32} ${height + 32}`}
         width={width}
       >
         <circle
@@ -84,6 +95,37 @@ function _12HoursChart(percentage: number[], isInner: boolean) {
             />
           );
         })}
+
+        {mins.map((m) => {
+          const r = width / 2 + 2;
+          const r2 = r + (m % (3 * 6) === 0 ? 12 : m % 6 === 0 ? 6 : 1);
+          const c = width / 2;
+          const a = (Math.PI * 2 * m) / 12 / 6;
+          return (
+            <path
+              key={m}
+              strokeWidth="3"
+              strokeLinecap="round"
+              stroke="white"
+              d={`M${c + r * Math.cos(a)} ${c + r * Math.sin(a)} ${
+                c + r2 * Math.cos(a)
+              } ${c + r2 * Math.sin(a)}`}
+            />
+          );
+        })}
+
+        <path d={`M${width / 2} -10 v10`} strokeWidth="1" stroke="white" />
+        <path
+          d={`M${width} ${height / 2} h10`}
+          strokeWidth="1"
+          stroke="white"
+        />
+        <path
+          d={`M${width / 2} ${height} v10`}
+          strokeWidth="1"
+          stroke="white"
+        />
+        <path d={`M-10 ${height / 2} h10`} strokeWidth="1" stroke="white" />
       </svg>
     </div>
   );

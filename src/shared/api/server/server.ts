@@ -207,6 +207,7 @@ class ServerClass {
   private async _getState(): Promise<SavedState> {
     await new Promise((resolve) => setTimeout(resolve, SEVER_LATENCY));
     if (this._cachedState) {
+      console.log(this._cachedState);
       return this._cachedState;
     }
     let storageItem = localStorage.getItem(KEY);
