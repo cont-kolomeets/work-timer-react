@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { formatDate, formatTotal } from "../../../../shared/lib";
+import {
+  formatDate,
+  formatTotal,
+  issueNumberFromLink,
+} from "../../../../shared/lib";
 import { Action } from "../../../../shared/ui";
-import { issueNumberFromLink } from "../../lib/createReportUtil";
 import { tasksModel } from "../../model/tasksModel";
 import { useTaskDialog } from "../../model/useTaskDialog";
 import "./TaskCard.scss";

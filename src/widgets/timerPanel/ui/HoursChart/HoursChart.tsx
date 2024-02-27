@@ -24,7 +24,7 @@ function _12HoursChart(
   const size = isInner ? 500 : 560;
   const height = size;
   const width = size;
-  const strokeWidth = 5;
+  const strokeWidth = 7;
   const sectorColors = percentage.map((p, i) =>
     p < 0 ? "transparent" : FILL_COLOR
   );
@@ -78,6 +78,7 @@ function _12HoursChart(
           cy={cy}
           r={r}
           strokeWidth={strokeWidth}
+          strokeLinecap="round"
         />
 
         {strokeDashOffsets.map((item, index) => {
@@ -92,6 +93,7 @@ function _12HoursChart(
               strokeDasharray={strokeDashArrays[index].join(", ")}
               strokeDashoffset={item + dashOffsetCorrection}
               strokeWidth={strokeWidth}
+              strokeLinecap="round"
             />
           );
         })}

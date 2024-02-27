@@ -1,4 +1,5 @@
 export { updateDocumentHeader } from "./documentUtil";
+export { issueNumberFromLink } from "./stringUtil";
 export {
   format2digit,
   formatDate,

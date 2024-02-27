@@ -1,24 +1,30 @@
 import { ReactNode } from "react";
+import { Loader } from "../Loader/Loader";
 
 export function Button({
   className,
   disabled,
+  loading,
   onClick,
   children,
 }: {
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
   onClick(): void;
   children: ReactNode;
 }) {
   return (
     <button
-      className={`wt-round-button ${
+      className={`wt-round-button wt-relative ${
         !disabled ? "" : "wt-round-button--disabled"
       } ${className || ""}`}
       onClick={onClick}
     >
-      {children}
+      <div style={{ visibility: loading ? "hidden" : "visible" }}>
+        {children}
+      </div>
+      {loading ? <Loader size="s" /> : null}
     </button>
   );
 }

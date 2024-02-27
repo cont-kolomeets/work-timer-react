@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { useAppSelector } from "../../../../app/hooks";
+import { client } from "../../../../shared/api";
+import { formatDate, get1BasedDate } from "../../../../shared/lib";
 import { Button } from "../../../../shared/ui";
-import { createTasksReport } from "../../lib/createReportUtil";
+import { downloadFile } from "../../lib/fileUtil";
 import { tasksModel } from "../../model/tasksModel";
 import { useTaskDialog } from "../../model/useTaskDialog";
 import "./TasksToolbar.scss";
@@ -8,20 +11,31 @@ import "./TasksToolbar.scss";
 export function TasksToolbar() {
   const tasks = useAppSelector(tasksModel.selectors.selectAllTasks);
   const { editDialog, setEditDialogShown } = useTaskDialog({ task: null });
+  const [loading, setLoading] = useState(false);
 
   const _addNewTask = () => {
     setEditDialogShown(true);
   };
 
-  const _createReport = () => {
-    createTasksReport(tasks);
+  const _createReport = async () => {
+    setLoading(true);
+    const report = await client.createReport({
+      year: get1BasedDate().y,
+      month: get1BasedDate().m,
+    });
+    downloadFile(`Tasks for ${formatDate(Date.now(), "y/m")}.txt`, report);
+    setLoading(false);
   };
 
   return (
     <div className="wt-flex-row wt-tasks-toolbar wt-pad-b-end-12">
       <Button onClick={_addNewTask}>Add task</Button>
       <div className="wt-flex-spacer"></div>
-      <Button onClick={_createReport} disabled={!tasks.length}>
+      <Button
+        onClick={_createReport}
+        disabled={!tasks.length}
+        loading={loading}
+      >
         Create report
       </Button>
       {editDialog}

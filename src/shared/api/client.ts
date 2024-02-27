@@ -64,4 +64,14 @@ export const client = {
   updateDept: async (params: { year: number; dept: number }) => {
     return (await _connectToServer()).updateDept(params);
   },
+
+  //--------------------------------------------------------------------------
+  //
+  // Report
+  //
+  //--------------------------------------------------------------------------
+
+  async createReport(params: { year: number; month: number }): Promise<string> {
+    return (await _connectToServer()).createReport(params);
+  },
 };

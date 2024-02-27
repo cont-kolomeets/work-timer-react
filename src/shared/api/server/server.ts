@@ -5,49 +5,14 @@ import {
   SavedState_Task,
   SavedState_Year,
 } from "../interfaces";
+import { createTasksReport } from "./createReportUtil";
 
 const KEY = "workTimer.savedState";
 const SEVER_LATENCY = 250; // ms
 
 //localStorage.removeItem(KEY); // remove for testing
 
-// for testing
-//const { d, m, y } = get1BasedDate();
-const DEFAULT_STATE: SavedState = {}; /*
-  years: {
-    [y]: {
-      months: {
-        [m]: {
-          days: {
-            [d]: {
-              index: d,
-              time: 100000,
-              workIntervals: [
-                [3600 * 1000 * 8, 3600 * 1000 * 12],
-                [3600 * 1000 * 13, 3600 * 1000 * 15],
-                [3600 * 1000 * 20, 3600 * 1000 * 23],
-              ],
-            },
-          },
-          tasks: {
-            1000: {
-              issue: 1000,
-              label: "Create work timer app 1",
-              time: 1e7,
-              modified: Date.now(),
-            },
-            2000: {
-              issue: 2000,
-              label: "Create work timer app 2",
-              time: 2e7,
-              modified: Date.now(),
-            },
-          },
-        },
-      },
-    },
-  },
-};*/
+const DEFAULT_STATE: SavedState = {};
 
 /**
  * Fake REST API. Stores the saved state.
@@ -176,6 +141,23 @@ class ServerClass {
     const { state, y } = await this._provideMonth({ year, month: 1 });
     y.dept = dept;
     this._postState(state);
+  }
+
+  //--------------------------------------------------------------------------
+  //
+  // Report
+  //
+  //--------------------------------------------------------------------------
+
+  async createReport({
+    year,
+    month,
+  }: {
+    year: number;
+    month: number;
+  }): Promise<string> {
+    const tasks = await this.getTasks({ year, month });
+    return createTasksReport(Object.values(tasks));
   }
 
   //--------------------------------------------------------------------------

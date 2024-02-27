@@ -1,4 +1,12 @@
 .wt-timer-panel {
+  .wt-timer-panel-bg {
+    background-image: url("./assets/bg7.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+  }
+
   .wt-timer-panel-label {
     font-family: latoregular;
     font-size: 100px;
