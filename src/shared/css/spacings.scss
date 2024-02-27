@@ -6,6 +6,14 @@
   margin: 12px;
 }
 
+.wt-m-16 {
+  margin: 16px;
+}
+
+.wt-m-20 {
+  margin: 20px;
+}
+
 .wt-m-b-8 {
   margin-block: 8px;
 }
@@ -20,6 +28,10 @@
 
 .wt-m-b-end-12 {
   margin-block-end: 12px;
+}
+
+.wt-m-b-end-28 {
+  margin-block-end: 28px;
 }
 
 .wt-m-i-start-12 {
@@ -62,4 +74,10 @@
 
 .wt-pad-i-end-12 {
   padding-inline-end: 12px;
+}
+
+/* Gap */
+
+.wt-flex-gap-8 {
+  gap: 8px;
 }

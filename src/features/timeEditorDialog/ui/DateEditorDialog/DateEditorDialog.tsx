@@ -44,7 +44,7 @@ export function DateEditorDialog({
           <>
             <div className="wt-flex-row">
               <div className="wt-m-12">Year</div>
-              <div className="wt-12">
+              <div className="wt-m-12">
                 <input
                   value={y + ""}
                   onChange={(event) => setYear(+event.target.value)}

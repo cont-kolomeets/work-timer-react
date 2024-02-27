@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useConfirmationDialog } from "../../../../features/timeEditorDialog/model/useConfirmationDialog";
 import {
   formatDate,
   formatTotal,
@@ -20,20 +21,34 @@ export function TaskCard({ taskId }: TaskCardProps) {
   const { link, label, modified, time } = task;
   const dispatch = useAppDispatch();
   const { editDialog, setEditDialogShown } = useTaskDialog({ task });
+  const { confirmationDialog, openConfirmationDialog } =
+    useConfirmationDialog();
 
   function _editTask(): void {
     setEditDialogShown(true);
   }
 
   function _deleteTask(): void {
-    dispatch(tasksModel.actions.removeTask(taskId));
+    openConfirmationDialog({
+      title: "Confirm delete",
+      message: "Are you sure you want to delete this task?",
+      onYes: () => {
+        dispatch(tasksModel.actions.removeTask(taskId));
+      },
+      onNo: () => {},
+    });
   }
 
   return (
     <div className="wt-task-card">
       <div className="wt-flex-row wt-m-b-12">
         <div className="wt-task-card__issue">
-          <a href={link} target="_blank" rel="noreferrer">
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "orange" }}
+          >
             #{issueNumberFromLink(link)}
           </a>{" "}
           ({formatTotal(time, "h:m")})
@@ -57,6 +72,7 @@ export function TaskCard({ taskId }: TaskCardProps) {
         <div className="wt-task-card__label">{label}</div>
       </div>
       {editDialog}
+      {confirmationDialog}
     </div>
   );
 }

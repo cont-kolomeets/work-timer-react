@@ -43,7 +43,7 @@ export function TimeEditorDialog({
           <>
             <div className="wt-flex-row">
               <div className="wt-m-12">Hours</div>
-              <div className="wt-12">
+              <div className="wt-m-12">
                 <input
                   value={hours + ""}
                   onChange={(event) => setHours(+event.target.value)}
