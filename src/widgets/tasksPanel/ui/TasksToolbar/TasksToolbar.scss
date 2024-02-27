@@ -1,3 +1,12 @@
 .wt-tasks-toolbar {
-  border-bottom: 1px solid #262626;
+  border-bottom: 1px solid #333333;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 8px;
+
+  .wt-round-button {
+    background-color: transparent;
+    border: 1px solid #754c00;
+    color: #dd8f00;
+  }
 }

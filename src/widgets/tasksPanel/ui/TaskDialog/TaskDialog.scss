@@ -4,12 +4,12 @@
   .wt-task-dialog-settings {
     & > div {
       display: grid;
-      grid-template-columns: 100px 1fr;
+      grid-template-columns: 80px 1fr;
     }
   }
 
   .wt-task-dialog-settings-2 {
     display: grid;
-    grid-template-columns: 100px 270px 1fr 100px 270px;
+    grid-template-columns: 80px 270px 1fr 80px 270px;
   }
 }

@@ -28,9 +28,8 @@ export function TasksToolbar() {
   };
 
   return (
-    <div className="wt-flex-row wt-tasks-toolbar wt-pad-b-end-12">
+    <div className="wt-tasks-toolbar wt-pad-b-end-12">
       <Button onClick={_addNewTask}>Add task</Button>
-      <div className="wt-flex-spacer"></div>
       <Button
         onClick={_createReport}
         disabled={!tasks.length}

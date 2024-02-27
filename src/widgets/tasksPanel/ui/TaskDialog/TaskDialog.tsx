@@ -58,7 +58,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
           <>
             <div className="wt-task-dialog-settings">
               <div className="wt-m-b-12">
-                <div>Issue:</div>
+                <div>Issue</div>
                 <input
                   value={taskLink || ""}
                   onChange={(event) => setTaskLink(event.target.value)}
@@ -66,7 +66,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
                 ></input>
               </div>
               <div className="wt-m-b-12">
-                <div>Label:</div>
+                <div>Label</div>
                 <textarea
                   value={taskLabel}
                   onChange={(event) => setTaskLabel(event.target.value)}
