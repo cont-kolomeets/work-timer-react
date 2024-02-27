@@ -2,7 +2,7 @@
  * Total saved state for all years so far.
  */
 export type SavedState = {
-  years: Record<number, SavedState_Year>;
+  years?: Record<number, SavedState_Year>;
 };
 
 export type SavedState_Year = {

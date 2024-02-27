@@ -4,14 +4,13 @@ import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model
 import { formatTotal } from "../../../../shared/lib";
 import { useOnDocumentKeyUp } from "../../../../shared/model";
 import { Action, Button, Loader } from "../../../../shared/ui";
-import { gridModel } from "../../../monthPanel/model/gridModel";
 import DayTimer from "../../model/DayTimer";
 import { timerModel } from "../../model/timerModel";
 import { useShowGreetingsAlert } from "../../model/useShowGreetingsAlert";
 import { HoursChart } from "../HoursChart/HoursChart";
 import "./TimerPanel.scss";
 
-function _useEditDialog(time: number) {
+function _useEditDialog(time: number, onTimeUpdated: (time: number) => void) {
   const dispatch = useAppDispatch();
 
   const { editDialog, setEditDialogShown } = useTimeEditorDialog({
@@ -19,8 +18,7 @@ function _useEditDialog(time: number) {
     onSetTime: async (time) => {
       dispatch(timerModel.actions.setTime(time));
       await dispatch(timerModel.actions.postTime(time));
-      dispatch(gridModel.actions.resetDate());
-      dispatch(gridModel.actions.fetchGridData());
+      onTimeUpdated(time);
     },
   });
 
@@ -35,7 +33,11 @@ function _useEditDialog(time: number) {
   };
 }
 
-function _useDayTimer(time: number, running: boolean) {
+function _useDayTimer(
+  time: number,
+  running: boolean,
+  onTimeUpdated: (time: number) => void
+) {
   const dispatch = useAppDispatch();
 
   const dayTimer = useRef(new DayTimer());
@@ -43,9 +45,8 @@ function _useDayTimer(time: number, running: boolean) {
     dispatch(timerModel.actions.setTime(dayTimer.current.time));
   };
   dayTimer.current.onTickRare = async () => {
-    dispatch(gridModel.actions.resetDate());
-    await dispatch(timerModel.actions.postTime(dayTimer.current.time));
-    dispatch(gridModel.actions.fetchGridData());
+    await dispatch(timerModel.actions.postTime(time));
+    onTimeUpdated(time);
   };
 
   useEffect(() => {
@@ -59,7 +60,11 @@ function _useDayTimer(time: number, running: boolean) {
   }, [time, running, dayTimer]);
 }
 
-export function TimerPanel() {
+export function TimerPanel({
+  onTimeUpdated,
+}: {
+  onTimeUpdated(time: number): void;
+}) {
   const dispatch = useAppDispatch();
   const time = useAppSelector(timerModel.selectors.getTime);
   const running = useAppSelector(timerModel.selectors.isRunning);
@@ -71,9 +76,9 @@ export function TimerPanel() {
     dispatch(timerModel.actions.fetchTime());
   }, [dispatch]);
 
-  _useDayTimer(time, running);
+  _useDayTimer(time, running, onTimeUpdated);
 
-  const { editDialog, editTime } = _useEditDialog(time);
+  const { editDialog, editTime } = _useEditDialog(time, onTimeUpdated);
 
   const _toggleTimer = useCallback(() => {
     !running && showGreetings();

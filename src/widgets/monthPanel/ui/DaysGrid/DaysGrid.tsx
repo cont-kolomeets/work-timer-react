@@ -8,7 +8,6 @@ import {
   get1BasedDate,
 } from "../../../../shared/lib";
 import { Action, Loader } from "../../../../shared/ui";
-import { timerModel } from "../../../timerPanel/model/timerModel";
 import { gridModel } from "../../model/gridModel";
 import { GridDayData } from "../../model/interfaces";
 import { GridCell } from "../GridCell/GridCell";
@@ -139,7 +138,15 @@ function _createRows({
 //
 //--------------------------------------------------------------------------
 
-function _useEditTimeDialog() {
+type EditStartEndProps = EditStartProps & {
+  onEditEnd(): void;
+};
+
+type EditStartProps = {
+  onEditStart(): void;
+};
+
+function _useEditTimeDialog({ onEditStart, onEditEnd }: EditStartEndProps) {
   const dispatch = useAppDispatch();
   const [editedData, setEditedData] = useState<GridDayData | null>(null);
 
@@ -151,7 +158,7 @@ function _useEditTimeDialog() {
         newData.time = time;
         dispatch(gridModel.actions.updateData(newData));
         await dispatch(gridModel.actions.postGridData(newData));
-        dispatch(timerModel.actions.fetchTime());
+        onEditEnd();
       }
     },
   });
@@ -160,13 +167,13 @@ function _useEditTimeDialog() {
     editDialog,
     editData: (data: GridDayData) => {
       setEditedData(data);
-      dispatch(timerModel.actions.stopTimer());
+      onEditStart();
       setEditDialogShown(true);
     },
   };
 }
 
-function _useEditDeptDialog() {
+function _useEditDeptDialog({ onEditStart }: EditStartProps) {
   const dispatch = useAppDispatch();
   const [editedDept, setEditedDept] = useState(0);
 
@@ -181,14 +188,14 @@ function _useEditDeptDialog() {
   return {
     editDialog,
     editDept: (dept: number) => {
-      dispatch(timerModel.actions.stopTimer());
+      onEditStart();
       setEditedDept(dept);
       setEditDialogShown(true);
     },
   };
 }
 
-function _useEditDateDialog() {
+function _useEditDateDialog({ onEditStart }: EditStartProps) {
   const dispatch = useAppDispatch();
   const [editedDate, setEditedDate] = useState({ year: 0, month: 0 });
 
@@ -204,14 +211,14 @@ function _useEditDateDialog() {
   return {
     editDialog,
     editDate: (year: number, month: number) => {
-      dispatch(timerModel.actions.stopTimer());
+      onEditStart();
       setEditedDate({ year, month });
       setEditDialogShown(true);
     },
   };
 }
 
-function _useChangeMonth() {
+function _useChangeMonth({ onEditStart }: EditStartProps) {
   const dispatch = useAppDispatch();
   return {
     changeMonth: (
@@ -219,7 +226,7 @@ function _useChangeMonth() {
       month: number,
       type: "prev" | "next" | "reset"
     ) => {
-      dispatch(timerModel.actions.stopTimer());
+      onEditStart();
       if (type === "reset") {
         dispatch(gridModel.actions.resetDate());
       } else {
@@ -243,16 +250,23 @@ function _useChangeMonth() {
   };
 }
 
-export function DaysGrid() {
+export function DaysGrid({ onEditStart, onEditEnd }: EditStartEndProps) {
   const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
   const monthData = useAppSelector(gridModel.selectors.selectMonthData);
   const dept = useAppSelector(gridModel.selectors.selectDept);
   const year = useAppSelector(gridModel.selectors.getYear);
   const month = useAppSelector(gridModel.selectors.getMonth);
-  const { editDialog: editTimeDialog, editData } = _useEditTimeDialog();
-  const { editDialog: editDeptDialog, editDept } = _useEditDeptDialog();
-  const { editDialog: editDateDialog, editDate } = _useEditDateDialog();
-  const { changeMonth } = _useChangeMonth();
+  const { editDialog: editTimeDialog, editData } = _useEditTimeDialog({
+    onEditStart,
+    onEditEnd,
+  });
+  const { editDialog: editDeptDialog, editDept } = _useEditDeptDialog({
+    onEditStart,
+  });
+  const { editDialog: editDateDialog, editDate } = _useEditDateDialog({
+    onEditStart,
+  });
+  const { changeMonth } = _useChangeMonth({ onEditStart });
 
   if (loadingStatus === "loading") {
     return <Loader />;

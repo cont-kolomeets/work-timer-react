@@ -101,7 +101,7 @@ export function formatDate(modified: number): string {
  * Merges intervals if the gaps are too small.
  */
 export function simplifyWorkIntervals(wi: number[][]): number[][] {
-  if (!wi.length) {
+  if (!wi?.length) {
     return wi;
   }
   const newWi: number[][] = [];
@@ -131,6 +131,9 @@ export function workIntervalsToNormalLatePercent(wi: number[][]): {
   normal: number[];
   late: number[];
 } {
+  if (!wi?.length) {
+    return { normal: [], late: [] };
+  }
   wi = simplifyWorkIntervals(wi);
   // split to have for normal and late hours
   const _8am = 3600 * 1000 * 8;

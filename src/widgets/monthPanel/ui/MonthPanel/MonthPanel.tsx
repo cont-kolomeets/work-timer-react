@@ -4,7 +4,13 @@ import { gridModel } from "../../model/gridModel";
 import { DaysGrid } from "../DaysGrid/DaysGrid";
 import "./MonthPanel.scss";
 
-export function MonthPanel() {
+export function MonthPanel({
+  onEditStart,
+  onEditEnd,
+}: {
+  onEditStart(): void;
+  onEditEnd(): void;
+}) {
   const dispatch = useAppDispatch();
 
   const _loadData = () => {
@@ -18,7 +24,7 @@ export function MonthPanel() {
       side="left"
       onShown={_loadData}
     >
-      <DaysGrid />
+      <DaysGrid onEditStart={onEditStart} onEditEnd={onEditEnd} />
     </Panel>
   );
 }

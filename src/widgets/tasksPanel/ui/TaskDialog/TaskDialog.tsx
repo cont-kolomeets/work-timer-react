@@ -27,7 +27,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
   }, [task]);
 
   useEffect(() => {
-    setCanSave(!!(issueNumber && taskLabel && minutes && hours));
+    setCanSave(!!(issueNumber && taskLabel && (minutes || hours)));
   }, [issueNumber, taskLabel, minutes, hours]);
 
   return (

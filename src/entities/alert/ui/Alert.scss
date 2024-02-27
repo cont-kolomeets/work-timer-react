@@ -1,11 +1,12 @@
 .wt-alert {
   position: absolute;
   top: -200px;
-  left: 30%;
-  right: 30%;
+  left: 50%;
   background-color: white;
   color: black;
   border-radius: 12px;
+  transform: translate(-50%, 0);
+  min-width: 500px;
 
   .wt-alert__title {
     font-weight: bold;

@@ -1,4 +1,3 @@
-import { get1BasedDate } from "../../lib";
 import {
   SavedState,
   SavedState_Day,
@@ -8,13 +7,13 @@ import {
 } from "../interfaces";
 
 const KEY = "workTimer.savedState";
-const SEVER_LATENCY = 500; // ms
+const SEVER_LATENCY = 250; // ms
 
 localStorage.removeItem(KEY); // remove for testing
 
 // for testing
-const { d, m, y } = get1BasedDate();
-const DEFAULT_STATE: SavedState = {
+//const { d, m, y } = get1BasedDate();
+const DEFAULT_STATE: SavedState = {}; /*
   years: {
     [y]: {
       months: {
@@ -48,7 +47,7 @@ const DEFAULT_STATE: SavedState = {
       },
     },
   },
-};
+};*/
 
 /**
  * Fake REST API. Stores the saved state.
@@ -193,7 +192,8 @@ class ServerClass {
     month: number;
   }): Promise<{ state: SavedState; y: SavedState_Year; m: SavedState_Month }> {
     const state = await this._getState();
-    const y = (state.years[year] = state.years[year] || { months: {} });
+    const ys = (state.years = state.years || {});
+    const y = (ys[year] = ys[year] || { months: {} });
     const m = (y.months[month] = y.months[month] || {});
     m.days = m.days || {};
     m.tasks = m.tasks || {};
