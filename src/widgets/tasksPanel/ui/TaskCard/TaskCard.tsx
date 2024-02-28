@@ -5,6 +5,7 @@ import {
   formatTotal,
   issueNumberFromLink,
 } from "../../../../shared/lib";
+import { TASK_REMOVED } from "../../../../shared/model";
 import { Action } from "../../../../shared/ui";
 import { tasksModel } from "../../model/tasksModel";
 import { useTaskDialog } from "../../model/useTaskDialog";
@@ -34,6 +35,7 @@ export function TaskCard({ taskId }: TaskCardProps) {
       message: "Are you sure you want to delete this task?",
       onYes: () => {
         dispatch(tasksModel.actions.removeTask(taskId));
+        dispatch({ type: TASK_REMOVED });
       },
       onNo: () => {},
     });
