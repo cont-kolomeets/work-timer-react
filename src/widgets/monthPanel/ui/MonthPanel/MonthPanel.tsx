@@ -1,4 +1,4 @@
-import { useAppDispatch } from "../../../../app/hooks";
+import { useAppDispatch } from "../../../../app/redux/hooks";
 import { Panel } from "../../../../entities/panel";
 import { gridModel } from "../../model/gridModel";
 import { DaysGrid } from "../DaysGrid/DaysGrid";

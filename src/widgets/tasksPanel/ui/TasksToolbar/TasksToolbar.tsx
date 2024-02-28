@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppSelector } from "../../../../app/hooks";
+import { useAppSelector } from "../../../../app/redux/hooks";
 import { client } from "../../../../shared/api";
 import { formatDate, get1BasedDate } from "../../../../shared/lib";
 import { Button } from "../../../../shared/ui";

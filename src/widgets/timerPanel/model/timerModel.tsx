@@ -4,6 +4,9 @@ import { client } from "../../../shared/api";
 import { get1BasedDate, simplifyWorkIntervals } from "../../../shared/lib";
 
 type TimerState = {
+  year: number;
+  month: number;
+  day: number;
   running: boolean;
   /** Elapsed time. */
   time: number;
@@ -12,31 +15,34 @@ type TimerState = {
   loadingStatus: "idle" | "loading";
 };
 
+const date = get1BasedDate();
 const initialState: TimerState = {
+  year: date.y,
+  month: date.m,
+  day: date.d,
   running: false,
   time: 0,
   workIntervals: [],
   loadingStatus: "idle",
 };
 
-const fetchTime = createAsyncThunk("timer/fetchTime", async () => {
-  const date = get1BasedDate();
+const fetchTime = createAsyncThunk("timer/fetchTime", async (_, api) => {
+  const state = (api.getState() as RootState).timer;
   const result = await client.getDayData({
-    year: date.y,
-    month: date.m,
-    day: date.d,
+    year: state.year,
+    month: state.month,
+    day: state.day,
   });
   return result;
 });
 
 const postTime = createAsyncThunk("timer/postTime", async (_, api) => {
-  const date = get1BasedDate();
   const state = (api.getState() as RootState).timer;
   const result = await client.updateDay({
-    year: date.y,
-    month: date.m,
+    year: state.year,
+    month: state.month,
     dayInfo: {
-      index: date.d,
+      index: state.day,
       time: state.time,
       workIntervals: state.workIntervals,
     },
@@ -48,6 +54,14 @@ const timerSlice = createSlice({
   name: "timer",
   initialState,
   reducers: {
+    setDate: (
+      state,
+      action: PayloadAction<{ year: number; month: number; day: number }>
+    ) => {
+      state.year = action.payload.year;
+      state.month = action.payload.month;
+      state.day = action.payload.day;
+    },
     toggleTimer: (state) => {
       state.running = !state.running;
     },
@@ -57,7 +71,10 @@ const timerSlice = createSlice({
     setTime: (state, action: PayloadAction<number>) => {
       state.time = action.payload;
     },
-    setInterval: (state, action: PayloadAction<number[]>) => {
+    clearIntervals: (state) => {
+      state.workIntervals = [];
+    },
+    addInterval: (state, action: PayloadAction<number[]>) => {
       state.workIntervals = state.workIntervals || [];
       state.workIntervals.push(action.payload);
       state.workIntervals = simplifyWorkIntervals(state.workIntervals);

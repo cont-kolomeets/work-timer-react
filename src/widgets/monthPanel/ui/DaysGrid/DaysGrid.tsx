@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
 import { useDateEditorDialog } from "../../../../features/timeEditorDialog/model/useDateEditorDialog";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import {

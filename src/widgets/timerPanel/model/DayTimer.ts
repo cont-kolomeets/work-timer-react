@@ -1,3 +1,5 @@
+import { formatDate } from "../../../shared/lib";
+
 class DayTimer {
   private _startTime = 0;
   private _timeElapsed = 0;
@@ -5,6 +7,7 @@ class DayTimer {
   private _intervalHandle: any;
   private _secondPoint = 0;
   private _curInterval: number[] = [];
+  private _lastDate: string = "";
 
   get isRunning(): boolean {
     return this._isRunning;
@@ -23,6 +26,9 @@ class DayTimer {
    */
   start(timeElapsed = 0) {
     this.stop();
+    // check if we need to start tracking for a new day
+    // case: the app started on the next day
+    this._checkDate();
 
     this._isRunning = true;
     this._startTime = Date.now();
@@ -36,6 +42,10 @@ class DayTimer {
   }
 
   private _updateTimer(): void {
+    // check if we need to start tracking for a new day
+    // case: the person worked over 0:00am
+    this._checkDate();
+
     let currentTime = Date.now();
     let delta = currentTime - this._startTime;
     this._timeElapsed = delta;
@@ -51,11 +61,20 @@ class DayTimer {
     return (new Date().getHours() * 3600 + new Date().getMinutes() * 60) * 1000;
   }
 
+  private _checkDate(): void {
+    const curDate = formatDate(Date.now(), "y/m/d");
+    if (this._lastDate !== curDate) {
+      this._lastDate = curDate;
+      this.onDayChanged();
+    }
+  }
+
   stop() {
     this._intervalHandle && clearInterval(this._intervalHandle);
     this._isRunning = false;
   }
 
+  onDayChanged(): void {}
   onTickFrequent(): void {}
   onTickRare(): void {}
 }

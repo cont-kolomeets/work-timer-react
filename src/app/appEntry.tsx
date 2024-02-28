@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 
 import { WorkTimer } from "../pages/workTimer";
-import { appStore } from "./appStore";
+import { appStore } from "./redux/appStore";
 
 import "bootstrap-icons/font/bootstrap-icons.scss";
 import "bootstrap/dist/css/bootstrap.css";

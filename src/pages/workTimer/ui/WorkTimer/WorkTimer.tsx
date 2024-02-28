@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
 import { useAlerts } from "../../../../entities/alert";
 import { get1BasedDate } from "../../../../shared/lib";
 import { MonthPanel } from "../../../../widgets/monthPanel";

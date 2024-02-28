@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../../../app/hooks";
+import { useAppSelector } from "../../../../app/redux/hooks";
 import { workIntervalsToNormalLatePercent } from "../../../../shared/lib";
 import { timerModel } from "../../model/timerModel";
 

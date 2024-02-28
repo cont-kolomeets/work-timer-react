@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppDispatch } from "../../../app/hooks";
+import { useAppDispatch } from "../../../app/redux/hooks";
 import { SavedState_Task } from "../../../shared/api";
 import { TaskDialog } from "../ui/TaskDialog/TaskDialog";
 import { tasksModel } from "./tasksModel";

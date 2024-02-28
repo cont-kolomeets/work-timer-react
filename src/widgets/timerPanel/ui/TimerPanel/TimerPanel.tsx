@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
-import { formatTotal, updateDocumentHeader } from "../../../../shared/lib";
+import {
+  formatTotal,
+  get1BasedDate,
+  updateDocumentHeader,
+} from "../../../../shared/lib";
 import { useOnDocumentKeyUp } from "../../../../shared/model";
 import { Action, Button, Loader } from "../../../../shared/ui";
 import DayTimer from "../../model/DayTimer";
@@ -17,6 +21,7 @@ function _useEditDialog(time: number, onTimeUpdated: (time: number) => void) {
     time,
     onSetTime: async (time) => {
       dispatch(timerModel.actions.setTime(time));
+      !time && dispatch(timerModel.actions.clearIntervals());
       await dispatch(timerModel.actions.postTime());
       onTimeUpdated(time);
     },
@@ -41,9 +46,14 @@ function _useDayTimer(
   const dispatch = useAppDispatch();
 
   const dayTimer = useRef(new DayTimer());
+  dayTimer.current.onDayChanged = () => {
+    // need to reset the day to a new one
+    const { y, m, d } = get1BasedDate();
+    dispatch(timerModel.actions.setDate({ year: y, month: m, day: d }));
+  };
   dayTimer.current.onTickFrequent = () => {
     dispatch(timerModel.actions.setTime(dayTimer.current.time));
-    dispatch(timerModel.actions.setInterval(dayTimer.current.interval.slice()));
+    dispatch(timerModel.actions.addInterval(dayTimer.current.interval.slice()));
   };
   dayTimer.current.onTickRare = async () => {
     await dispatch(timerModel.actions.postTime());

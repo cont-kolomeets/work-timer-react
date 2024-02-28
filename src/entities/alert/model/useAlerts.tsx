@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { Alert } from "../ui/Alert";
 import { alertModel } from "./alertModel";
 

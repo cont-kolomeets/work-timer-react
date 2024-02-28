@@ -37,13 +37,16 @@ const postGridData = createAsyncThunk(
   "grid/postGridData",
   async (data: GridDayData, api) => {
     const { year, month } = (api.getState() as RootState).grid;
+    const dayInfo: Partial<SavedState_Day> = {
+      index: data.index,
+      time: data.time,
+    };
+    // clear the intervals if for empty time
+    !data.time && (dayInfo.workIntervals = []);
     await client.updateDay({
       year,
       month,
-      dayInfo: {
-        index: data.index,
-        time: data.time,
-      },
+      dayInfo,
     });
   }
 );
@@ -91,7 +94,9 @@ const gridSlice = createSlice({
     });
     builder.addCase(fetchGridData.fulfilled, (state, result) => {
       const { monthData, dept } = result.payload;
-      state.data = Object.values(monthData).sort((a, b) => a.index - b.index);
+      state.data = Object.values(monthData)
+        .sort((a, b) => a.index - b.index)
+        .map((d) => ({ index: d.index, time: d.time }));
       state.dept = dept;
       state.status = "idle";
     });

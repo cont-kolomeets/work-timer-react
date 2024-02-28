@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../../../app/hooks";
+import { useAppSelector } from "../../../../app/redux/hooks";
 import { Loader } from "../../../../shared/ui";
 import { tasksModel } from "../../model/tasksModel";
 import { TaskCard } from "../TaskCard/TaskCard";

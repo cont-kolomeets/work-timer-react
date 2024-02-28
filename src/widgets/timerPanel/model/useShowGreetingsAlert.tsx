@@ -1,5 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { alertModel } from "../../../entities/alert/model/alertModel";
 
 let numCalls = 0;

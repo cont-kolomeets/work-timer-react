@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
 import { useConfirmationDialog } from "../../../../features/timeEditorDialog/model/useConfirmationDialog";
 import {
   formatDate,

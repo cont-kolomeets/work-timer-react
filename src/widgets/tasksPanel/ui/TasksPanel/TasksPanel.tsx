@@ -1,4 +1,4 @@
-import { useAppDispatch } from "../../../../app/hooks";
+import { useAppDispatch } from "../../../../app/redux/hooks";
 import { Panel } from "../../../../entities/panel";
 import { tasksModel } from "../../model/tasksModel";
 import { TasksList } from "../TasksList.tsx/TasksList";
