@@ -1,5 +1,4 @@
-import { format2digit } from "../../../../shared/lib";
-import { Action } from "../../../../shared/ui";
+import { DateToolbar } from "../../../../entities/dateToolbar";
 import { useGridToolbar } from "../../model/useGridToolbar";
 import "./GridToolbar.scss";
 
@@ -8,34 +7,33 @@ export function GridToolbar({ onEditStart }: { onEditStart(): void }) {
     useGridToolbar(onEditStart);
 
   return (
-    <div className="wt-flex-row wt-m-b-end-12 wt-clickable wt-days-grid__date">
-      <Action
-        name="chevron-left"
-        size="16"
-        className="wt-m-i-start-12"
-        onClick={() => changeMonth(year, month, "prev")}
-      />
-      <div
-        className=" wt-flex-row wt-flex-center wt-flex-spacer"
-        onClick={() => editDate(year, month)}
-      >{`${year}.${format2digit(month)}`}</div>
-      <Action
-        name="pencil"
-        size="16"
-        className="wt-m-i-start-12"
-        onClick={() => editDate(year, month)}
-      />
-      <Action
-        name="arrow-clockwise"
-        size="16"
-        className="wt-m-i-start-12"
-        onClick={() => changeMonth(year, month, "reset")}
-      />
-      <Action
-        name="chevron-right"
-        size="16"
-        className="wt-m-i-start-12"
-        onClick={() => changeMonth(year, month, "next")}
+    <div>
+      <DateToolbar
+        year={year}
+        month={month}
+        onClickDate={() => editDate(year, month)}
+        actionsLeft={[
+          {
+            icon: "chevron-left",
+            onClick: () => changeMonth(year, month, "prev"),
+          },
+        ]}
+        actionsRight={[
+          {
+            icon: "pencil",
+            onClick: () => {
+              editDate(year, month);
+            },
+          },
+          {
+            icon: "arrow-clockwise",
+            onClick: () => changeMonth(year, month, "reset"),
+          },
+          {
+            icon: "chevron-right",
+            onClick: () => changeMonth(year, month, "next"),
+          },
+        ]}
       />
       {editDateDialog}
     </div>

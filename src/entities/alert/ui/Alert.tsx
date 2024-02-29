@@ -18,7 +18,7 @@ export function Alert({ title, message, onClosed }: AlertProps) {
             <div className="wt-m-b-12">{message}</div>
           </div>
           <div className="wt-pad-12">
-            <Action name="x" onClick={closeAlert} />
+            <Action name="x" onClick={closeAlert} size="20" />
           </div>
         </div>
       );

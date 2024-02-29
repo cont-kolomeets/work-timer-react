@@ -16,6 +16,7 @@ export function PanelSideHeader({ title, side, onOpen }: PanelTitleProps) {
       <Action
         name={side === "left" ? "chevron-double-right" : "chevron-double-left"}
         className="wt-panel-side-header__open-button"
+        size="20"
       />
       <div className="header-text-container">
         <div className="header-text-container__header-text">{title}</div>

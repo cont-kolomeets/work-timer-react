@@ -7,12 +7,12 @@ import { useTaskDialog } from "./useTaskDialog";
 
 export function useTaskCard(task: SavedState_Task) {
   const dispatch = useAppDispatch();
-  const { editDialog, setEditDialogShown } = useTaskDialog({ task });
+  const { editTaskDialog, setTaskEditDialogShown } = useTaskDialog({ task });
   const { confirmationDialog, openConfirmationDialog } =
     useConfirmationDialog();
 
   function editTask(): void {
-    setEditDialogShown(true);
+    setTaskEditDialogShown(true);
   }
 
   function deleteTask(): void {
@@ -30,7 +30,7 @@ export function useTaskCard(task: SavedState_Task) {
   return {
     editTask,
     deleteTask,
-    editDialog,
+    editTaskDialog,
     confirmationDialog,
   };
 }

@@ -5,23 +5,23 @@ import { TaskDialog } from "../ui/TaskDialog/TaskDialog";
 import { tasksModel } from "./tasksModel";
 
 export function useTaskDialog({ task }: { task: SavedState_Task | null }) {
-  const [editDialogShown, setEditDialogShown] = useState(false);
+  const [editTaskDialogShown, setTaskEditDialogShown] = useState(false);
   const dispatch = useAppDispatch();
 
-  const editDialog = editDialogShown ? (
+  const editTaskDialog = editTaskDialogShown ? (
     <TaskDialog
       task={task}
       onSave={(task) => {
         dispatch(tasksModel.actions.updateTask(task));
       }}
       onClosed={() => {
-        setEditDialogShown(false);
+        setTaskEditDialogShown(false);
       }}
     ></TaskDialog>
   ) : null;
 
   return {
-    editDialog,
-    setEditDialogShown,
+    editTaskDialog,
+    setTaskEditDialogShown,
   };
 }

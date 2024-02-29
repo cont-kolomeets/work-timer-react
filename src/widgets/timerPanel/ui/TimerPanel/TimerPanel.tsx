@@ -28,7 +28,12 @@ export function TimerPanel({
         <div className="wt-clickable wt-timer-panel-label" onClick={editTime}>
           {formatTotal(time, "h:m:s")}
         </div>
-        <Action name="pencil" className="wt-m-i-start-12" onClick={editTime} />
+        <Action
+          name="pencil"
+          className="wt-m-i-start-12"
+          size="20"
+          onClick={editTime}
+        />
       </div>
       <div className="wt-flex-row wt-flex-center wt-timer-bottom-container">
         <Button

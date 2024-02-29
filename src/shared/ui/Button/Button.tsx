@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Loader } from "../Loader/Loader";
+import "./Button.scss";
 
 export function Button({
   className,
@@ -16,8 +17,8 @@ export function Button({
 }) {
   return (
     <button
-      className={`wt-round-button wt-relative ${
-        !disabled ? "" : "wt-round-button--disabled"
+      className={`wt-round-button wt-relative${
+        !disabled ? "" : " wt-round-button--disabled"
       } ${className || ""}`}
       onClick={onClick}
     >

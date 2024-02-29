@@ -19,6 +19,7 @@ export function PanelHeader({ title, onTitleClick, onClose }: PanelTitleProps) {
       <Action
         name="x"
         className="wt-panel-header__close-button"
+        size="20"
         onClick={onClose}
       />
     </div>

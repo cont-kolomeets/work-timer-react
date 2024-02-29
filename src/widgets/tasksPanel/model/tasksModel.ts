@@ -111,6 +111,8 @@ const tasksSlice = createSlice({
   },
   selectors: {
     getLoadingStatus: (state) => state.status,
+    getYear: (state) => state.year,
+    getMonth: (state) => state.month,
   },
 });
 

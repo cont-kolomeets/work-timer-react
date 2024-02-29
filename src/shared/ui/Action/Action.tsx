@@ -1,4 +1,7 @@
-type IconName =
+import { Loader } from "../Loader/Loader";
+import "./Action.scss";
+
+export type IconName =
   | "x"
   | "chevron-left"
   | "chevron-right"
@@ -7,25 +10,34 @@ type IconName =
   | "pencil-square"
   | "trash"
   | "pencil"
-  | "arrow-clockwise";
+  | "arrow-clockwise"
+  | "plus-lg"
+  | "download";
 
 export function Action({
   name,
   className,
   size,
+  disabled,
+  loading,
   onClick,
 }: {
   name: IconName;
   className?: string;
-  size?: number | string;
+  size: "16" | "20";
+  disabled?: boolean;
+  loading?: boolean;
   onClick?(): void;
 }) {
   return (
     <i
-      className={`bi bi-${name} wt-clickable wt-action-button-${size || 20} ${
-        className || ""
-      }`}
+      className={`bi bi-${name} wt-relative wt-clickable wt-action-button-${
+        size || 20
+      }${!disabled ? "" : " wt-action-button--disabled"} ${className || ""}`}
       onClick={onClick}
-    ></i>
+      style={{ color: loading ? "transparent" : "" }}
+    >
+      {loading ? <Loader size="s" /> : null}
+    </i>
   );
 }
