@@ -18,9 +18,11 @@ export function TasksList() {
     );
   }
 
+  let latestFirstIds = taskIds.slice().reverse();
+
   return (
     <div className="wt-tasks-list">
-      {taskIds.map((id) => {
+      {latestFirstIds.map((id) => {
         return <TaskCard key={id} taskId={id} />;
       })}
     </div>

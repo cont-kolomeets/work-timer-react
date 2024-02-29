@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
+import { dialogModel } from "../../../entities/dialog";
 import { useTimeEditorDialog } from "../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import { get1BasedDate, updateDocumentHeader } from "../../../shared/lib";
 import { useOnDocumentKeyUp } from "../../../shared/model";
@@ -70,6 +71,7 @@ export function useTimerPanel(onTimeUpdated: (time: number) => void) {
   const running = useAppSelector(timerModel.selectors.isRunning);
   const loadingStatus = useAppSelector(timerModel.selectors.getLoadingStatus);
   const { showGreetings } = useShowGreetingsAlert();
+  const hasOpenDialogs = useAppSelector(dialogModel.selectors.getDialogState);
 
   // load time from the server the first time
   useEffect(() => {
@@ -81,9 +83,12 @@ export function useTimerPanel(onTimeUpdated: (time: number) => void) {
   const { editDialog, editTime } = _useEditDialog(time, onTimeUpdated);
 
   const toggleTimer = useCallback(() => {
+    if (hasOpenDialogs) {
+      return;
+    }
     !running && showGreetings();
     dispatch(timerModel.actions.toggleTimer());
-  }, [dispatch, running, showGreetings]);
+  }, [dispatch, running, showGreetings, hasOpenDialogs]);
 
   useOnDocumentKeyUp({ key: " ", onKeyUp: toggleTimer });
 

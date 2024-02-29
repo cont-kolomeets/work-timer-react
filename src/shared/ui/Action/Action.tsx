@@ -36,6 +36,9 @@ export function Action({
       }${!disabled ? "" : " wt-action-button--disabled"} ${className || ""}`}
       onClick={onClick}
       style={{ color: loading ? "transparent" : "" }}
+      tabIndex={1}
+      onKeyDown={(event) => event.key === "Enter" && onClick?.()}
+      role="button"
     >
       {loading ? <Loader size="s" /> : null}
     </i>

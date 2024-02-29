@@ -47,6 +47,7 @@ export function useFadeInOutTransition({
         </CSSTransition>
       </>
     ),
+    display,
     setDisplay,
   };
 }

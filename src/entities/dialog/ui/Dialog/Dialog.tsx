@@ -1,10 +1,12 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAppDispatch } from "../../../../app/redux/hooks";
 import {
   useFadeInOutTransition,
   useOnDocumentKeyUp,
 } from "../../../../shared/model";
 import { PanelHeader } from "../../../../shared/ui";
+import { dialogModel } from "../../model/dialogModel";
 import "./Dialog.scss";
 
 type DialogProps = {
@@ -15,7 +17,8 @@ type DialogProps = {
 };
 
 export function Dialog({ title, className, children, onClosed }: DialogProps) {
-  const { content, setDisplay } = useFadeInOutTransition({
+  const dispatch = useAppDispatch();
+  const { content, display, setDisplay } = useFadeInOutTransition({
     content: (refNode, closeDialog) => {
       const dialog: ReactNode = (
         <div
@@ -41,6 +44,10 @@ export function Dialog({ title, className, children, onClosed }: DialogProps) {
     key: "Escape",
     onKeyUp: () => setDisplay(false),
   });
+
+  useEffect(() => {
+    dispatch(dialogModel.actions.setDialogState(display));
+  }, [dispatch, display]);
 
   return content;
 }

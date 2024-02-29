@@ -25,6 +25,7 @@ export function createTasksReport(rawTasks: SavedState_Task[]): string {
 
   let tasksContent = "";
   let tasksTotal_days = 0;
+  tasks.sort((t1, t2) => t2.time - t1.time);
   tasks.forEach((task) => {
     const days = _toDays(task.time);
     if (days === 0) {
@@ -35,7 +36,7 @@ export function createTasksReport(rawTasks: SavedState_Task[]): string {
     tasksTotal_days += days;
     tasksContent += `#${issueNumberFromLink(task.link)} ${
       task.label
-    } - ${days} ${days === 1 ? "day" : "days"} \n`;
+    } - ${days} ${days === 1 ? "day" : "days"}\n`;
   });
 
   let bugsContent = "";
