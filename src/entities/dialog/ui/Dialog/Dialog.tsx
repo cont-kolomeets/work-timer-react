@@ -47,6 +47,9 @@ export function Dialog({ title, className, children, onClosed }: DialogProps) {
 
   useEffect(() => {
     dispatch(dialogModel.actions.setDialogState(display));
+    return () => {
+      dispatch(dialogModel.actions.setDialogState(false));
+    };
   }, [dispatch, display]);
 
   return content;
