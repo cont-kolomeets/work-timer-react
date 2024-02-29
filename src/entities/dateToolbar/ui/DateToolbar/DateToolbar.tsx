@@ -25,7 +25,14 @@ export function DateToolbar({
   return (
     <div className="wt-flex-row wt-m-b-end-12 wt-clickable wt-flex-gap-12">
       {actionsLeft.map((info) => {
-        return <Action name={info.icon} size="16" onClick={info.onClick} />;
+        return (
+          <Action
+            key={info.icon}
+            name={info.icon}
+            size="16"
+            onClick={info.onClick}
+          />
+        );
       })}
       <div
         className=" wt-flex-row wt-flex-center wt-flex-spacer wt-date-toolbar__date"
@@ -34,6 +41,7 @@ export function DateToolbar({
       {actionsRight.map((info) => {
         return (
           <Action
+            key={info.icon}
             name={info.icon}
             disabled={info.disabled}
             loading={info.loading}

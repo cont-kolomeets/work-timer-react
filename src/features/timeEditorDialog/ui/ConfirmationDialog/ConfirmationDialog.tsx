@@ -29,16 +29,16 @@ export function ConfirmationDialog({
             <div className="wt-flex-row wt-flex-end wt-m-b-12 wt-flex-gap-8">
               <Button
                 onClick={() => {
-                  onNo();
                   closeDialog();
+                  onNo();
                 }}
               >
                 No
               </Button>
               <Button
                 onClick={() => {
-                  onYes();
                   closeDialog();
+                  onYes();
                 }}
               >
                 Yes

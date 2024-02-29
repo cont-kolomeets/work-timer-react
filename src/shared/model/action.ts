@@ -1,6 +1,8 @@
-export const TASK_REMOVED = "task-removed";
-export const UNDO_TASK = "undo-task";
-export const SHOW_TASK_UNDO = "show-task-undo";
-export const HIDE_TASK_UNDO = "hide-task-undo";
-export const SHOW_TASK_UNDONE = "show-task-undone";
-export const HIDE_TASK_UNDONE = "hide-task-undone";
+import { createAction } from "@reduxjs/toolkit";
+import { SavedState_Task } from "../api";
+
+const TASK_REMOVED = "task-removed";
+const UNDO_TASK = "undo-task";
+
+export const taskRemovedAction = createAction<SavedState_Task>(TASK_REMOVED);
+export const undoTaskAction = createAction<SavedState_Task>(UNDO_TASK);

@@ -8,6 +8,8 @@ type AlertInfo = {
   id: string;
   title: string;
   message: string;
+  link?: string;
+  linkAction?: any;
 };
 
 const initialState: AlertState = {

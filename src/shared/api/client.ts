@@ -51,6 +51,10 @@ export const client = {
     return (await _connectToServer()).removeTask(params);
   },
 
+  undoRemoveTask: async (params: { taskId: string }) => {
+    return (await _connectToServer()).undoRemoveTask(params);
+  },
+
   //--------------------------------------------------------------------------
   //
   // Dept

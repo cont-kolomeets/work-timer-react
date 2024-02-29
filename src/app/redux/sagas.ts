@@ -1,33 +1,38 @@
-import { all, delay, put, takeEvery } from "redux-saga/effects";
-import {
-  HIDE_TASK_UNDO,
-  HIDE_TASK_UNDONE,
-  SHOW_TASK_UNDO,
-  SHOW_TASK_UNDONE,
-  TASK_REMOVED,
-  UNDO_TASK,
-} from "../../shared/model";
+import { PayloadAction, nanoid } from "@reduxjs/toolkit";
+import { all, call, put, takeEvery } from "redux-saga/effects";
+import { alertModel } from "../../entities/alert/model/alertModel";
+import { SavedState_Task, client } from "../../shared/api";
+import { taskRemovedAction, undoTaskAction } from "../../shared/model";
+import { tasksModel } from "../../widgets/tasksPanel/model/tasksModel";
 
-// Show a snackbar to allow removing a task
-// Wait for a while and hide it
-function* watchTaskRemovedSaga() {
-  console.log("watchTaskRemovedSaga");
-  yield put({ type: SHOW_TASK_UNDO });
-  yield delay(2000);
-  yield put({ type: HIDE_TASK_UNDO });
+function* showUndoAlert(task: SavedState_Task) {
+  yield put(
+    alertModel.actions.showAlert({
+      id: nanoid(8),
+      title: "Task removed",
+      message: `Task "${task.label}" has been removed.`,
+      link: "UNDO",
+      linkAction: undoTaskAction(task),
+    })
+  );
 }
 
-//
-function* watchUndoTaskSaga() {
-  console.log("watchUndoTaskSaga");
-  yield put({ type: SHOW_TASK_UNDONE });
-  yield delay(2000);
-  yield put({ type: HIDE_TASK_UNDONE });
+function* watchTaskRemovedSaga(action: PayloadAction<SavedState_Task>) {
+  yield call(showUndoAlert, action.payload);
+}
+
+function* undoTask(task: SavedState_Task) {
+  yield call(client.undoRemoveTask, { taskId: task.id });
+}
+
+function* watchUndoTaskSaga(action: PayloadAction<SavedState_Task>) {
+  yield call(undoTask, action.payload);
+  yield put(tasksModel.actions.fetchTasks());
 }
 
 export function* rootSaga() {
   yield all([
-    takeEvery(TASK_REMOVED, watchTaskRemovedSaga),
-    takeEvery(UNDO_TASK, watchUndoTaskSaga),
+    takeEvery(taskRemovedAction.type, watchTaskRemovedSaga),
+    takeEvery(undoTaskAction.type, watchUndoTaskSaga),
   ]);
 }

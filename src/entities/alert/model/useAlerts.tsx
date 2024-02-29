@@ -15,6 +15,11 @@ export function useAlerts() {
         key={a.id} // unique key to avoid re-rendering
         title={a.title}
         message={a.message}
+        link={a.link}
+        timeout={a.link ? 5000 : 0}
+        onLinkClick={() => {
+          dispatch(a.linkAction);
+        }}
         onClosed={() => {
           dispatch(alertModel.actions.hideAlert(a.id)); // will update the store and re-render the components that listen to it
         }}

@@ -84,6 +84,11 @@ class ServerClass {
     return JSON.parse(JSON.stringify(m.tasks));
   }
 
+  private _removedCache: Record<
+    string,
+    { year: number; month: number; task: SavedState_Task }
+  > = {};
+
   async removeTask({
     year,
     month,
@@ -94,8 +99,20 @@ class ServerClass {
     taskId: string;
   }): Promise<void> {
     const { state, m } = await this._provideMonth({ year, month });
+    this._removedCache[taskId] = { year, month, task: m.tasks[taskId] };
     delete m.tasks[taskId];
     this._postState(state);
+  }
+
+  async undoRemoveTask({ taskId }: { taskId: string }): Promise<void> {
+    const info = this._removedCache[taskId];
+    if (info) {
+      delete this._removedCache[taskId];
+      const { year, month, task } = info;
+      const { state, m } = await this._provideMonth({ year, month });
+      m.tasks[taskId] = { ...task };
+      this._postState(state);
+    }
   }
 
   async updateTask({
