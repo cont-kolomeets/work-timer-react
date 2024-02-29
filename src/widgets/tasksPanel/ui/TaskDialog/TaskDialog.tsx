@@ -16,6 +16,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
   const [taskId, setTaskId] = useState("");
   const [taskLink, setTaskLink] = useState("");
   const [taskLabel, setTaskLabel] = useState("");
+  const [taskType, setTaskType] = useState<SavedState_Task["type"]>("unset");
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [canSave, setCanSave] = useState(false);
@@ -24,6 +25,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
     setTaskId(task?.id || nanoid(8));
     setTaskLink(task?.link || "");
     setTaskLabel(task?.label || "");
+    setTaskType(task?.type || "task");
     const ps = totalToParts(task?.time || 0);
     setHours(ps.h);
     setMinutes(ps.m);
@@ -49,6 +51,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
             link: taskLink,
             label: taskLabel,
             time: partsToTotal({ h: hours, m: minutes }),
+            type: taskType,
             modified: Date.now(),
           });
           closeDialog();
@@ -57,15 +60,25 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
         return (
           <>
             <div className="wt-task-dialog-settings">
-              <div className="wt-m-b-12">
+              <div className="wt-m-b-12 wt-task-dialog-row-1">
                 <div>Issue</div>
                 <input
                   value={taskLink || ""}
                   onChange={(event) => setTaskLink(event.target.value)}
                   onKeyUp={_handleEnter}
                 ></input>
+                <div className="wt-m-i-start-24">Type</div>
+                <select
+                  value={taskType}
+                  onChange={(event) =>
+                    setTaskType(event.target.value as SavedState_Task["type"])
+                  }
+                >
+                  <option value="task">Task</option>
+                  <option value="bug">Bug</option>
+                </select>
               </div>
-              <div className="wt-m-b-12">
+              <div className="wt-m-b-12 wt-task-dialog-row-2">
                 <div>Label</div>
                 <textarea
                   value={taskLabel}
@@ -73,21 +86,21 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
                   onKeyUp={_handleEnter}
                 ></textarea>
               </div>
-            </div>
-            <div className="wt-m-b-12 wt-task-dialog-settings-2">
-              <div>Hours</div>
-              <input
-                value={hours + ""}
-                onChange={(event) => setHours(+event.target.value)}
-                onKeyUp={_handleEnter}
-              ></input>
-              <div></div>
-              <div>Minutes</div>
-              <input
-                value={minutes + ""}
-                onChange={(event) => setMinutes(+event.target.value)}
-                onKeyUp={_handleEnter}
-              ></input>
+              <div className="wt-task-dialog-row-3">
+                <div>Hours</div>
+                <input
+                  value={hours + ""}
+                  onChange={(event) => setHours(+event.target.value)}
+                  onKeyUp={_handleEnter}
+                ></input>
+                <div></div>
+                <div>Minutes</div>
+                <input
+                  value={minutes + ""}
+                  onChange={(event) => setMinutes(+event.target.value)}
+                  onKeyUp={_handleEnter}
+                ></input>
+              </div>
             </div>
             <div className="wt-flex-row wt-flex-end wt-m-b-12">
               <Button

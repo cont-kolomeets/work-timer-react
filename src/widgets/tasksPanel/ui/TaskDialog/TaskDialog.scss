@@ -1,14 +1,17 @@
 .wt-task-dialog {
   width: 800px;
 
-  .wt-task-dialog-settings {
-    & > div {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-    }
+  .wt-task-dialog-row-1 {
+    display: grid;
+    grid-template-columns: 80px 1fr 70px 100px;
   }
 
-  .wt-task-dialog-settings-2 {
+  .wt-task-dialog-row-2 {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+  }
+
+  .wt-task-dialog-row-3 {
     display: grid;
     grid-template-columns: 80px 270px 1fr 80px 270px;
   }

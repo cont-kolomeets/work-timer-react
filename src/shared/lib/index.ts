@@ -1,3 +1,4 @@
+export { getNumDaysInMonth, isHoliday, isWeekend } from "./dateUtil";
 export { updateDocumentHeader } from "./documentUtil";
 export { issueNumberFromLink } from "./stringUtil";
 export {

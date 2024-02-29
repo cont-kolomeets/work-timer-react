@@ -1,3 +1,4 @@
+import { getNumDaysInMonth } from "../../lib";
 import {
   SavedState,
   SavedState_Day,
@@ -47,15 +48,7 @@ class ServerClass {
     day: number;
   }): Promise<SavedState_Day> {
     const { m } = await this._provideMonth({ year, month });
-    return JSON.parse(
-      JSON.stringify(
-        m.days[day] || {
-          index: day,
-          time: 0,
-          workIntervals: [],
-        }
-      )
-    );
+    return JSON.parse(JSON.stringify(m.days[day]));
   }
 
   async updateDay({
@@ -178,6 +171,15 @@ class ServerClass {
     const y = (ys[year] = ys[year] || { months: {} });
     const m = (y.months[month] = y.months[month] || {});
     m.days = m.days || {};
+
+    for (let i = 0; i < getNumDaysInMonth(year, month); i++) {
+      m.days[i + 1] = m.days[i + 1] || {
+        index: i + 1,
+        time: 0,
+        workIntervals: [],
+      };
+    }
+
     m.tasks = m.tasks || {};
     return { state, y, m };
   }

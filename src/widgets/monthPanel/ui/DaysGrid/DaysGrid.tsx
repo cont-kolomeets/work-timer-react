@@ -1,17 +1,18 @@
 import { ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
-import { useDateEditorDialog } from "../../../../features/timeEditorDialog/model/useDateEditorDialog";
 import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
 import {
-  format2digit,
   formatTotal,
   get1BasedDate,
+  isHoliday,
+  isWeekend,
 } from "../../../../shared/lib";
-import { Action, Loader } from "../../../../shared/ui";
+import { Loader } from "../../../../shared/ui";
 import { gridModel } from "../../model/gridModel";
 import { GridDayData } from "../../model/interfaces";
 import { GridCell } from "../GridCell/GridCell";
 import { GridRow } from "../GridRow/GridRow";
+import { GridToolbar } from "../GridToolbar/GridToolbar";
 import "./DaysGrid.scss";
 
 const COLUMNS = [
@@ -24,6 +25,9 @@ const COLUMNS = [
     field: "dayTime",
   },
 ];
+
+const _8h = 8 * 3600000;
+const _10h = 10 * 3600000;
 
 //--------------------------------------------------------------------------
 //
@@ -55,26 +59,37 @@ function _createHeader(): ReactNode {
 //--------------------------------------------------------------------------
 
 function _createRows({
+  year,
+  month,
   data,
   dept,
   onEditTime,
   onEditDept,
 }: {
+  year: number;
+  month: number;
   data: GridDayData[];
   dept: number;
   onEditTime(data: GridDayData): void;
   onEditDept(): void;
 }): ReactNode[] {
+  let total = 0;
+  let totalExpected = 0;
+
   const dataRows = data.map((data, rIndex) => {
+    const today = get1BasedDate();
+    const isNonWorkingDay =
+      isWeekend(year, month, data.index) || isHoliday(month, data.index);
+    total += data.time;
+    !isNonWorkingDay && (totalExpected += _8h);
+
     const cells = COLUMNS.map((c, cIndex) => {
       let label: string;
       let markerColor: string | null = null;
       if (c.field === "dayTime") {
-        label = formatTotal(data.time, "h:m:s");
+        label = formatTotal(data.time, "h:m");
 
         if (data.index === -1) {
-          let _8h = 8 * 3600000;
-          let _10h = 10 * 3600000;
           markerColor =
             data.time < _8h ? "red" : data.time > _10h ? "yellow" : "#7fff00";
         }
@@ -99,19 +114,45 @@ function _createRows({
     return (
       <GridRow
         key={rIndex + 1 /* header */}
-        isCurrentDay={data.index === get1BasedDate().d}
+        isCurrentDay={
+          today.y === year && today.m === month && data.index === today.d
+        }
+        isNonWorkingDay={isNonWorkingDay}
       >
         {cells}
       </GridRow>
     );
   });
 
-  // dept
+  // total
 
-  const cells = COLUMNS.map((c, cIndex) => {
+  const totalCells = COLUMNS.map((c, cIndex) => {
     let label: string;
     if (c.field === "dayTime") {
-      label = formatTotal(dept, "h:m:s");
+      label = `${formatTotal(total, "h:m")} of ${formatTotal(
+        totalExpected,
+        "h:m"
+      )}`;
+    } else {
+      label = "Total";
+    }
+    return (
+      <GridCell
+        key={"total-" + cIndex}
+        label={label}
+        cIndex={cIndex}
+        isHeader={false}
+      />
+    );
+  });
+  dataRows.push(<GridRow key="total">{totalCells}</GridRow>);
+
+  // dept
+
+  const deptCells = COLUMNS.map((c, cIndex) => {
+    let label: string;
+    if (c.field === "dayTime") {
+      label = formatTotal(dept, "h:m");
     } else {
       label = "Dept";
     }
@@ -127,7 +168,7 @@ function _createRows({
       />
     );
   });
-  dataRows.push(<GridRow key="dept">{cells}</GridRow>);
+  dataRows.push(<GridRow key="dept">{deptCells}</GridRow>);
 
   return dataRows;
 }
@@ -195,67 +236,13 @@ function _useEditDeptDialog({ onEditStart }: EditStartProps) {
   };
 }
 
-function _useEditDateDialog({ onEditStart }: EditStartProps) {
-  const dispatch = useAppDispatch();
-  const [editedDate, setEditedDate] = useState({ year: 0, month: 0 });
-
-  const { editDialog, setEditDialogShown } = useDateEditorDialog({
-    year: editedDate.year,
-    month: editedDate.month,
-    onSetDate: (year, month) => {
-      dispatch(gridModel.actions.setDate({ year, month }));
-      dispatch(gridModel.actions.fetchGridData());
-    },
-  });
-
-  return {
-    editDialog,
-    editDate: (year: number, month: number) => {
-      onEditStart();
-      setEditedDate({ year, month });
-      setEditDialogShown(true);
-    },
-  };
-}
-
-function _useChangeMonth({ onEditStart }: EditStartProps) {
-  const dispatch = useAppDispatch();
-  return {
-    changeMonth: (
-      year: number,
-      month: number,
-      type: "prev" | "next" | "reset"
-    ) => {
-      onEditStart();
-      if (type === "reset") {
-        dispatch(gridModel.actions.resetDate());
-      } else {
-        if (type === "next") {
-          month++;
-          if (month > 12) {
-            month = 1;
-            year++;
-          }
-        } else {
-          month--;
-          if (month === 0) {
-            month = 12;
-            year--;
-          }
-        }
-        dispatch(gridModel.actions.setDate({ year, month }));
-      }
-      dispatch(gridModel.actions.fetchGridData());
-    },
-  };
-}
-
 export function DaysGrid({ onEditStart, onEditEnd }: EditStartEndProps) {
+  const year = useAppSelector(gridModel.selectors.getYear);
+  const month = useAppSelector(gridModel.selectors.getMonth);
   const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
   const monthData = useAppSelector(gridModel.selectors.selectMonthData);
   const dept = useAppSelector(gridModel.selectors.selectDept);
-  const year = useAppSelector(gridModel.selectors.getYear);
-  const month = useAppSelector(gridModel.selectors.getMonth);
+
   const { editDialog: editTimeDialog, editData } = _useEditTimeDialog({
     onEditStart,
     onEditEnd,
@@ -263,10 +250,6 @@ export function DaysGrid({ onEditStart, onEditEnd }: EditStartEndProps) {
   const { editDialog: editDeptDialog, editDept } = _useEditDeptDialog({
     onEditStart,
   });
-  const { editDialog: editDateDialog, editDate } = _useEditDateDialog({
-    onEditStart,
-  });
-  const { changeMonth } = _useChangeMonth({ onEditStart });
 
   if (loadingStatus === "loading") {
     return <Loader />;
@@ -274,6 +257,8 @@ export function DaysGrid({ onEditStart, onEditEnd }: EditStartEndProps) {
 
   const headerRow = _createHeader();
   const rows = _createRows({
+    year,
+    month,
     data: monthData,
     dept,
     onEditTime: editData,
@@ -281,41 +266,11 @@ export function DaysGrid({ onEditStart, onEditEnd }: EditStartEndProps) {
   });
   return (
     <div className="wt-days-grid">
-      <div className="wt-flex-row wt-m-b-end-12 wt-clickable wt-days-grid__date">
-        <Action
-          name="chevron-left"
-          size="16"
-          className="wt-m-i-start-12"
-          onClick={() => changeMonth(year, month, "prev")}
-        />
-        <div
-          className=" wt-flex-row wt-flex-center wt-flex-spacer"
-          onClick={() => editDate(year, month)}
-        >{`${year}.${format2digit(month)}`}</div>
-        <Action
-          name="pencil"
-          size="16"
-          className="wt-m-i-start-12"
-          onClick={() => editDate(year, month)}
-        />
-        <Action
-          name="arrow-clockwise"
-          size="16"
-          className="wt-m-i-start-12"
-          onClick={() => changeMonth(year, month, "reset")}
-        />
-        <Action
-          name="chevron-right"
-          size="16"
-          className="wt-m-i-start-12"
-          onClick={() => changeMonth(year, month, "next")}
-        />
-      </div>
+      <GridToolbar onEditStart={onEditStart} />
       {headerRow}
       {rows}
       {editTimeDialog}
       {editDeptDialog}
-      {editDateDialog}
     </div>
   );
 }

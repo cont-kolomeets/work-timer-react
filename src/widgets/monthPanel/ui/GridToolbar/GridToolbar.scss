@@ -5,7 +5,7 @@
 
   .wt-grid-row {
     display: grid;
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 50px 1fr;
 
     .wt-grid-row__cell {
       padding: 4px;
@@ -29,9 +29,5 @@
 
   .wt-grid-row--current-day .wt-grid-row__cell {
     color: orange;
-  }
-
-  .wt-grid-row--non-working-day .wt-grid-row__cell {
-    opacity: 0.2;
   }
 }

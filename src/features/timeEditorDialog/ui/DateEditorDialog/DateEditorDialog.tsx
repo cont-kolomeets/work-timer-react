@@ -26,7 +26,7 @@ export function DateEditorDialog({
 
   return (
     <Dialog
-      title="Edit time"
+      title="Edit date"
       className="wt-time-editor-dialog"
       onClosed={onClosed}
       children={(closeDialog) => {

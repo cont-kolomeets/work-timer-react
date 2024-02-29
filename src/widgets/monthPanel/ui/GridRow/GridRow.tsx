@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 type GridRowProps = {
   isHeader?: boolean;
   isCurrentDay?: boolean;
+  isNonWorkingDay?: boolean;
   rowClass?: string;
   children: ReactNode;
 };
@@ -10,6 +11,7 @@ type GridRowProps = {
 export function GridRow({
   isHeader,
   isCurrentDay,
+  isNonWorkingDay,
   rowClass,
   children,
 }: GridRowProps) {
@@ -19,6 +21,7 @@ export function GridRow({
         "wt-flex-row wt-grid-row" +
         (isHeader ? " wt-grid-row--header" : "") +
         (isCurrentDay ? " wt-grid-row--current-day" : "") +
+        (isNonWorkingDay ? " wt-grid-row--non-working-day" : "") +
         (rowClass ? " " + rowClass : "")
       }
     >

@@ -19,7 +19,7 @@ export function TaskCard({ taskId }: TaskCardProps) {
   const task = useAppSelector((state) =>
     tasksModel.selectors.selectTaskById(state, taskId)
   );
-  const { link, label, modified, time } = task;
+  const { link, label, modified, time, type } = task;
   const dispatch = useAppDispatch();
   const { editDialog, setEditDialogShown } = useTaskDialog({ task });
   const { confirmationDialog, openConfirmationDialog } =
@@ -54,6 +54,13 @@ export function TaskCard({ taskId }: TaskCardProps) {
             #{issueNumberFromLink(link)}
           </a>{" "}
           ({formatTotal(time, "h:m")})
+        </div>
+        <div
+          className={`wt-m-i-start-12 wt-task-card__chip wt-task-card__chip--${
+            type || "unset"
+          }`}
+        >
+          {type === "bug" ? "Bug" : type === "task" ? "Task" : "Unset"}
         </div>
         <div className="wt-flex-spacer"></div>
         <div className="wt-task-card__modified">

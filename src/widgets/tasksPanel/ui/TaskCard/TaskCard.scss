@@ -9,6 +9,28 @@
     font-size: 16px;
   }
 
+  .wt-task-card__chip {
+    border-radius: 12px;
+    border: 1px solid;
+    padding-inline: 5px;
+    font-size: 12px;
+
+    &.wt-task-card__chip--unset {
+      color: gray;
+      border-color: gray;
+    }
+
+    &.wt-task-card__chip--task {
+      color: green;
+      border-color: green;
+    }
+
+    &.wt-task-card__chip--bug {
+      color: darkred;
+      border-color: darkred;
+    }
+  }
+
   .wt-task-card__modified {
     color: #cccccc;
     font-size: 14px;

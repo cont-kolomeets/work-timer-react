@@ -37,6 +37,7 @@ export type SavedState_Task = {
   label: string;
   /** Time spent on the task. Relative milliseconds. */
   time: number;
+  type: "unset" | "task" | "bug";
   /** Time. Absolute milliseconds. */
   modified: number;
 };
