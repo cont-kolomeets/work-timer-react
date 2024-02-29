@@ -10,13 +10,13 @@ export function HoursChart() {
   );
   return (
     <>
-      {_12HoursChart(normal, true, !late.length)}
-      {late.length ? _12HoursChart(late, false, true) : null}
+      {_draw12HoursChart(normal, true, !late.length)}
+      {late.length ? _draw12HoursChart(late, false, true) : null}
     </>
   );
 }
 
-function _12HoursChart(
+function _draw12HoursChart(
   percentage: number[],
   isInner: boolean,
   showTicks: boolean

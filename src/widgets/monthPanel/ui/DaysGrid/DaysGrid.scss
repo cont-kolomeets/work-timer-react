@@ -1,19 +1,15 @@
 .wt-days-grid {
-  .wt-days-grid__date {
-    font-size: 30px;
-  }
-
   .wt-grid-row {
     display: grid;
     grid-template-columns: 60px 1fr;
 
     .wt-grid-row__cell {
-      padding: 4px;
       padding-inline: 12px;
 
       .wt-grid-row__cell-marker {
-        width: 12px;
-        height: 12px;
+        border: 2px solid;
+        width: 4px;
+        height: 4px;
         border-radius: 50%;
       }
     }

@@ -16,9 +16,9 @@ export type TimeInfo = Partial<{
  * @param total Time in ms.
  */
 export function totalToParts(total: number) {
-  let h = Math.floor(total / 3600000);
+  let h = Math.floor(total / 3_600_000);
   total -= h * 3600000;
-  let m = Math.floor(total / 60000);
+  let m = Math.floor(total / 60_000);
   total -= m * 60000;
   let s = Math.floor(total / 1000);
   total -= s * 1000;

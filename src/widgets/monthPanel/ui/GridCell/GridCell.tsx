@@ -23,7 +23,7 @@ export function GridCell({
     markerNode = (
       <div
         className="wt-grid-row__cell-marker"
-        style={{ border: `2px solid ${markerColor}` }}
+        style={{ borderColor: markerColor }}
       ></div>
     );
   }

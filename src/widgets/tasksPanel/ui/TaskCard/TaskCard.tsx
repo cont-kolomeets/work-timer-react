@@ -1,14 +1,12 @@
-import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
-import { useConfirmationDialog } from "../../../../features/timeEditorDialog/model/useConfirmationDialog";
+import { useAppSelector } from "../../../../app/redux/hooks";
 import {
   formatDate,
   formatTotal,
   issueNumberFromLink,
 } from "../../../../shared/lib";
-import { TASK_REMOVED } from "../../../../shared/model";
 import { Action } from "../../../../shared/ui";
 import { tasksModel } from "../../model/tasksModel";
-import { useTaskDialog } from "../../model/useTaskDialog";
+import { useTaskCard } from "../../model/useTaskCard";
 import "./TaskCard.scss";
 
 type TaskCardProps = {
@@ -20,26 +18,8 @@ export function TaskCard({ taskId }: TaskCardProps) {
     tasksModel.selectors.selectTaskById(state, taskId)
   );
   const { link, label, modified, time, type } = task;
-  const dispatch = useAppDispatch();
-  const { editDialog, setEditDialogShown } = useTaskDialog({ task });
-  const { confirmationDialog, openConfirmationDialog } =
-    useConfirmationDialog();
-
-  function _editTask(): void {
-    setEditDialogShown(true);
-  }
-
-  function _deleteTask(): void {
-    openConfirmationDialog({
-      title: "Confirm delete",
-      message: "Are you sure you want to delete this task?",
-      onYes: () => {
-        dispatch(tasksModel.actions.removeTask(taskId));
-        dispatch({ type: TASK_REMOVED });
-      },
-      onNo: () => {},
-    });
-  }
+  const { editTask, deleteTask, editDialog, confirmationDialog } =
+    useTaskCard(task);
 
   return (
     <div className="wt-task-card">
@@ -69,13 +49,9 @@ export function TaskCard({ taskId }: TaskCardProps) {
         <Action
           name="pencil-square"
           className="wt-m-i-start-12"
-          onClick={_editTask}
+          onClick={editTask}
         />
-        <Action
-          name="trash"
-          className="wt-m-i-start-12"
-          onClick={_deleteTask}
-        />
+        <Action name="trash" className="wt-m-i-start-12" onClick={deleteTask} />
       </div>
       <div className="wt-flex-row wt-m-b-12">
         <div className="wt-task-card__label">{label}</div>

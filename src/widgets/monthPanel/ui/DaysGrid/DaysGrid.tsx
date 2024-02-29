@@ -1,6 +1,4 @@
-import { ReactNode, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../app/redux/hooks";
-import { useTimeEditorDialog } from "../../../../features/timeEditorDialog/model/useTimeEditorDialog";
+import { ReactNode } from "react";
 import {
   formatTotal,
   get1BasedDate,
@@ -8,8 +6,8 @@ import {
   isWeekend,
 } from "../../../../shared/lib";
 import { Loader } from "../../../../shared/ui";
-import { gridModel } from "../../model/gridModel";
 import { GridDayData } from "../../model/interfaces";
+import { useDaysGrid } from "../../model/useDaysGrid";
 import { GridCell } from "../GridCell/GridCell";
 import { GridRow } from "../GridRow/GridRow";
 import { GridToolbar } from "../GridToolbar/GridToolbar";
@@ -88,8 +86,7 @@ function _createRows({
       let markerColor: string | null = null;
       if (c.field === "dayTime") {
         label = formatTotal(data.time, "h:m");
-
-        if (data.index === -1) {
+        if (data.time && !isNonWorkingDay) {
           markerColor =
             data.time < _8h ? "red" : data.time > _10h ? "yellow" : "#7fff00";
         }
@@ -187,69 +184,18 @@ type EditStartProps = {
   onEditStart(): void;
 };
 
-function _useEditTimeDialog({ onEditStart, onEditEnd }: EditStartEndProps) {
-  const dispatch = useAppDispatch();
-  const [editedData, setEditedData] = useState<GridDayData | null>(null);
-
-  const { editDialog, setEditDialogShown } = useTimeEditorDialog({
-    time: editedData?.time || 0,
-    onSetTime: async (time) => {
-      if (editedData) {
-        const newData = { ...editedData };
-        newData.time = time;
-        dispatch(gridModel.actions.updateData(newData));
-        await dispatch(gridModel.actions.postGridData(newData));
-        onEditEnd();
-      }
-    },
-  });
-
-  return {
-    editDialog,
-    editData: (data: GridDayData) => {
-      setEditedData(data);
-      onEditStart();
-      setEditDialogShown(true);
-    },
-  };
-}
-
-function _useEditDeptDialog({ onEditStart }: EditStartProps) {
-  const dispatch = useAppDispatch();
-  const [editedDept, setEditedDept] = useState(0);
-
-  const { editDialog, setEditDialogShown } = useTimeEditorDialog({
-    time: editedDept,
-    onSetTime: (time) => {
-      dispatch(gridModel.actions.updateDept(time));
-      dispatch(gridModel.actions.postDept(time));
-    },
-  });
-
-  return {
-    editDialog,
-    editDept: (dept: number) => {
-      onEditStart();
-      setEditedDept(dept);
-      setEditDialogShown(true);
-    },
-  };
-}
-
 export function DaysGrid({ onEditStart, onEditEnd }: EditStartEndProps) {
-  const year = useAppSelector(gridModel.selectors.getYear);
-  const month = useAppSelector(gridModel.selectors.getMonth);
-  const loadingStatus = useAppSelector(gridModel.selectors.getLoaingStatus);
-  const monthData = useAppSelector(gridModel.selectors.selectMonthData);
-  const dept = useAppSelector(gridModel.selectors.selectDept);
-
-  const { editDialog: editTimeDialog, editData } = _useEditTimeDialog({
-    onEditStart,
-    onEditEnd,
-  });
-  const { editDialog: editDeptDialog, editDept } = _useEditDeptDialog({
-    onEditStart,
-  });
+  const {
+    loadingStatus,
+    year,
+    month,
+    monthData,
+    dept,
+    editData,
+    editDept,
+    editTimeDialog,
+    editDeptDialog,
+  } = useDaysGrid({ onEditStart, onEditEnd });
 
   if (loadingStatus === "loading") {
     return <Loader />;

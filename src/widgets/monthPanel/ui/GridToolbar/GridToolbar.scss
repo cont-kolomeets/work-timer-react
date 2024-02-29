@@ -2,32 +2,4 @@
   .wt-days-grid__date {
     font-size: 30px;
   }
-
-  .wt-grid-row {
-    display: grid;
-    grid-template-columns: 50px 1fr;
-
-    .wt-grid-row__cell {
-      padding: 4px;
-      padding-inline: 12px;
-
-      .wt-grid-row__cell-marker {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-      }
-    }
-
-    &.wt-grid-row--header {
-      border-bottom: 2px solid #333333;
-    }
-
-    &:not(.wt-grid-row--header) {
-      border-bottom: 1px solid #333333;
-    }
-  }
-
-  .wt-grid-row--current-day .wt-grid-row__cell {
-    color: orange;
-  }
 }
