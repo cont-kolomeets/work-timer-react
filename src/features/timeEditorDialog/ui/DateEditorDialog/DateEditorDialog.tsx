@@ -51,7 +51,7 @@ export function DateEditorDialog({
                   onKeyUp={_handleEnter}
                 ></input>
               </div>
-              <div className="wt-m-12">Minutes</div>
+              <div className="wt-m-12">Month</div>
               <div className="wt-m-12">
                 <input
                   value={m + ""}
