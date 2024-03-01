@@ -1,3 +1,5 @@
+Check out the online version: https://work-timer-react.netlify.app/
+
 # Key Features
 
 * Track your time spent at work.
