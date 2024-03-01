@@ -21,13 +21,13 @@
     }
 
     &.wt-task-card__chip--task {
-      color: green;
+      color: rgb(25, 182, 25);
       border-color: green;
     }
 
     &.wt-task-card__chip--bug {
-      color: darkred;
-      border-color: darkred;
+      color: rgb(216, 35, 35);
+      border-color: rgb(192, 24, 24);
     }
   }
 

@@ -214,6 +214,13 @@ class ServerClass {
     const json: SavedState = storageItem
       ? JSON.parse(storageItem)
       : DEFAULT_STATE;
+
+    // demo
+    // (json as any).years[2024].months[3].days[1].workIntervals = [
+    //   [9 * 3_600_000, 12 * 3_600_000],
+    //   [13 * 3_600_000, (17 * 3600 + 25 * 60) * 1000],
+    // ];
+
     return (this._cachedState = json);
   }
 

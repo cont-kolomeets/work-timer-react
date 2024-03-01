@@ -44,6 +44,7 @@ function _useDayTimer(
     // need to reset the day to a new one
     const { y, m, d } = get1BasedDate();
     dispatch(timerModel.actions.setDate({ year: y, month: m, day: d }));
+    dispatch(timerModel.actions.fetchTime());
   };
   dayTimer.current.onTickFrequent = () => {
     dispatch(timerModel.actions.setTime(dayTimer.current.time));

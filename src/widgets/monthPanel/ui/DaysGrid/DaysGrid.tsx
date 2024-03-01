@@ -88,7 +88,7 @@ function _createRows({
         label = formatTotal(data.time, "h:m");
         if (data.time && !isNonWorkingDay) {
           markerColor =
-            data.time < _8h ? "red" : data.time > _10h ? "yellow" : "#7fff00";
+            data.time < _8h ? "darkred" : data.time > _10h ? "yellow" : "green";
         }
       } else {
         label = data.index + "";
