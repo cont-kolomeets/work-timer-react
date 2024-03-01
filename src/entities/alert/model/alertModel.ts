@@ -10,6 +10,7 @@ type AlertInfo = {
   message: string;
   link?: string;
   linkAction?: any;
+  timeout?: number;
 };
 
 const initialState: AlertState = {

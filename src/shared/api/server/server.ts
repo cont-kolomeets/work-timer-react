@@ -1,4 +1,9 @@
-import { getNumDaysInMonth } from "../../lib";
+import {
+  get1BasedDate,
+  getNumDaysInMonth,
+  isHoliday,
+  isWeekend,
+} from "../../lib";
 import {
   SavedState,
   SavedState_Day,
@@ -8,12 +13,82 @@ import {
 } from "../interfaces";
 import { createTasksReport } from "./createReportUtil";
 
-const KEY = "workTimer.savedState";
+const isDemo = window.location.href.includes("demo=true");
+
+const KEY = `workTimer.savedState${isDemo ? ".demo" : ""}`;
 const SEVER_LATENCY = 250; // ms
 
 //localStorage.removeItem(KEY); // remove for testing
 
 const DEFAULT_STATE: SavedState = {};
+
+if (isDemo) {
+  const d = get1BasedDate();
+  const days: Record<number, SavedState_Day> = {};
+  for (let i = 1; i <= getNumDaysInMonth(d.y, d.m); i++) {
+    if (!isWeekend(d.y, d.m, i) && !isHoliday(d.m, i)) {
+      days[i] = {
+        index: i,
+        time: 8 * 3_600_000,
+        workIntervals: [],
+      };
+    }
+  }
+  days[d.d].time = (7 * 3600 + 25 * 60) * 1000;
+  days[d.d].workIntervals = [
+    [9 * 3_600_000, 12 * 3_600_000],
+    [13 * 3_600_000, (17 * 3600 + 25 * 60) * 1000],
+  ];
+  const tasks: Record<string, SavedState_Task> = {
+    "1": {
+      id: "1",
+      link: "https://github.com/cont-kolomeets/work-timer-react/issues/1",
+      label: "Initial prototyping of Work Timer",
+      modified: Date.now(),
+      time: 5 * 3_600_000,
+      type: "task",
+    },
+    "2": {
+      id: "2",
+      link: "https://github.com/cont-kolomeets/work-timer-react/issues/2",
+      label: "Introducing Redux architecture to the project",
+      modified: Date.now(),
+      time: 8 * 3_600_000,
+      type: "task",
+    },
+    "3": {
+      id: "3",
+      link: "https://github.com/cont-kolomeets/work-timer-react/issues/3",
+      label:
+        "Adding key components to the project: TimerPanel, GridPanel, TasksPanel",
+      modified: Date.now(),
+      time: 8 * 3_600_000,
+      type: "task",
+    },
+    "4": {
+      id: "4",
+      link: "https://github.com/cont-kolomeets/work-timer-react/issues/4",
+      label: "Final bug fixing and polishing of the app",
+      modified: Date.now(),
+      time: 8 * 3_600_000,
+      type: "bug",
+    },
+  };
+  const DEMO_STATE: SavedState = {
+    years: {
+      [d.y]: {
+        months: {
+          [d.m]: {
+            days,
+            tasks,
+          },
+        },
+      },
+    },
+  };
+
+  localStorage.setItem(KEY, JSON.stringify(DEMO_STATE));
+}
 
 /**
  * Fake REST API. Stores the saved state.
@@ -214,12 +289,6 @@ class ServerClass {
     const json: SavedState = storageItem
       ? JSON.parse(storageItem)
       : DEFAULT_STATE;
-
-    // demo
-    // (json as any).years[2024].months[3].days[1].workIntervals = [
-    //   [9 * 3_600_000, 12 * 3_600_000],
-    //   [13 * 3_600_000, (17 * 3600 + 25 * 60) * 1000],
-    // ];
 
     return (this._cachedState = json);
   }

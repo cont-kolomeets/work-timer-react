@@ -16,7 +16,7 @@ export function useAlerts() {
         title={a.title}
         message={a.message}
         link={a.link}
-        timeout={a.link ? 5000 : 0}
+        timeout={a.timeout || (a.link ? 5000 : 0)}
         onLinkClick={() => {
           dispatch(a.linkAction);
         }}
