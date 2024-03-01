@@ -1,7 +1,8 @@
 # Key Features
 
-* Track your time in the office.
-* View the time spent at work for the current or any specified month in a table.
+* Track your time spent at work.
+* View which parts of the day were occupied by work.
+* View the total time spent at work for the current or any specified month (in a table).
 * Track the time you spent on tasks or bugs. Add, edit, remove tasks.
 * Create a monthly task report.
 
