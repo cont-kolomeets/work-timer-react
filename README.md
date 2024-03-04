@@ -1,4 +1,4 @@
-Check out the online version: https://work-timer-react.netlify.app/
+Check out the online version: https://work-timer-react.netlify.app/?demo=true
 
 # Key Features
 
@@ -11,9 +11,9 @@ Check out the online version: https://work-timer-react.netlify.app/
 
 ## Screenshots
 
-![2024-03-01 10_43_43-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/ff046020-3b19-4875-bde7-a2fa01326541)
+![2024-03-01 16_46_35-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/e36424fa-a532-4c6e-8ea3-dfd0fdeb58df)
 
-![2024-03-01 10_51_48-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/22edcaf9-4d40-453b-bf5e-d9c2f26185ed)
+![2024-03-01 16_46_14-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/23a11e79-a8d6-4cfa-9b7c-f29a138e2a2c)
 
 
 
