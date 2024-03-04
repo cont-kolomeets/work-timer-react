@@ -23,7 +23,13 @@ export function TimerPanel({
           className="wt-flex-row wt-relative"
           style={{ opacity: running ? "1" : "0.3" }}
         >
-          <div className="wt-clickable wt-timer-panel-label" onClick={editTime}>
+          <div
+            className="wt-clickable wt-timer-panel-label"
+            onClick={editTime}
+            style={{
+              fontSize: Math.min(100, (100 * (window.innerHeight - 200)) / 500),
+            }}
+          >
             {formatTotal(time, "h:m:s")}
           </div>
           <Action

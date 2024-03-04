@@ -21,7 +21,8 @@ function _draw12HoursChart(
   isInner: boolean,
   showTicks: boolean
 ) {
-  const size = isInner ? 500 : 560;
+  const baseSize = Math.max(180, Math.min(500, window.innerHeight - 200));
+  const size = isInner ? baseSize : baseSize + 60;
   const height = size;
   const width = size;
   const strokeWidth = 7;

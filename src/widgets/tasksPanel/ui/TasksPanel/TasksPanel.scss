@@ -4,10 +4,19 @@
   top: 0px;
   bottom: 0px;
   width: 400px;
+
+  .wt-panel-header {
+    width: 400px;
+  }
 }
 
 .wt-tasks-panel.hidden {
   animation: wt-tasks-panel-hide 0.5s forwards;
+
+  .wt-panel-header,
+  .wt-panel__content {
+    animation: wt-tasks-panel-content-hide 0.5s forwards;
+  }
 
   .wt-panel-side-header {
     animation: wt-tasks-panel-header-show 0.5s forwards;
@@ -16,6 +25,11 @@
 
 .wt-tasks-panel.shown {
   animation: wt-tasks-panel-show 0.5s forwards;
+
+  .wt-panel-header,
+  .wt-panel__content {
+    animation: wt-tasks-panel-content-show 0.5s forwards;
+  }
 
   .wt-panel-side-header {
     animation: wt-tasks-panel-header-hide 0.5s forwards;
@@ -37,6 +51,24 @@
   }
   100% {
     right: -400px;
+  }
+}
+
+@keyframes wt-tasks-panel-content-show {
+  0% {
+    visibility: hidden;
+  }
+  1% {
+    visibility: visible;
+  }
+}
+
+@keyframes wt-tasks-panel-content-hide {
+  99% {
+    visibility: visible;
+  }
+  100% {
+    visibility: hidden;
   }
 }
 

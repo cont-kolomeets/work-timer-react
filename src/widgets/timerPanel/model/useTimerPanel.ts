@@ -40,13 +40,10 @@ function _useDayTimer(
   const dispatch = useAppDispatch();
 
   const dayTimer = useRef(new DayTimer());
-  dayTimer.current.onDayChanged = () => {
+  dayTimer.current.onTickFrequent = () => {
     // need to reset the day to a new one
     const { y, m, d } = get1BasedDate();
     dispatch(timerModel.actions.setDate({ year: y, month: m, day: d }));
-    dispatch(timerModel.actions.fetchTime());
-  };
-  dayTimer.current.onTickFrequent = () => {
     dispatch(timerModel.actions.setTime(dayTimer.current.time));
     dispatch(timerModel.actions.addInterval(dayTimer.current.interval.slice()));
   };

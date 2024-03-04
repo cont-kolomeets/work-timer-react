@@ -2,6 +2,10 @@
 @import url("./shared.scss");
 @import url("./spacings.scss");
 
+html {
+  overflow: hidden;
+}
+
 body {
   overflow: hidden;
   --bs-body-color: white;

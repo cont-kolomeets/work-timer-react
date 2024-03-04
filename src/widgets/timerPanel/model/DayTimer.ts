@@ -26,25 +26,31 @@ class DayTimer {
    */
   start(timeElapsed = 0) {
     this.stop();
+    this._isRunning = true;
+
     // check if we need to start tracking for a new day
     // case: the app started on the next day
-    this._checkDate();
+    this._restart(
+      this._checkDateChanged()
+        ? 0 /* fresh start */
+        : timeElapsed /* continue accumulating time */
+    );
 
-    this._isRunning = true;
-    this._startTime = Date.now();
-    if (timeElapsed > 0) this._startTime -= timeElapsed;
-
-    this._curInterval = [this._toIntevalTime(), this._toIntevalTime()];
-
-    this._secondPoint = Date.now();
     this._intervalHandle = setInterval(() => this._updateTimer(), 33);
     this._updateTimer();
+  }
+
+  private _restart(timeElapsed = 0): void {
+    this._startTime = Date.now();
+    if (timeElapsed > 0) this._startTime -= timeElapsed;
+    this._curInterval = [this._toIntevalTime(), this._toIntevalTime()];
+    this._secondPoint = Date.now();
   }
 
   private _updateTimer(): void {
     // check if we need to start tracking for a new day
     // case: the person worked over 0:00am
-    this._checkDate();
+    this._checkDateChanged() && this._restart(0); // give it a fresh start
 
     let currentTime = Date.now();
     let delta = currentTime - this._startTime;
@@ -61,12 +67,14 @@ class DayTimer {
     return (new Date().getHours() * 3600 + new Date().getMinutes() * 60) * 1000;
   }
 
-  private _checkDate(): void {
+  private _checkDateChanged(): boolean {
     const curDate = formatDate(Date.now(), "y/m/d");
+    this._lastDate = this._lastDate || curDate;
     if (this._lastDate !== curDate) {
       this._lastDate = curDate;
-      this.onDayChanged();
+      return true;
     }
+    return false;
   }
 
   stop() {
@@ -74,7 +82,6 @@ class DayTimer {
     this._isRunning = false;
   }
 
-  onDayChanged(): void {}
   onTickFrequent(): void {}
   onTickRare(): void {}
 }
