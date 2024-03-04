@@ -9,7 +9,7 @@ export function WorkTimer() {
     useWorkTimer();
 
   return (
-    <div className="wt-page">
+    <div className="wt-stretched wt-page">
       <TimerPanel onTimeUpdated={syncTimeToGrid} />
       <MonthPanel onEditStart={onGridEditStart} onEditEnd={onGridEditEnd} />
       <TasksPanel />
