@@ -56,11 +56,19 @@ const timerSlice = createSlice({
   reducers: {
     setDate: (
       state,
-      action: PayloadAction<{ year: number; month: number; day: number }>
+      { payload }: PayloadAction<{ year: number; month: number; day: number }>
     ) => {
-      state.year = action.payload.year;
-      state.month = action.payload.month;
-      state.day = action.payload.day;
+      const dayChanged =
+        `${state.year}/${state.month}/${state.day}` !==
+        `${payload.year}/${payload.month}/${payload.day}`;
+      state.year = payload.year;
+      state.month = payload.month;
+      state.day = payload.day;
+      if (dayChanged) {
+        // reset state
+        state.time = 0;
+        state.workIntervals = [];
+      }
     },
     toggleTimer: (state) => {
       state.running = !state.running;
@@ -70,9 +78,7 @@ const timerSlice = createSlice({
     },
     setTime: (state, action: PayloadAction<number>) => {
       state.time = action.payload;
-    },
-    clearIntervals: (state) => {
-      state.workIntervals = [];
+      !state.time && (state.workIntervals = []);
     },
     addInterval: (state, action: PayloadAction<number[]>) => {
       state.workIntervals = state.workIntervals || [];

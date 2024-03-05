@@ -29,6 +29,11 @@
       color: rgb(216, 35, 35);
       border-color: rgb(192, 24, 24);
     }
+
+    &.wt-task-card__chip--today {
+      color: rgb(0, 137, 250);
+      border-color: rgb(0, 110, 253);
+    }
   }
 
   .wt-task-card__modified {

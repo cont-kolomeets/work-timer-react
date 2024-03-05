@@ -29,3 +29,9 @@ export function get1BasedDate(d?: Date): {
     d: d.getDate(),
   };
 }
+
+export function isToday(time: number): boolean {
+  const d = new Date();
+  d.setTime(time);
+  return JSON.stringify(get1BasedDate()) === JSON.stringify(get1BasedDate(d));
+}

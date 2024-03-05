@@ -16,6 +16,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
   const [taskId, setTaskId] = useState("");
   const [taskLink, setTaskLink] = useState("");
   const [taskLabel, setTaskLabel] = useState("");
+  const [taskCreated, setTaskCreated] = useState(0);
   const [taskType, setTaskType] = useState<SavedState_Task["type"]>("unset");
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -26,6 +27,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
     setTaskLink(task?.link || "");
     setTaskLabel(task?.label || "");
     setTaskType(task?.type || "task");
+    setTaskCreated(task?.created || task?.modified || 0);
     const ps = totalToParts(task?.time || 0);
     setHours(ps.h);
     setMinutes(ps.m);
@@ -52,6 +54,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
             label: taskLabel,
             time: partsToTotal({ h: hours, m: minutes }),
             type: taskType,
+            created: taskCreated,
             modified: Date.now(),
           });
           closeDialog();

@@ -1,5 +1,9 @@
 import { useAppSelector } from "../../../../app/redux/hooks";
-import { formatTotal, issueNumberFromLink } from "../../../../shared/lib";
+import {
+  formatTotal,
+  isToday,
+  issueNumberFromLink,
+} from "../../../../shared/lib";
 import { Action } from "../../../../shared/ui";
 import { tasksModel } from "../../model/tasksModel";
 import { useTaskCard } from "../../model/useTaskCard";
@@ -17,6 +21,24 @@ export function TaskCard({ taskId }: TaskCardProps) {
   const { editTask, deleteTask, editTaskDialog, confirmationDialog } =
     useTaskCard(task);
 
+  const typeChip = (
+    <div
+      className={`wt-m-i-start-12 wt-task-card__chip wt-task-card__chip--${
+        type || "unset"
+      }`}
+    >
+      {type === "bug" ? "Bug" : type === "task" ? "Task" : "Unset"}
+    </div>
+  );
+
+  const todayChip = isToday(task.created || task.modified) ? (
+    <div
+      className={`wt-m-i-start-12 wt-task-card__chip wt-task-card__chip--today`}
+    >
+      Today
+    </div>
+  ) : null;
+
   return (
     <div className="wt-task-card">
       <div className="wt-flex-row wt-m-b-12">
@@ -31,13 +53,8 @@ export function TaskCard({ taskId }: TaskCardProps) {
           </a>{" "}
           ({formatTotal(time, "h:m")})
         </div>
-        <div
-          className={`wt-m-i-start-12 wt-task-card__chip wt-task-card__chip--${
-            type || "unset"
-          }`}
-        >
-          {type === "bug" ? "Bug" : type === "task" ? "Task" : "Unset"}
-        </div>
+        {typeChip}
+        {todayChip}
         <div className="wt-flex-spacer"></div>
         <Action
           name="pencil-square"

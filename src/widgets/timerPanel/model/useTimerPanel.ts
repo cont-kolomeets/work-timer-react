@@ -15,7 +15,6 @@ function _useEditDialog(time: number, onTimeUpdated: (time: number) => void) {
     time,
     onSetTime: async (time) => {
       dispatch(timerModel.actions.setTime(time));
-      !time && dispatch(timerModel.actions.clearIntervals());
       await dispatch(timerModel.actions.postTime());
       onTimeUpdated(time);
     },

@@ -2,6 +2,7 @@ export {
   get1BasedDate,
   getNumDaysInMonth,
   isHoliday,
+  isToday,
   isWeekend,
 } from "./dateUtil";
 export { updateDocumentHeader } from "./documentUtil";
