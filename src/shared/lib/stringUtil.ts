@@ -1,3 +1,4 @@
 export function issueNumberFromLink(link: string): string {
-  return link.match(/\d+$/)?.[0] || "";
+  const number = link.match(/\d+$/)?.[0];
+  return number ? "#" + number : link;
 }

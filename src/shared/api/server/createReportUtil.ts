@@ -34,7 +34,7 @@ export function createTasksReport(rawTasks: SavedState_Task[]): string {
     }
 
     tasksTotal_days += days;
-    tasksContent += `#${issueNumberFromLink(task.link)} ${
+    tasksContent += `${issueNumberFromLink(task.link)} ${
       task.label
     } - ${days} ${days === 1 ? "day" : "days"}\n`;
   });
@@ -43,7 +43,7 @@ export function createTasksReport(rawTasks: SavedState_Task[]): string {
   let bugsTotalTime = 0;
   bugs.forEach((bug, index) => {
     bugsTotalTime += bug.time;
-    bugsContent += `#${issueNumberFromLink(bug.link)}${
+    bugsContent += `${issueNumberFromLink(bug.link)}${
       index < bugs.length - 1 ? ", " : ""
     }`;
   });

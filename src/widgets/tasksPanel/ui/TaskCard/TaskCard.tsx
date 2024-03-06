@@ -39,19 +39,20 @@ export function TaskCard({ taskId }: TaskCardProps) {
     </div>
   ) : null;
 
+  const linkOrName = link.includes("http") ? (
+    <a href={link} target="_blank" rel="noreferrer" style={{ color: "orange" }}>
+      {issueNumberFromLink(link)}
+    </a>
+  ) : (
+    <span style={{ color: "orange" }}>{issueNumberFromLink(link)}</span>
+  );
+
   return (
     <div className="wt-task-card">
       <div className="wt-flex-row wt-m-b-12">
         <div className="wt-task-card__issue">
-          <a
-            href={link}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "orange" }}
-          >
-            #{issueNumberFromLink(link)}
-          </a>{" "}
-          ({formatTotal(time, "h:m")})
+          {linkOrName}
+          <span className="wt-m-i-start-8"></span>({formatTotal(time, "h:m")})
         </div>
         {typeChip}
         {todayChip}
