@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
-import { partsToTotal, totalToParts } from "../../../../shared/lib";
+import {
+  partsToTotal,
+  totalToParts,
+  useInputFocusOnCreate,
+} from "../../../../shared/lib";
 import { Button } from "../../../../shared/ui";
 import "./TimeEditorDialog.scss";
 
@@ -17,6 +21,7 @@ export function TimeEditorDialog({
 }: TimeEditorDialogProps) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
+  const { setElement } = useInputFocusOnCreate();
 
   useEffect(() => {
     const ps = totalToParts(time);
@@ -45,6 +50,7 @@ export function TimeEditorDialog({
               <div className="wt-m-12">Hours</div>
               <div className="wt-m-12">
                 <input
+                  ref={(ref) => setElement(ref)}
                   value={hours + ""}
                   onChange={(event) => setHours(+event.target.value)}
                   onKeyUp={_handleEnter}

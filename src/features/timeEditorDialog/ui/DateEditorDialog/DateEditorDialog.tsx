@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
+import { useInputFocusOnCreate } from "../../../../shared/lib";
 import { Button } from "../../../../shared/ui";
 import "./DateEditorDialog.scss";
 
@@ -18,6 +19,7 @@ export function DateEditorDialog({
 }: DateEditorDialogProps) {
   const [y, setYear] = useState(0);
   const [m, setMonth] = useState(0);
+  const { setElement } = useInputFocusOnCreate();
 
   useEffect(() => {
     setYear(year);
@@ -46,6 +48,7 @@ export function DateEditorDialog({
               <div className="wt-m-12">Year</div>
               <div className="wt-m-12">
                 <input
+                  ref={setElement}
                   value={y + ""}
                   onChange={(event) => setYear(+event.target.value)}
                   onKeyUp={_handleEnter}
