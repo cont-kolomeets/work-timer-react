@@ -1,5 +1,5 @@
-import { issueNumberFromLink, totalToParts } from "../../lib";
-import { SavedState_Task } from "../interfaces";
+import { issueNumberFromLink, totalToParts } from "../../../lib";
+import { SavedState_Task } from "../../interfaces";
 
 export function createTasksReport(rawTasks: SavedState_Task[]): string {
   const tasks: Pick<SavedState_Task, "label" | "link" | "time">[] = [];

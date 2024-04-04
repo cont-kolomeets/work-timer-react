@@ -1,19 +1,37 @@
+import { nanoid } from "@reduxjs/toolkit";
 import {
   get1BasedDate,
+  getLoggedInUser,
   getNumDaysInMonth,
   isHoliday,
   isWeekend,
-} from "../../lib";
-import {
-  SavedState,
-  SavedState_Day,
-  SavedState_Month,
-  SavedState_Task,
-  SavedState_Year,
-} from "../interfaces";
+} from "../../../lib";
+import { SavedState_Day, SavedState_Task } from "../../interfaces";
+import { IWorkTimerServer } from "../interfaces";
 import { createTasksReport } from "./createReportUtil";
 
-const isDemo = window.location.href.includes("demo=true");
+/**
+ * Total saved state for all years so far.
+ */
+export type SavedState = {
+  years?: Record<number, SavedState_Year>;
+};
+
+export type SavedState_Year = {
+  /** Month index (1-based) => Month. */
+  months: Record<number, SavedState_Month>;
+  /** The amount of dept. Relative milliseconds. */
+  dept?: number;
+};
+
+export type SavedState_Month = {
+  /** Day index (1-based) => Day. */
+  days: Record<number, SavedState_Day>;
+  /** Task issue number => Task. */
+  tasks: Record<string, SavedState_Task>;
+};
+
+const isDemo = getLoggedInUser() === "demo";
 
 const KEY = `workTimer.savedState${isDemo ? ".demo" : ""}`;
 const SEVER_LATENCY = 250; // ms
@@ -99,7 +117,7 @@ if (isDemo) {
  * Returns copies of objects.
  * Copies data when writing.
  */
-class ServerClass {
+class ServerClass implements IWorkTimerServer {
   //--------------------------------------------------------------------------
   //
   // Month data
@@ -203,6 +221,7 @@ class ServerClass {
     month: number;
     task: SavedState_Task;
   }): Promise<SavedState_Task> {
+    task.id = task.id || nanoid(8); // creation
     const { state, m } = await this._provideMonth({ year, month });
     m.tasks[task.id] = { ...task };
     this._postState(state);

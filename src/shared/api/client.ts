@@ -1,6 +1,14 @@
 import { SavedState_Day, SavedState_Task } from "./interfaces";
+import { IWorkTimerServer } from "./servers/interfaces";
 
-const _connectToServer = async () => (await import("./server/server")).server;
+const useRemoveServer = true;
+
+const _connectToServer = async (): Promise<IWorkTimerServer> => {
+  if (useRemoveServer) {
+    return (await import("./servers/remoteServer/remoteServer")).server;
+  }
+  return (await import("./servers/localServer/localServer")).server;
+};
 
 export const client = {
   //--------------------------------------------------------------------------

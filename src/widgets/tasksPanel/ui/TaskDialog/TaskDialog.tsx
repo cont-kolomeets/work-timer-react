@@ -1,4 +1,3 @@
-import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { Dialog } from "../../../../entities/dialog";
 import { SavedState_Task } from "../../../../shared/api";
@@ -23,7 +22,7 @@ export function TaskDialog({ task, onSave, onClosed }: TaskDialogProps) {
   const [canSave, setCanSave] = useState(false);
 
   useEffect(() => {
-    setTaskId(task?.id || nanoid(8));
+    setTaskId(task?.id || "");
     setTaskLink(task?.link || "");
     setTaskLabel(task?.label || "");
     setTaskType(task?.type || "task");
