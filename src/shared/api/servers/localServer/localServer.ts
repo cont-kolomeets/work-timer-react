@@ -221,6 +221,8 @@ class ServerClass implements IWorkTimerServer {
     month: number;
     task: SavedState_Task;
   }): Promise<SavedState_Task> {
+    task.created = task.created || Date.now();
+    task.modified = Date.now();
     task.id = task.id || nanoid(8); // creation
     const { state, m } = await this._provideMonth({ year, month });
     m.tasks[task.id] = { ...task };

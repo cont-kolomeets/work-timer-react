@@ -1,7 +1,7 @@
 import { SavedState_Day, SavedState_Task } from "./interfaces";
 import { IWorkTimerServer } from "./servers/interfaces";
 
-const useRemoveServer = true;
+const useRemoveServer = !window.location.href.includes("local=true");
 
 const _connectToServer = async (): Promise<IWorkTimerServer> => {
   if (useRemoveServer) {

@@ -187,7 +187,7 @@ class ServerClass implements IWorkTimerServer {
       delete this._removedCache[taskId];
       const { year, month, task } = info;
       task.id = ""; // a new id will have to be created
-      await this.updateTask({ year, month, task });
+      await this.updateTask({ year, month, task, isRestoring: true });
     }
   }
 
@@ -195,11 +195,14 @@ class ServerClass implements IWorkTimerServer {
     year,
     month,
     task,
+    isRestoring,
   }: {
     year: number;
     month: number;
     task: SavedState_Task;
+    isRestoring?: boolean;
   }): Promise<SavedState_Task> {
+    !isRestoring && (task.modified = Date.now());
     const data: any = { ...task };
     delete data.id;
     delete data.year;
@@ -207,6 +210,7 @@ class ServerClass implements IWorkTimerServer {
 
     if (!task.id) {
       // create
+      !isRestoring && (data.created = Date.now());
       const newTask = await postJSON(
         API_URL + `task?user=${getLoggedInUser()}&year=${year}&month=${month}`,
         data
