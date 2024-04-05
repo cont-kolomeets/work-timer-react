@@ -1,6 +1,6 @@
 # Demo
 
-Check out the online version: https://work-timer-react.netlify.app/?demo=true&local=true
+Check out the online version: https://work-timer-react.netlify.app/?demo=true&local=true (used demo data)
 
 # Key Features
 
@@ -23,6 +23,7 @@ Check out the online version: https://work-timer-react.netlify.app/?demo=true&lo
 
 * The project is using the [Feature-Sliced Design](https://feature-sliced.design/) approach.
 * Built with [React](https://react.dev/) and [Redux-toolkit](https://redux-toolkit.js.org/).
+* Makes REST calls to the backend API deployed from this repo https://github.com/cont-kolomeets/work-timer-backend.
 
 ## Available Scripts
 
