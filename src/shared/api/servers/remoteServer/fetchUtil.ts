@@ -7,7 +7,6 @@ export async function getJSON(url: string) {
       },
     });
     const result = await response.json();
-    console.log("Success:", result);
     return result;
   } catch (error) {
     console.error("Error:", error);
@@ -40,7 +39,6 @@ async function _postPutJSON(
           : JSON.stringify(_removeUndefinedProperties(data)),
     });
     const result = await response.json();
-    console.log("Success:", result);
     return result;
   } catch (error) {
     console.error("Error:", error);
@@ -53,7 +51,6 @@ export async function fetchDelete(url: string) {
       method: "DELETE",
     });
     const result = await response.json();
-    console.log("Success:", result);
     return result;
   } catch (error) {
     console.error("Error:", error);

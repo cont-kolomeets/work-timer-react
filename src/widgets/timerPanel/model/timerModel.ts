@@ -38,7 +38,7 @@ const fetchTime = createAsyncThunk("timer/fetchTime", async (_, api) => {
 
 const postTime = createAsyncThunk("timer/postTime", async (_, api) => {
   const state = (api.getState() as RootState).timer;
-  const result = await client.updateDay({
+  await client.updateDay({
     year: state.year,
     month: state.month,
     dayInfo: {
@@ -47,7 +47,6 @@ const postTime = createAsyncThunk("timer/postTime", async (_, api) => {
       workIntervals: state.workIntervals,
     },
   });
-  return result;
 });
 
 const timerSlice = createSlice({

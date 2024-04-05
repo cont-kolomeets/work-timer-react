@@ -1,4 +1,4 @@
-import { getLoggedInUser, getNumDaysInMonth } from "../../../lib";
+import { clone, getLoggedInUser, getNumDaysInMonth } from "../../../lib";
 import { SavedState_Day, SavedState_Task } from "../../interfaces";
 import { IWorkTimerServer } from "../interfaces";
 import { createTasksReport } from "../localServer/createReportUtil";
@@ -19,6 +19,12 @@ class ServerClass implements IWorkTimerServer {
   //--------------------------------------------------------------------------
 
   private _daysCache: Record<string, Record<number, SavedState_Day>> = {};
+  private _pendingUpdate: {
+    year: number;
+    month: number;
+    dayInfo: Partial<SavedState_Day>;
+  } | null = null;
+  private _updateTimerH: any;
 
   async getMonthData({
     year,
@@ -28,7 +34,7 @@ class ServerClass implements IWorkTimerServer {
     month: number;
   }): Promise<Record<number, SavedState_Day>> {
     const days = await this._provideMonthDays({ year, month });
-    return JSON.parse(JSON.stringify(days));
+    return clone(days);
   }
 
   async getDayData({
@@ -41,7 +47,7 @@ class ServerClass implements IWorkTimerServer {
     day: number;
   }): Promise<SavedState_Day> {
     const days = await this._provideMonthDays({ year, month });
-    return JSON.parse(JSON.stringify(days[day]));
+    return clone(days[day]);
   }
 
   private async _provideMonthDays({
@@ -51,6 +57,10 @@ class ServerClass implements IWorkTimerServer {
     year: number;
     month: number;
   }): Promise<Record<number, SavedState_Day>> {
+    if (this._pendingUpdate) {
+      await this._doUpdate();
+    }
+
     if (this._daysCache[year + "/" + month]) {
       return this._daysCache[year + "/" + month];
     }
@@ -86,7 +96,22 @@ class ServerClass implements IWorkTimerServer {
     year: number;
     month: number;
     dayInfo: Partial<SavedState_Day>;
-  }): Promise<SavedState_Day> {
+  }): Promise<void> {
+    this._pendingUpdate = { year, month, dayInfo: clone(dayInfo) };
+    this._updateTimerH =
+      this._updateTimerH || setTimeout(() => this._doUpdate(), 60_000);
+  }
+
+  private async _doUpdate(): Promise<void> {
+    if (!this._pendingUpdate) {
+      return;
+    }
+
+    const { year, month, dayInfo } = this._pendingUpdate;
+    this._pendingUpdate = null;
+    clearTimeout(this._updateTimerH);
+    this._updateTimerH = null;
+
     await postJSON(
       API_URL +
         `day?user=${getLoggedInUser()}&year=${year}&month=${month}&day=${
@@ -99,7 +124,6 @@ class ServerClass implements IWorkTimerServer {
     );
     // invalidate cache
     delete this._daysCache[year + "/" + month];
-    return this.getDayData({ year, month, day: dayInfo.index as number });
   }
 
   //--------------------------------------------------------------------------
@@ -118,7 +142,7 @@ class ServerClass implements IWorkTimerServer {
     month: number;
   }): Promise<Record<string, SavedState_Task>> {
     const tasks = await this._fetchTasks({ year, month });
-    return JSON.parse(JSON.stringify(tasks));
+    return clone(tasks);
   }
 
   private async _fetchTasks({

@@ -156,12 +156,12 @@ class ServerClass implements IWorkTimerServer {
     year: number;
     month: number;
     dayInfo: Partial<SavedState_Day>;
-  }): Promise<SavedState_Day> {
+  }): Promise<void> {
     const { state, m } = await this._provideMonth({ year, month });
     const { index } = dayInfo as SavedState_Day;
     m.days[index] = { ...m.days[index], ...dayInfo };
     this._postState(state);
-    return m.days[index];
+    //return m.days[index];
   }
 
   //--------------------------------------------------------------------------

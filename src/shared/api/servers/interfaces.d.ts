@@ -22,7 +22,7 @@ export interface IWorkTimerServer {
     year: number;
     month: number;
     dayInfo: Partial<SavedState_Day>;
-  }): Promise<SavedState_Day>;
+  }): Promise<void>;
 
   //--------------------------------------------------------------------------
   //
