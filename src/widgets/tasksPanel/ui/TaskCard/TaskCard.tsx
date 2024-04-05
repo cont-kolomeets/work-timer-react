@@ -31,7 +31,7 @@ export function TaskCard({ taskId }: TaskCardProps) {
     </div>
   );
 
-  const todayChip = isToday(task.created || task.modified) ? (
+  const todayChip = isToday(task.created) ? (
     <div
       className={`wt-m-i-start-12 wt-task-card__chip wt-task-card__chip--today`}
     >
