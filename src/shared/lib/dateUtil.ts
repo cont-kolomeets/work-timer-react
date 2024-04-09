@@ -1,3 +1,15 @@
+type DateLike = Date | number;
+
+function _toDate(value: DateLike | undefined): Date {
+  value = value || Date.now();
+  if (value instanceof Date) {
+    return value;
+  }
+  const d = new Date();
+  d.setTime(value);
+  return d;
+}
+
 /** 1-based. */
 export function getNumDaysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
@@ -17,12 +29,12 @@ export function isHoliday(month: number, day: number): boolean {
 /**
  * @param d If not passed, the current time is used.
  */
-export function get1BasedDate(d?: Date): {
+export function get1BasedDate(value?: DateLike): {
   y: number;
   m: number;
   d: number;
 } {
-  d = d || new Date();
+  const d = _toDate(value);
   return {
     y: d.getFullYear(),
     m: d.getMonth() + 1,
@@ -30,8 +42,7 @@ export function get1BasedDate(d?: Date): {
   };
 }
 
-export function isToday(time: number): boolean {
-  const d = new Date();
-  d.setTime(time);
+export function isToday(value: DateLike): boolean {
+  const d = _toDate(value);
   return JSON.stringify(get1BasedDate()) === JSON.stringify(get1BasedDate(d));
 }

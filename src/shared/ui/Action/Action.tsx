@@ -12,7 +12,9 @@ export type IconName =
   | "pencil"
   | "arrow-clockwise"
   | "plus-lg"
-  | "download";
+  | "download"
+  | "calendar-day"
+  | "calendar-month";
 
 export function Action({
   name,

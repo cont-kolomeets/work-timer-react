@@ -1,7 +1,15 @@
 import { issueNumberFromLink, totalToParts } from "../../../lib";
 import { SavedState_Task } from "../../interfaces";
 
-export function createTasksReport(rawTasks: SavedState_Task[]): string {
+export function createTasksReportDay(rawTasks: SavedState_Task[]): string {
+  let tasksContent = "";
+  rawTasks.forEach((task) => {
+    tasksContent += `${task.label} ${issueNumberFromLink(task.link)}\n`;
+  });
+  return tasksContent;
+}
+
+export function createTasksReportMonth(rawTasks: SavedState_Task[]): string {
   const tasks: Pick<SavedState_Task, "label" | "link" | "time">[] = [];
   const bugs: Pick<SavedState_Task, "label" | "link" | "time">[] = [];
 

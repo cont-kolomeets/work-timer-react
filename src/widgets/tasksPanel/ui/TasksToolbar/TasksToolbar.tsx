@@ -12,7 +12,8 @@ export function TasksToolbar() {
     loading,
     editTaskDialog,
     addNewTask,
-    createReport,
+    createReportDay,
+    createReportMonth,
     editDate,
     changeMonth,
     editDateDialog,
@@ -36,10 +37,16 @@ export function TasksToolbar() {
             onClick: addNewTask,
           },
           {
-            icon: "download",
+            icon: "calendar-day",
             disabled: !tasks.length,
             loading: loading,
-            onClick: createReport,
+            onClick: createReportDay,
+          },
+          {
+            icon: "calendar-month",
+            disabled: !tasks.length,
+            loading: loading,
+            onClick: createReportMonth,
           },
           {
             icon: "chevron-right",

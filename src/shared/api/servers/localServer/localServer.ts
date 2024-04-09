@@ -8,7 +8,10 @@ import {
 } from "../../../lib";
 import { SavedState_Day, SavedState_Task } from "../../interfaces";
 import { IWorkTimerServer } from "../interfaces";
-import { createTasksReport } from "./createReportUtil";
+import {
+  createTasksReportDay,
+  createTasksReportMonth,
+} from "./createReportUtil";
 
 /**
  * Total saved state for all years so far.
@@ -259,7 +262,23 @@ class ServerClass implements IWorkTimerServer {
   //
   //--------------------------------------------------------------------------
 
-  async createReport({
+  async createReportDay({
+    year,
+    month,
+    day,
+  }: {
+    year: number;
+    month: number;
+    day: number;
+  }): Promise<string> {
+    const tasksCache = await this.getTasks({ year, month });
+    const tasks = Object.values(tasksCache).filter(
+      (task) => get1BasedDate(task.modified).d === day
+    );
+    return createTasksReportDay(tasks);
+  }
+
+  async createReportMonth({
     year,
     month,
   }: {
@@ -267,7 +286,7 @@ class ServerClass implements IWorkTimerServer {
     month: number;
   }): Promise<string> {
     const tasks = await this.getTasks({ year, month });
-    return createTasksReport(Object.values(tasks));
+    return createTasksReportMonth(Object.values(tasks));
   }
 
   //--------------------------------------------------------------------------

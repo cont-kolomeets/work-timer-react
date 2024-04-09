@@ -65,5 +65,10 @@ export interface IWorkTimerServer {
   //
   //--------------------------------------------------------------------------
 
-  createReport(params: { year: number; month: number }): Promise<string>;
+  createReportDay(params: {
+    year: number;
+    month: number;
+    day: number;
+  }): Promise<string>;
+  createReportMonth(params: { year: number; month: number }): Promise<string>;
 }

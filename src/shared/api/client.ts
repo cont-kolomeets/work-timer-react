@@ -83,7 +83,18 @@ export const client = {
   //
   //--------------------------------------------------------------------------
 
-  async createReport(params: { year: number; month: number }): Promise<string> {
-    return (await _connectToServer()).createReport(params);
+  async createReportDay(params: {
+    year: number;
+    month: number;
+    day: number;
+  }): Promise<string> {
+    return (await _connectToServer()).createReportDay(params);
+  },
+
+  async createReportMonth(params: {
+    year: number;
+    month: number;
+  }): Promise<string> {
+    return (await _connectToServer()).createReportMonth(params);
   },
 };
