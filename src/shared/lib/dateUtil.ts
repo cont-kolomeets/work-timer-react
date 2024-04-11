@@ -43,6 +43,9 @@ export function get1BasedDate(value?: DateLike): {
 }
 
 export function isToday(value: DateLike): boolean {
+  if (!value) {
+    return false; // do not fallback to today for empty values
+  }
   const d = _toDate(value);
   return JSON.stringify(get1BasedDate()) === JSON.stringify(get1BasedDate(d));
 }
