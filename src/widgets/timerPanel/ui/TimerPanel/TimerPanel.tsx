@@ -14,7 +14,6 @@ export function TimerPanel({
 
   return (
     <div className="wt-stretched wt-flex-row wt-flex-center wt-timer-panel">
-      <div className="wt-stretched wt-timer-panel-bg"></div>
       <HoursChart />
       {loadingStatus === "loading" ? (
         <Loader />

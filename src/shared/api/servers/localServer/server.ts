@@ -1,7 +1,6 @@
 import { nanoid } from "@reduxjs/toolkit";
 import {
   get1BasedDate,
-  getLoggedInUser,
   getNumDaysInMonth,
   isHoliday,
   isWeekend,
@@ -34,7 +33,11 @@ export type SavedState_Month = {
   tasks: Record<string, SavedState_Task>;
 };
 
-const isDemo = getLoggedInUser() === "demo";
+function _getLoggedInUserName(): string {
+  return window.location.href.includes("demo=true") ? "demo" : "alex";
+}
+
+const isDemo = _getLoggedInUserName() === "demo";
 
 const KEY = `workTimer.savedState${isDemo ? ".demo" : ""}`;
 const SEVER_LATENCY = 250; // ms
@@ -121,6 +124,53 @@ if (isDemo) {
  * Copies data when writing.
  */
 class ServerClass implements IWorkTimerServer {
+  //--------------------------------------------------------------------------
+  //
+  // User
+  //
+  //--------------------------------------------------------------------------
+
+  getSignedInUser(): {
+    username: string;
+    fullName: string;
+  } {
+    return {
+      username: _getLoggedInUserName(),
+      fullName: isDemo ? "Demo User" : "Alex",
+    };
+  }
+
+  async checkSignInState(): Promise<boolean> {
+    return true;
+  }
+
+  async signIn(params: {
+    username: string;
+    password: string;
+  }): Promise<boolean> {
+    // not used
+    return true;
+  }
+
+  async register(params: {
+    username: string;
+    password: string;
+    fullName: string;
+  }): Promise<boolean> {
+    // not used
+    return true;
+  }
+
+  async checkUserNameAvailable(username: string): Promise<boolean> {
+    // not used
+    return true;
+  }
+
+  signOut(): boolean {
+    // does nothing
+    return true;
+  }
+
   //--------------------------------------------------------------------------
   //
   // Month data
@@ -215,7 +265,7 @@ class ServerClass implements IWorkTimerServer {
     }
   }
 
-  async updateTask({
+  async updateOrCreateTask({
     year,
     month,
     task,

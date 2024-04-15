@@ -1,3 +1,11 @@
 .wt-page {
   overflow: hidden;
+
+  .wt-timer-bg {
+    background-image: url("./assets/bg7.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+  }
 }

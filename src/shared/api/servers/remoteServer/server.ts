@@ -1,25 +1,98 @@
-import {
-  clone,
-  get1BasedDate,
-  getLoggedInUser,
-  getNumDaysInMonth,
-} from "../../../lib";
+import { clone, get1BasedDate, getNumDaysInMonth } from "../../../lib";
 import { SavedState_Day, SavedState_Task } from "../../interfaces";
 import { IWorkTimerServer } from "../interfaces";
 import {
   createTasksReportDay,
   createTasksReportMonth,
 } from "../localServer/createReportUtil";
-import { fetchDelete, getJSON, postJSON, putJSON } from "./fetchUtil";
+import { RemoteClient } from "./client";
 
-const API_URL = "https://work-timer-backend.onrender.com/api/";
-//const API_URL = "http://localhost:5000/api/";
+export type User = {
+  username: string;
+  fullName: string;
+};
+
+const TOKEN_KEY = "workTimer.token";
+const client = new RemoteClient();
 
 /**
  * REST API wrapper. Caches loaded data.
  * Returns copies of objects.
  */
 class ServerClass implements IWorkTimerServer {
+  //--------------------------------------------------------------------------
+  //
+  // User
+  //
+  //--------------------------------------------------------------------------
+
+  private _user: User | null = null;
+
+  getSignedInUser(): User | null {
+    return this._user;
+  }
+
+  async checkSignInState(): Promise<boolean> {
+    client.token = localStorage.getItem(TOKEN_KEY);
+    if (!client.token) {
+      return false;
+    }
+    return client.sendGet("checkToken").then(({ data }) => {
+      if (!data.valid) {
+        return false;
+      }
+      // our token is valid, can get the user
+      return client.sendGet("user").then((data) => {
+        this._user = data;
+        return true;
+      });
+    });
+  }
+
+  async signIn({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }): Promise<boolean> {
+    client.token = null;
+    return client
+      .sendGet(`getToken?username=${username}&password=${password}`)
+      .then((data) => {
+        if (!data.token) {
+          return false;
+        }
+        localStorage.setItem(TOKEN_KEY, data.token);
+        return this.checkSignInState();
+      });
+  }
+
+  async register(params: {
+    username: string;
+    password: string;
+    fullName: string;
+  }): Promise<boolean> {
+    client.token = null;
+    return client.sendPost("user", params).then((data) => {
+      return !data.error;
+    });
+  }
+
+  async checkUserNameAvailable(username: string): Promise<boolean> {
+    // not used
+    return client.sendGet("checkUserName?username" + username).then((data) => {
+      return data.exists === false;
+    });
+  }
+
+  signOut(): boolean {
+    localStorage.removeItem(TOKEN_KEY);
+    client.token = null;
+    this._user = null;
+    return true;
+  }
+
   //--------------------------------------------------------------------------
   //
   // Month data
@@ -73,9 +146,9 @@ class ServerClass implements IWorkTimerServer {
       return this._daysCache[year + "/" + month];
     }
 
-    const serverDays = (await getJSON(
-      API_URL + `days?user=${getLoggedInUser()}&year=${year}&month=${month}`
-    )) as any[];
+    const serverDays = await client.sendGet<any[]>(
+      `days?year=${year}&month=${month}`
+    );
     const cache: Record<number, SavedState_Day> = {};
     serverDays?.forEach((sDay) => {
       const day: SavedState_Day = {
@@ -120,11 +193,8 @@ class ServerClass implements IWorkTimerServer {
     clearTimeout(this._updateTimerH);
     this._updateTimerH = null;
 
-    await postJSON(
-      API_URL +
-        `day?user=${getLoggedInUser()}&year=${year}&month=${month}&day=${
-          dayInfo.index
-        }`,
+    await client.sendPost(
+      `day?year=${year}&month=${month}&day=${dayInfo.index}`,
       {
         time: dayInfo.time,
         workIntervals: dayInfo.workIntervals,
@@ -163,8 +233,8 @@ class ServerClass implements IWorkTimerServer {
     if (this._tasksCache[year + "/" + month]) {
       return this._tasksCache[year + "/" + month];
     }
-    const serverTasks = (await getJSON(
-      API_URL + `tasks?user=${getLoggedInUser()}&year=${year}&month=${month}`
+    const serverTasks = (await client.sendGet(
+      `tasks?year=${year}&month=${month}`
     )) as any[];
     const cache: Record<number, SavedState_Task> = {};
     serverTasks?.forEach((sTask) => {
@@ -189,7 +259,7 @@ class ServerClass implements IWorkTimerServer {
   }): Promise<void> {
     const tasks = await this._fetchTasks({ year, month });
     this._removedCache[taskId] = { year, month, task: tasks[taskId] };
-    await fetchDelete(API_URL + "task/" + taskId);
+    await client.sendDelete("tasks/" + taskId);
     // invalidate cache
     delete this._tasksCache[year + "/" + month];
   }
@@ -200,11 +270,11 @@ class ServerClass implements IWorkTimerServer {
       delete this._removedCache[taskId];
       const { year, month, task } = info;
       task.id = ""; // a new id will have to be created
-      await this.updateTask({ year, month, task, isRestoring: true });
+      await this.updateOrCreateTask({ year, month, task, isRestoring: true });
     }
   }
 
-  async updateTask({
+  async updateOrCreateTask({
     year,
     month,
     task,
@@ -227,14 +297,14 @@ class ServerClass implements IWorkTimerServer {
 
     if (!task.id) {
       // create
-      const newTask = await postJSON(
-        API_URL + `task?user=${getLoggedInUser()}&year=${year}&month=${month}`,
+      const newTask = await client.sendPost<{ id: string }>(
+        `tasks?year=${year}&month=${month}`,
         data
       );
       task.id = newTask.id; // update the id
     } else {
       // update
-      await putJSON(API_URL + `task/` + task.id, data);
+      await client.sendPatch(`tasks/` + task.id, data);
     }
 
     // invalidate cache
@@ -259,14 +329,12 @@ class ServerClass implements IWorkTimerServer {
     if (this._dept >= 0) {
       return this._dept;
     }
-    const response = (await getJSON(
-      API_URL + `dept?user=${getLoggedInUser()}`
-    )) as any;
-    return (this._dept = response?.dept || 0);
+    const response = await client.sendGet<{ dept: number }>(`dept`);
+    return (this._dept = response.dept || 0);
   }
 
   async updateDept({ dept }: { dept: number }): Promise<void> {
-    await postJSON(API_URL + `dept?user=${getLoggedInUser()}`, { dept });
+    await client.sendPost(`dept`, { dept });
     // invalidate cache
     this._dept = -1;
   }

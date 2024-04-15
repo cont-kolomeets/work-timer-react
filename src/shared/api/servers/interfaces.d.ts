@@ -3,6 +3,26 @@ import { SavedState_Day, SavedState_Task } from "../interfaces";
 export interface IWorkTimerServer {
   //--------------------------------------------------------------------------
   //
+  // User
+  //
+  //--------------------------------------------------------------------------
+
+  checkSignInState(): Promise<boolean>;
+  getSignedInUser(): {
+    username: string;
+    fullName: string;
+  } | null;
+  signIn(params: { username: string; password: string }): Promise<boolean>;
+  register(params: {
+    username: string;
+    password: string;
+    fullName: string;
+  }): Promise<boolean>;
+  checkUserNameAvailable(username: string): Promise<boolean>;
+  signOut(): boolean;
+
+  //--------------------------------------------------------------------------
+  //
   // Month data
   //
   //--------------------------------------------------------------------------
@@ -43,7 +63,7 @@ export interface IWorkTimerServer {
 
   undoRemoveTask({ taskId }: { taskId: string }): Promise<void>;
 
-  updateTask(params: {
+  updateOrCreateTask(params: {
     year: number;
     month: number;
     task: SavedState_Task;

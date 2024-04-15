@@ -5,12 +5,52 @@ const useRemoveServer = !window.location.href.includes("local=true");
 
 const _connectToServer = async (): Promise<IWorkTimerServer> => {
   if (useRemoveServer) {
-    return (await import("./servers/remoteServer/remoteServer")).server;
+    return (await import("./servers/remoteServer/server")).server;
   }
-  return (await import("./servers/localServer/localServer")).server;
+  return (await import("./servers/localServer/server")).server;
 };
 
 export const client = {
+  //--------------------------------------------------------------------------
+  //
+  // User
+  //
+  //--------------------------------------------------------------------------
+
+  checkSignInState: async (): Promise<boolean> => {
+    return (await _connectToServer()).checkSignInState();
+  },
+
+  getSignedInUser: async (): Promise<{
+    username: string;
+    fullName: string;
+  } | null> => {
+    return (await _connectToServer()).getSignedInUser();
+  },
+
+  signIn: async (params: {
+    username: string;
+    password: string;
+  }): Promise<boolean> => {
+    return (await _connectToServer()).signIn(params);
+  },
+
+  register: async (params: {
+    username: string;
+    password: string;
+    fullName: string;
+  }): Promise<boolean> => {
+    return (await _connectToServer()).register(params);
+  },
+
+  checkUserNameAvailable: async (username: string): Promise<boolean> => {
+    return (await _connectToServer()).checkUserNameAvailable(username);
+  },
+
+  signOut: async (): Promise<boolean> => {
+    return (await _connectToServer()).signOut();
+  },
+
   //--------------------------------------------------------------------------
   //
   // Month data
@@ -48,7 +88,7 @@ export const client = {
     month: number;
     task: SavedState_Task;
   }) => {
-    return (await _connectToServer()).updateTask(params);
+    return (await _connectToServer()).updateOrCreateTask(params);
   },
 
   removeTask: async (params: {

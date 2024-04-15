@@ -18,4 +18,3 @@ export {
   totalToParts,
   workIntervalsToNormalLatePercent,
 } from "./timeConvertUtil";
-export { getLoggedInUser } from "./userUtil";
