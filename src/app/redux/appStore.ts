@@ -5,6 +5,7 @@ import { dialogModelReducer } from "../../entities/dialog";
 import { gridModelReducer } from "../../widgets/monthPanel";
 import { tasksModelReducer } from "../../widgets/tasksPanel";
 import { timerModelReducer } from "../../widgets/timerPanel";
+import { userModelReducer } from "../../widgets/userPanel";
 import { rootSaga } from "./sagas";
 
 const sagaMiddleware = createSagaMiddleware();
@@ -16,6 +17,7 @@ export const appStore = configureStore({
     tasks: tasksModelReducer,
     alert: alertModelReducer,
     dialog: dialogModelReducer,
+    user: userModelReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

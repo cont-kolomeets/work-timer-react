@@ -1,6 +1,7 @@
 {
   "editor.indentSize": "tabSize",
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
+    "source.fixAll": "always",
+    "source.organizeImports": "always"
   }
 }
