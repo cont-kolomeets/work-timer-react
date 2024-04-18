@@ -174,14 +174,21 @@ class ServerClass implements IWorkTimerServer {
     year,
     month,
     dayInfo,
+    type,
   }: {
     year: number;
     month: number;
     dayInfo: Partial<SavedState_Day>;
+    type: "tick" | "manual";
   }): Promise<void> {
     this._pendingUpdate = { year, month, dayInfo: clone(dayInfo) };
-    this._updateTimerH =
-      this._updateTimerH || setTimeout(() => this._doUpdate(), 60_000);
+
+    if (type === "manual") {
+      this._doUpdate();
+    } else {
+      this._updateTimerH =
+        this._updateTimerH || setTimeout(() => this._doUpdate(), 60_000);
+    }
   }
 
   private async _doUpdate(): Promise<void> {

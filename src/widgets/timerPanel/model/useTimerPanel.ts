@@ -15,7 +15,7 @@ function _useEditDialog(time: number, onTimeUpdated: (time: number) => void) {
     time,
     onSetTime: async (time) => {
       dispatch(timerModel.actions.setTime(time));
-      await dispatch(timerModel.actions.postTime());
+      await dispatch(timerModel.actions.postTime("manual"));
       onTimeUpdated(time);
     },
   });
@@ -47,7 +47,7 @@ function _useDayTimer(
     dispatch(timerModel.actions.addInterval(dayTimer.current.interval.slice()));
   };
   dayTimer.current.onTickRare = async () => {
-    await dispatch(timerModel.actions.postTime());
+    await dispatch(timerModel.actions.postTime("tick"));
     onTimeUpdated(time);
   };
 

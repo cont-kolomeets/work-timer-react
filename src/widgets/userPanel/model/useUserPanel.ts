@@ -11,10 +11,6 @@ export function useUserPanel() {
   const registerError = useAppSelector(userModel.selectors.getRegister_error);
 
   useEffect(() => {
-    dispatch(userModel.actions.checkSignInState());
-  }, []);
-
-  useEffect(() => {
     if (signInError) {
       dispatch(userModel.actions.clearErrors());
       dispatch(

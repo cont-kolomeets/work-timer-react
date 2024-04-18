@@ -17,7 +17,6 @@ export function WorkTimer() {
   return (
     <div className="wt-stretched wt-page">
       <div className="wt-stretched wt-timer-bg"></div>
-      <UserPanel />
       {userState === "logged-in" ? (
         <>
           <TimerPanel onTimeUpdated={syncTimeToGrid} />
@@ -25,7 +24,7 @@ export function WorkTimer() {
           <TasksPanel />
         </>
       ) : null}
-
+      {userState !== "initial" ? <UserPanel /> : null}
       {alerts}
     </div>
   );

@@ -69,6 +69,7 @@ export const client = {
     year: number;
     month: number;
     dayInfo: Partial<SavedState_Day>;
+    type: "tick" | "manual";
   }) => {
     return (await _connectToServer()).updateDay(params);
   },

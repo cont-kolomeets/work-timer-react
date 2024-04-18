@@ -47,6 +47,7 @@ const postGridData = createAsyncThunk(
       year,
       month,
       dayInfo,
+      type: "manual",
     });
   }
 );

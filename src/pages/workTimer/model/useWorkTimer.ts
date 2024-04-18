@@ -13,6 +13,10 @@ export function useWorkTimer() {
   const userState = useAppSelector(userModel.selectors.getState);
   const alerts = useAlerts();
 
+  useEffect(() => {
+    userState === "initial" && dispatch(userModel.actions.checkSignInState());
+  }, [dispatch, userState]);
+
   const syncTimeToGrid = (time: number) => {
     dispatch(gridModel.actions.resetDate());
     if (monthData.find((data) => data.index === get1BasedDate().d)) {

@@ -3,7 +3,7 @@ import { RootState } from "../../../app/types";
 import { client } from "../../../shared/api";
 
 type UserState = Partial<{
-  state: "logged-in" | "logged-out" | "register" | "loading";
+  state: "initial" | "logged-in" | "logged-out" | "register" | "loading";
 
   signIn_username: string;
   signIn_password: string;
@@ -20,7 +20,7 @@ type UserState = Partial<{
 }>;
 
 const initialState: UserState = {
-  state: "logged-out",
+  state: "initial",
   register_nameState: "unknown",
 };
 
@@ -159,7 +159,6 @@ const userSlice = createSlice({
     });
     builder.addCase(signOut.fulfilled, (state, action) => {
       state.state = "logged-out";
-      state.loggedIn_fullName = "";
     });
     builder.addCase(signOut.rejected, (state, action) => {
       state.state = "logged-out";

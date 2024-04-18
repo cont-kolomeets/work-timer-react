@@ -36,18 +36,22 @@ const fetchTime = createAsyncThunk("timer/fetchTime", async (_, api) => {
   return result;
 });
 
-const postTime = createAsyncThunk("timer/postTime", async (_, api) => {
-  const state = (api.getState() as RootState).timer;
-  await client.updateDay({
-    year: state.year,
-    month: state.month,
-    dayInfo: {
-      index: state.day,
-      time: state.time,
-      workIntervals: state.workIntervals,
-    },
-  });
-});
+const postTime = createAsyncThunk(
+  "timer/postTime",
+  async (type: "tick" | "manual", api) => {
+    const state = (api.getState() as RootState).timer;
+    await client.updateDay({
+      year: state.year,
+      month: state.month,
+      dayInfo: {
+        index: state.day,
+        time: state.time,
+        workIntervals: state.workIntervals,
+      },
+      type,
+    });
+  }
+);
 
 const timerSlice = createSlice({
   name: "timer",
