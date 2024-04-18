@@ -3,25 +3,25 @@ import { RootState } from "../../../app/types";
 import { client } from "../../../shared/api";
 
 type UserState = Partial<{
-  state: "logged-in" | "logged-out" | "register";
-  loadingStatus: "idle" | "loading";
+  state: "logged-in" | "logged-out" | "register" | "loading";
 
   signIn_username: string;
   signIn_password: string;
+  signIn_error: boolean;
 
   loggedIn_fullName: string;
 
   register_username: string;
-  register_username_loadingStatus: "idle" | "loading";
-  register_nameAvailable: boolean;
+  register_nameState: "unknown" | "available" | "not-available" | "loading";
   register_password: string;
   register_fullName: string;
+  register_success: boolean;
+  register_error: boolean;
 }>;
 
 const initialState: UserState = {
   state: "logged-out",
-  loadingStatus: "idle",
-  register_username_loadingStatus: "idle",
+  register_nameState: "unknown",
 };
 
 const checkSignInState = createAsyncThunk(
@@ -95,93 +95,90 @@ const userSlice = createSlice({
     setRegister_fullName: (state, action: PayloadAction<string>) => {
       state.register_fullName = action.payload;
     },
+
+    clearErrors: (state) => {
+      state.signIn_error = false;
+      state.register_error = false;
+    },
   },
   extraReducers: (builder) => {
     // checkSignInState
     builder.addCase(checkSignInState.pending, (state, action) => {
-      state.state = "logged-out";
-      state.loadingStatus = "loading";
+      state.state = "loading";
     });
     builder.addCase(checkSignInState.fulfilled, (state, action) => {
       state.state = action.payload.loggedIn ? "logged-in" : "logged-out";
       state.loggedIn_fullName = action.payload.user?.fullName || "";
-      state.loadingStatus = "idle";
     });
     builder.addCase(checkSignInState.rejected, (state, action) => {
-      state.loadingStatus = "idle";
+      state.state = "logged-out";
     });
 
     // checkUserNameAvailable
     builder.addCase(checkUserNameAvailable.pending, (state, action) => {
-      state.register_nameAvailable = false;
-      state.register_username_loadingStatus = "loading";
+      state.register_nameState = "loading";
     });
     builder.addCase(checkUserNameAvailable.fulfilled, (state, action) => {
-      state.register_nameAvailable = action.payload;
-      state.register_username_loadingStatus = "idle";
+      state.register_nameState = action.payload ? "available" : "not-available";
     });
     builder.addCase(checkUserNameAvailable.rejected, (state, action) => {
-      state.register_nameAvailable = false;
-      state.register_username_loadingStatus = "idle";
+      state.register_nameState = "not-available";
     });
 
     // signIn
     builder.addCase(signIn.pending, (state, action) => {
-      state.loadingStatus = "loading";
+      state.state = "loading";
+      state.signIn_error = false;
     });
     builder.addCase(signIn.fulfilled, (state, action) => {
       state.state = action.payload.loggedIn ? "logged-in" : "logged-out";
       state.loggedIn_fullName = action.payload.user?.fullName || "";
-      state.loadingStatus = "idle";
+      state.signIn_error = !action.payload.loggedIn;
     });
     builder.addCase(signIn.rejected, (state, action) => {
-      state.loadingStatus = "idle";
+      state.state = "logged-out";
+      state.signIn_error = true;
     });
 
     builder.addCase(register.pending, (state, action) => {
-      state.loadingStatus = "loading";
+      state.state = "loading";
+      state.register_error = false;
     });
     builder.addCase(register.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.state = "logged-out";
-        state.loggedIn_fullName = "";
-      }
-      state.loadingStatus = "idle";
+      state.state = action.payload ? "logged-out" : "register";
+      state.register_error = !action.payload;
     });
     builder.addCase(register.rejected, (state, action) => {
-      state.loadingStatus = "idle";
+      state.state = "register";
+      state.register_error = true;
     });
 
     // signOut
     builder.addCase(signOut.pending, (state, action) => {
-      state.loadingStatus = "loading";
+      state.state = "loading";
     });
     builder.addCase(signOut.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.state = "logged-out";
-        state.loggedIn_fullName = "";
-      }
-      state.loadingStatus = "idle";
+      state.state = "logged-out";
+      state.loggedIn_fullName = "";
     });
     builder.addCase(signOut.rejected, (state, action) => {
-      state.loadingStatus = "idle";
+      state.state = "logged-out";
     });
   },
   selectors: {
     getState: (state) => state.state,
-    getLoadingStatus: (state) => state.loadingStatus,
 
     getLoggedIn_fullName: (state) => state.loggedIn_fullName,
 
     getSignIn_username: (state) => state.signIn_username,
     getSignIn_password: (state) => state.signIn_password,
+    getSignIn_error: (state) => state.signIn_error,
 
     getRegister_username: (state) => state.register_username,
     getRegister_password: (state) => state.register_password,
     getRegister_fullName: (state) => state.register_fullName,
-    getRegister_username_loadingStatus: (state) =>
-      state.register_username_loadingStatus,
-    getRegister_nameAvailable: (state) => state.register_nameAvailable,
+    getRegister_nameState: (state) => state.register_nameState,
+    getRegister_error: (state) => state.register_error,
   },
 });
 

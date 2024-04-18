@@ -1,0 +1,24 @@
+.wt-user-form {
+  gap: 40px;
+
+  .wt-form-title {
+    font-size: 44px;
+    text-align: center;
+  }
+
+  .wt-form-row {
+    font-size: 20px;
+
+    div {
+      width: 100px;
+    }
+
+    input {
+      width: 350px;
+    }
+  }
+
+  button {
+    font-size: 20px;
+  }
+}

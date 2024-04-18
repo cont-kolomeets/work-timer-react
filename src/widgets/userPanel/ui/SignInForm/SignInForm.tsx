@@ -1,5 +1,20 @@
-import "./UserPanel.scss";
+import { UserForm } from "../Form/UserForm";
 
-export function SignInForm() {
-  return <div className="wt-user-sign-in-form"></div>;
+export function SignInForm({
+  onLogin,
+  onRegister,
+}: {
+  onLogin(params: { username: string; password: string }): void;
+  onRegister(): void;
+}) {
+  return (
+    <UserForm
+      title="Log in to Work Timer"
+      hasFullName={false}
+      submitButtonText="Log in"
+      secondaryButtonText="Register"
+      onSubmit={onLogin}
+      onSecondaryButtonClicked={onRegister}
+    />
+  );
 }

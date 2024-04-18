@@ -37,7 +37,7 @@ class ServerClass implements IWorkTimerServer {
     if (!client.token) {
       return false;
     }
-    return client.sendGet("checkToken").then(({ data }) => {
+    return client.sendGet("checkToken").then((data) => {
       if (!data.valid) {
         return false;
       }

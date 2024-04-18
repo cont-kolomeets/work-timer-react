@@ -14,7 +14,8 @@ export type IconName =
   | "plus-lg"
   | "download"
   | "calendar-day"
-  | "calendar-month";
+  | "calendar-month"
+  | "box-arrow-right";
 
 export function Action({
   name,

@@ -1,4 +1,4 @@
-import { PayloadAction, nanoid } from "@reduxjs/toolkit";
+import { PayloadAction } from "@reduxjs/toolkit";
 import { all, call, put, takeEvery } from "redux-saga/effects";
 import { alertModel } from "../../entities/alert/model/alertModel";
 import { SavedState_Task, client } from "../../shared/api";
@@ -8,7 +8,6 @@ import { tasksModel } from "../../widgets/tasksPanel/model/tasksModel";
 function* showUndoAlert(task: SavedState_Task) {
   yield put(
     alertModel.actions.showAlert({
-      id: nanoid(8),
       title: "Task removed",
       message: `Task "${task.label}" has been removed.`,
       link: "UNDO",

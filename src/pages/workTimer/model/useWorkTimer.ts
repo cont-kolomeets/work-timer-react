@@ -1,4 +1,3 @@
-import { nanoid } from "@reduxjs/toolkit";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { useAlerts } from "../../../entities/alert";
@@ -6,10 +5,12 @@ import { alertModel } from "../../../entities/alert/model/alertModel";
 import { get1BasedDate } from "../../../shared/lib";
 import { gridModel } from "../../../widgets/monthPanel/model/gridModel";
 import { timerModel } from "../../../widgets/timerPanel/model/timerModel";
+import { userModel } from "../../../widgets/userPanel/model/userModel";
 
 export function useWorkTimer() {
   const dispatch = useAppDispatch();
   const monthData = useAppSelector(gridModel.selectors.selectMonthData);
+  const userState = useAppSelector(userModel.selectors.getState);
   const alerts = useAlerts();
 
   const syncTimeToGrid = (time: number) => {
@@ -37,7 +38,6 @@ export function useWorkTimer() {
       isDemo &&
         dispatch(
           alertModel.actions.showAlert({
-            id: nanoid(8),
             title: "Welcome",
             message:
               "Welcome to Work Timer demo! Press Start to run the timer.",
@@ -48,6 +48,7 @@ export function useWorkTimer() {
   }, [dispatch]);
 
   return {
+    userState,
     syncTimeToGrid,
     onGridEditStart,
     onGridEditEnd,

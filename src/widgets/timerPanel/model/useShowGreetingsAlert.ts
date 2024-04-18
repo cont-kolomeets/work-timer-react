@@ -1,4 +1,3 @@
-import { nanoid } from "@reduxjs/toolkit";
 import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { alertModel } from "../../../entities/alert/model/alertModel";
 
@@ -17,7 +16,6 @@ export function useShowGreetingsAlert() {
       const isAm = new Date().getHours() < 12;
       dispatch(
         alertModel.actions.showAlert({
-          id: nanoid(8),
           title: numCalls
             ? "Welcome back!"
             : isAm

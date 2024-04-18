@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
 
 type AlertState = {
   stack: AlertInfo[];
@@ -21,8 +21,10 @@ const alertSlice = createSlice({
   name: "alert",
   initialState,
   reducers: {
-    showAlert: (state, action: PayloadAction<AlertInfo>) => {
-      state.stack.push(action.payload);
+    showAlert: (state, action: PayloadAction<Omit<AlertInfo, "id">>) => {
+      const alert = action.payload as AlertInfo;
+      alert.id = nanoid(8);
+      state.stack.push(alert);
     },
     hideAlert: (state, action: PayloadAction<string>) => {
       state.stack = state.stack.filter((a) => a.id !== action.payload);

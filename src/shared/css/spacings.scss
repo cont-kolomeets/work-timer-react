@@ -1,12 +1,3 @@
+@import url("./spacings/gap.scss");
 @import url("./spacings/margin.scss");
 @import url("./spacings/padding.scss");
-
-/* Gap */
-
-.wt-flex-gap-8 {
-  gap: 8px;
-}
-
-.wt-flex-gap-12 {
-  gap: 12px;
-}

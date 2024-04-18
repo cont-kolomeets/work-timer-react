@@ -1,3 +1,4 @@
+import { Loader } from "../../../../shared/ui";
 import { MonthPanel } from "../../../../widgets/monthPanel";
 import { TasksPanel } from "../../../../widgets/tasksPanel";
 import { TimerPanel } from "../../../../widgets/timerPanel";
@@ -6,16 +7,25 @@ import { useWorkTimer } from "../../model/useWorkTimer";
 import "./WorkTimer.scss";
 
 export function WorkTimer() {
-  const { syncTimeToGrid, onGridEditStart, onGridEditEnd, alerts } =
+  const { userState, syncTimeToGrid, onGridEditStart, onGridEditEnd, alerts } =
     useWorkTimer();
+
+  if (userState === "loading") {
+    return <Loader />;
+  }
 
   return (
     <div className="wt-stretched wt-page">
       <div className="wt-stretched wt-timer-bg"></div>
-      <TimerPanel onTimeUpdated={syncTimeToGrid} />
-      <MonthPanel onEditStart={onGridEditStart} onEditEnd={onGridEditEnd} />
-      <TasksPanel />
       <UserPanel />
+      {userState === "logged-in" ? (
+        <>
+          <TimerPanel onTimeUpdated={syncTimeToGrid} />
+          <MonthPanel onEditStart={onGridEditStart} onEditEnd={onGridEditEnd} />
+          <TasksPanel />
+        </>
+      ) : null}
+
       {alerts}
     </div>
   );
