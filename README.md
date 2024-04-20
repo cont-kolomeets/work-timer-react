@@ -4,14 +4,18 @@ Check out the online version: https://work-timer-react.netlify.app/?demo=true&lo
 
 # Key Features
 
+* Create your own account.
 * Track your time spent at work.
 * View which parts of the day were occupied by work.
 * View the total time spent at work for the current or any specified month (in a table).
 * Track the time you spent on tasks or bugs. Add, edit, remove tasks.
-* Create a monthly task report.
+* Create daily and monthly task reports.
 
 
 ## Screenshots
+
+![image](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/9955e996-9a10-41b7-8fe5-a699f07de679)
+
 
 ![2024-03-01 16_46_35-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/e36424fa-a532-4c6e-8ea3-dfd0fdeb58df)
 
