@@ -82,9 +82,11 @@ class ServerClass implements IWorkTimerServer {
   async checkUserNameAvailable(username: string): Promise<boolean> {
     return !username
       ? false
-      : client.sendGet("checkUserName?username" + username).then((data) => {
-          return data.exists === false;
-        });
+      : client
+          .sendGet("checkUserName?username=" + username, { noToken: true })
+          .then((data) => {
+            return data.exists === false;
+          });
   }
 
   signOut(): boolean {

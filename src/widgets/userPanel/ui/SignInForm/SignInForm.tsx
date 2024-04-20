@@ -1,4 +1,4 @@
-import { UserForm } from "../Form/UserForm";
+import { UserForm } from "../UserForm/UserForm";
 
 export function SignInForm({
   onLogin,

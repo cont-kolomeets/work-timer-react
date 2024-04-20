@@ -1,8 +1,10 @@
-import { UserForm } from "../Form/UserForm";
+import { UserForm } from "../UserForm/UserForm";
 
 export function RegisterForm({
   onRegister,
   onSignIn,
+  onCheckUsername,
+  usernameStatus,
 }: {
   onRegister(params: {
     username: string;
@@ -10,6 +12,8 @@ export function RegisterForm({
     fullName: string;
   }): void;
   onSignIn(): void;
+  onCheckUsername(username: string): void;
+  usernameStatus: undefined | "available" | "not-available" | "loading";
 }) {
   return (
     <UserForm
@@ -19,6 +23,9 @@ export function RegisterForm({
       secondaryButtonText="Log in"
       onSubmit={onRegister}
       onSecondaryButtonClicked={onSignIn}
+      needValidateUsername={true}
+      onCheckUsername={onCheckUsername}
+      usernameStatus={usernameStatus}
     />
   );
 }

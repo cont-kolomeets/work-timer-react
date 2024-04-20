@@ -5,7 +5,15 @@ import { UserCard } from "../UserCard/UserCard";
 import "./UserPanel.scss";
 
 export function UserPanel() {
-  const { userState, logIn, register, toRegister, toSignIn } = useUserPanel();
+  const {
+    userState,
+    logIn,
+    register,
+    toRegister,
+    toSignIn,
+    checkUsername,
+    registerUsernameState,
+  } = useUserPanel();
   return userState === "logged-in" ? (
     <UserCard />
   ) : (
@@ -13,7 +21,12 @@ export function UserPanel() {
       {userState === "logged-out" ? (
         <SignInForm onLogin={logIn} onRegister={toRegister} />
       ) : (
-        <RegisterForm onRegister={register} onSignIn={toSignIn} />
+        <RegisterForm
+          onRegister={register}
+          onSignIn={toSignIn}
+          onCheckUsername={checkUsername}
+          usernameStatus={registerUsernameState}
+        />
       )}
     </div>
   );

@@ -12,16 +12,15 @@ type UserState = Partial<{
   loggedIn_fullName: string;
 
   register_username: string;
-  register_nameState: "unknown" | "available" | "not-available" | "loading";
+  register_nameState: "available" | "not-available" | "loading";
   register_password: string;
   register_fullName: string;
   register_success: boolean;
-  register_error: boolean;
+  register_state: "error" | "success";
 }>;
 
 const initialState: UserState = {
   state: "initial",
-  register_nameState: "unknown",
 };
 
 const checkSignInState = createAsyncThunk(
@@ -38,11 +37,10 @@ const checkSignInState = createAsyncThunk(
 
 const checkUserNameAvailable = createAsyncThunk(
   "user/checkUserNameAvailable",
-  async (_, api) => {
-    const state = (api.getState() as RootState).user;
-    const result = await client.checkUserNameAvailable(
-      state.register_username || ""
-    );
+  async (username: string) => {
+    const result = !username
+      ? undefined
+      : await client.checkUserNameAvailable(username);
     return result;
   }
 );
@@ -95,10 +93,9 @@ const userSlice = createSlice({
     setRegister_fullName: (state, action: PayloadAction<string>) => {
       state.register_fullName = action.payload;
     },
-
-    clearErrors: (state) => {
+    clearStates: (state) => {
       state.signIn_error = false;
-      state.register_error = false;
+      state.register_state = undefined;
     },
   },
   extraReducers: (builder) => {
@@ -119,7 +116,12 @@ const userSlice = createSlice({
       state.register_nameState = "loading";
     });
     builder.addCase(checkUserNameAvailable.fulfilled, (state, action) => {
-      state.register_nameState = action.payload ? "available" : "not-available";
+      state.register_nameState =
+        action.payload === true
+          ? "available"
+          : action.payload === false
+          ? "not-available"
+          : undefined;
     });
     builder.addCase(checkUserNameAvailable.rejected, (state, action) => {
       state.register_nameState = "not-available";
@@ -140,17 +142,19 @@ const userSlice = createSlice({
       state.signIn_error = true;
     });
 
+    // register
     builder.addCase(register.pending, (state, action) => {
       state.state = "loading";
-      state.register_error = false;
+      state.register_state = undefined;
     });
     builder.addCase(register.fulfilled, (state, action) => {
       state.state = action.payload ? "logged-out" : "register";
-      state.register_error = !action.payload;
+      state.register_state = action.payload ? "success" : "error";
+      state.register_nameState = undefined;
     });
     builder.addCase(register.rejected, (state, action) => {
       state.state = "register";
-      state.register_error = true;
+      state.register_state = "error";
     });
 
     // signOut
@@ -177,7 +181,7 @@ const userSlice = createSlice({
     getRegister_password: (state) => state.register_password,
     getRegister_fullName: (state) => state.register_fullName,
     getRegister_nameState: (state) => state.register_nameState,
-    getRegister_error: (state) => state.register_error,
+    getRegister_state: (state) => state.register_state,
   },
 });
 

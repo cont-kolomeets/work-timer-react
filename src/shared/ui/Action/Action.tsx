@@ -15,7 +15,9 @@ export type IconName =
   | "download"
   | "calendar-day"
   | "calendar-month"
-  | "box-arrow-right";
+  | "box-arrow-right"
+  | "exclamation-triangle"
+  | "check-circle";
 
 export function Action({
   name,

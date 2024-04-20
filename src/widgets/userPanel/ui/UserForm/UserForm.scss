@@ -8,8 +8,9 @@
 
   .wt-form-row {
     font-size: 20px;
+    position: relative;
 
-    div {
+    & > div:first-child {
       width: 100px;
     }
 

@@ -8,33 +8,39 @@ export function useUserPanel() {
   const userState = useAppSelector(userModel.selectors.getState);
   const fullName = useAppSelector(userModel.selectors.getLoggedIn_fullName);
   const signInError = useAppSelector(userModel.selectors.getSignIn_error);
-  const registerError = useAppSelector(userModel.selectors.getRegister_error);
+  const registerState = useAppSelector(userModel.selectors.getRegister_state);
+  const registerUsernameState = useAppSelector(
+    userModel.selectors.getRegister_nameState
+  );
 
   useEffect(() => {
     if (signInError) {
-      dispatch(userModel.actions.clearErrors());
+      dispatch(userModel.actions.clearStates());
       dispatch(
         alertModel.actions.showAlert({
-          title: "Error",
+          title: "Error!",
           message: "Failed to log it. Username or password may be incorrect.",
-          timeout: 3000,
+          timeout: 5000,
         })
       );
     }
   }, [dispatch, signInError]);
 
   useEffect(() => {
-    if (registerError) {
-      dispatch(userModel.actions.clearErrors());
+    if (registerState) {
+      dispatch(userModel.actions.clearStates());
       dispatch(
         alertModel.actions.showAlert({
-          title: "Error",
-          message: "Failed to register. Please try again.",
-          timeout: 3000,
+          title: registerState === "success" ? "Congratulation!" : "Error!",
+          message:
+            registerState === "success"
+              ? "Registration complete! Please log in with your credentials."
+              : "Failed to register. Please try again.",
+          timeout: 5000,
         })
       );
     }
-  }, [dispatch, registerError]);
+  }, [dispatch, registerState]);
 
   const logIn = ({
     username,
@@ -75,6 +81,10 @@ export function useUserPanel() {
     dispatch(userModel.actions.setState("logged-out"));
   };
 
+  const checkUsername = (username: string) => {
+    dispatch(userModel.actions.checkUserNameAvailable(username));
+  };
+
   return {
     userState,
     fullName,
@@ -83,5 +93,7 @@ export function useUserPanel() {
     logIn,
     register,
     logOut,
+    checkUsername,
+    registerUsernameState,
   };
 }

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDebounce } from "../../../../shared/model/useDebounce";
 import { Button } from "../../../../shared/ui";
 import "./UserForm.scss";
+import { UsernameValidator } from "./UsernameValidator";
 
 export function UserForm({
   title,
@@ -9,6 +11,9 @@ export function UserForm({
   hasFullName,
   onSubmit,
   onSecondaryButtonClicked,
+  needValidateUsername,
+  usernameStatus,
+  onCheckUsername,
 }: {
   title: string;
   submitButtonText: string;
@@ -20,20 +25,40 @@ export function UserForm({
     fullName: string;
   }): void;
   onSecondaryButtonClicked?(): void;
+  needValidateUsername?: boolean;
+  usernameStatus?: undefined | "available" | "not-available" | "loading";
+  onCheckUsername?(username: string): void;
 }) {
   const [username, setUsername] = useState("");
   const [password, setPasswrod] = useState("");
   const [fullName, setFullName] = useState("");
+
+  const debouncedUsername = useDebounce(username, 500);
+  const lastCheckedName = useRef("");
+
+  useEffect(() => {
+    const name = debouncedUsername.trim();
+    if (!name || lastCheckedName.current === name) {
+      return;
+    }
+    lastCheckedName.current = name;
+    onCheckUsername?.(name);
+  }, [lastCheckedName, onCheckUsername, debouncedUsername]);
 
   const _handleEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     event.key === "Enter" && _submit();
   };
 
   const _submit = () => {
-    username &&
-      password &&
-      (!hasFullName || fullName) &&
-      onSubmit({ username, password, fullName });
+    username.trim() &&
+      password.trim() &&
+      (!hasFullName || fullName.trim()) &&
+      usernameStatus !== "not-available" &&
+      onSubmit({
+        username: username.trim(),
+        password: password.trim(),
+        fullName: fullName?.trim(),
+      });
   };
 
   return (
@@ -43,16 +68,21 @@ export function UserForm({
         <div>Username</div>
         <input
           value={username}
-          onChange={(event) => setUsername(event.target.value.trim())}
+          onChange={(event) => {
+            setUsername(event.target.value);
+          }}
           onKeyUp={_handleEnter}
         ></input>
+        {needValidateUsername && usernameStatus ? (
+          <UsernameValidator usernameStatus={usernameStatus} />
+        ) : null}
       </div>
       <div className="wt-flex-row wt-form-row">
         <div>Password</div>
         <input
           type="password"
           value={password}
-          onChange={(event) => setPasswrod(event.target.value.trim())}
+          onChange={(event) => setPasswrod(event.target.value)}
           onKeyUp={_handleEnter}
         ></input>
       </div>
@@ -61,7 +91,7 @@ export function UserForm({
           <div>Full name</div>
           <input
             value={fullName}
-            onChange={(event) => setFullName(event.target.value.trim())}
+            onChange={(event) => setFullName(event.target.value)}
             onKeyUp={_handleEnter}
           ></input>
         </div>
@@ -69,7 +99,12 @@ export function UserForm({
       <div className="wt-flex-row wt-flex-gap-20">
         <Button
           className="wt-flex-spacer"
-          disabled={!username || !password || (hasFullName && !fullName)}
+          disabled={
+            !username.trim() ||
+            !password.trim() ||
+            (hasFullName && !fullName?.trim()) ||
+            usernameStatus === "not-available"
+          }
           onClick={_submit}
         >
           {submitButtonText}

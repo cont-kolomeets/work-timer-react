@@ -6,8 +6,11 @@ const API_URL = "https://work-timer-backend.onrender.com/api/";
 export class RemoteClient {
   token: string | null = null;
 
-  async sendGet<T = any>(url: string): Promise<T> {
-    const { data } = await sendGet(this._enrichUrl(url));
+  async sendGet<T = any>(
+    url: string,
+    options?: { noToken?: boolean }
+  ): Promise<T> {
+    const { data } = await sendGet(this._enrichUrl(url, options));
     return data;
   }
 
@@ -26,11 +29,15 @@ export class RemoteClient {
     return data;
   }
 
-  private _enrichUrl(url: string): string {
+  private _enrichUrl(url: string, options?: { noToken?: boolean }): string {
     url += url.includes("?") ? "" : "?";
-    this.token &&
-      (url +=
-        (url.indexOf("?") < url.length - 1 ? "&" : "") + "token=" + this.token);
+    if (!options?.noToken) {
+      this.token &&
+        (url +=
+          (url.indexOf("?") < url.length - 1 ? "&" : "") +
+          "token=" +
+          this.token);
+    }
     return API_URL + url;
   }
 }
