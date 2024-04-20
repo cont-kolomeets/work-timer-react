@@ -2,10 +2,33 @@
   overflow: hidden;
 
   .wt-timer-bg {
-    background-image: url("./assets/bg7.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+  }
+
+  .wt-timer-bg--1 {
+    background-image: url("./assets/bg01.jpg");
+    opacity: 0.3;
+  }
+
+  .wt-timer-bg--2 {
+    background-image: url("./assets/bg02.jpg");
+    opacity: 0.5;
+  }
+
+  .wt-timer-bg--3 {
+    background-image: url("./assets/bg03.jpg");
+    opacity: 1;
+  }
+
+  .wt-timer-bg--4 {
+    background-image: url("./assets/bg04.jpg");
+    opacity: 0.5;
+  }
+
+  .wt-timer-bg--5 {
+    background-image: url("./assets/bg05.jpg");
     opacity: 0.3;
   }
 }

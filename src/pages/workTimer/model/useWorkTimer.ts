@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { useAlerts } from "../../../entities/alert";
 import { alertModel } from "../../../entities/alert/model/alertModel";
@@ -7,11 +7,15 @@ import { gridModel } from "../../../widgets/monthPanel/model/gridModel";
 import { timerModel } from "../../../widgets/timerPanel/model/timerModel";
 import { userModel } from "../../../widgets/userPanel/model/userModel";
 
+const MAX_BG_INDEX = 5;
+
 export function useWorkTimer() {
   const dispatch = useAppDispatch();
   const monthData = useAppSelector(gridModel.selectors.selectMonthData);
   const userState = useAppSelector(userModel.selectors.getState);
   const alerts = useAlerts();
+  const [bgIndex, setBgIndex] = useState(1);
+  const curBgIndex = useRef(bgIndex);
 
   useEffect(() => {
     userState === "initial" && dispatch(userModel.actions.checkSignInState());
@@ -51,11 +55,23 @@ export function useWorkTimer() {
     }, 1000);
   }, [dispatch]);
 
+  useEffect(() => {
+    const h = setInterval(() => {
+      curBgIndex.current++;
+      if (curBgIndex.current > MAX_BG_INDEX) {
+        curBgIndex.current = 1;
+      }
+      setBgIndex(curBgIndex.current);
+    }, 300_000 /* 5 mins */);
+    return () => clearInterval(h);
+  }, [curBgIndex, setBgIndex]);
+
   return {
     userState,
     syncTimeToGrid,
     onGridEditStart,
     onGridEditEnd,
     alerts,
+    bgIndex,
   };
 }

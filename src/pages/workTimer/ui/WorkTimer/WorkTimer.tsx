@@ -7,8 +7,14 @@ import { useWorkTimer } from "../../model/useWorkTimer";
 import "./WorkTimer.scss";
 
 export function WorkTimer() {
-  const { userState, syncTimeToGrid, onGridEditStart, onGridEditEnd, alerts } =
-    useWorkTimer();
+  const {
+    userState,
+    syncTimeToGrid,
+    onGridEditStart,
+    onGridEditEnd,
+    alerts,
+    bgIndex,
+  } = useWorkTimer();
 
   if (userState === "loading") {
     return <Loader />;
@@ -16,7 +22,7 @@ export function WorkTimer() {
 
   return (
     <div className="wt-stretched wt-page">
-      <div className="wt-stretched wt-timer-bg"></div>
+      <div className={`wt-stretched wt-timer-bg wt-timer-bg--${bgIndex}`}></div>
       {userState === "logged-in" ? (
         <>
           <TimerPanel onTimeUpdated={syncTimeToGrid} />
