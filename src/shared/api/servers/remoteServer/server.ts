@@ -117,6 +117,7 @@ class ServerClass implements IWorkTimerServer {
     year: number;
     month: number;
   }): Promise<Record<number, SavedState_Day>> {
+    await this._currentUpdateDayPromise;
     const days = await this._provideMonthDays({ year, month });
     return clone(days);
   }
@@ -130,6 +131,7 @@ class ServerClass implements IWorkTimerServer {
     month: number;
     day: number;
   }): Promise<SavedState_Day> {
+    await this._currentUpdateDayPromise;
     const days = await this._provideMonthDays({ year, month });
     return clone(days[day]);
   }
@@ -193,6 +195,8 @@ class ServerClass implements IWorkTimerServer {
     }
   }
 
+  private _currentUpdateDayPromise: Promise<void> | null = null;
+
   private async _doUpdate(): Promise<void> {
     if (!this._pendingUpdate) {
       return;
@@ -203,7 +207,7 @@ class ServerClass implements IWorkTimerServer {
     clearTimeout(this._updateTimerH);
     this._updateTimerH = null;
 
-    await client.sendPost(
+    this._currentUpdateDayPromise = client.sendPost(
       `day?year=${year}&month=${month}&day=${dayInfo.index}`,
       {
         time: dayInfo.time,
@@ -212,6 +216,7 @@ class ServerClass implements IWorkTimerServer {
     );
     // invalidate cache
     delete this._daysCache[year + "/" + month];
+    await this._currentUpdateDayPromise;
   }
 
   //--------------------------------------------------------------------------

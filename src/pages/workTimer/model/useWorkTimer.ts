@@ -41,6 +41,7 @@ export function useWorkTimer() {
   };
 
   const onGridEditEnd = () => {
+    // sync with the timer after we edit data in the grid
     dispatch(timerModel.actions.fetchTime());
   };
 
