@@ -9,12 +9,16 @@ import { userModel } from "../../../widgets/userPanel/model/userModel";
 
 const MAX_BG_INDEX = 5;
 
+function _getRandomBgIndex(): number {
+  return 1 + Math.round((MAX_BG_INDEX - 1) * Math.random());
+}
+
 export function useWorkTimer() {
   const dispatch = useAppDispatch();
   const monthData = useAppSelector(gridModel.selectors.selectMonthData);
   const userState = useAppSelector(userModel.selectors.getState);
   const alerts = useAlerts();
-  const [bgIndex, setBgIndex] = useState(1);
+  const [bgIndex, setBgIndex] = useState(_getRandomBgIndex());
   const curBgIndex = useRef(bgIndex);
 
   useEffect(() => {
@@ -57,10 +61,7 @@ export function useWorkTimer() {
 
   useEffect(() => {
     const h = setInterval(() => {
-      curBgIndex.current++;
-      if (curBgIndex.current > MAX_BG_INDEX) {
-        curBgIndex.current = 1;
-      }
+      curBgIndex.current = _getRandomBgIndex();
       setBgIndex(curBgIndex.current);
     }, 300_000 /* 5 mins */);
     return () => clearInterval(h);
