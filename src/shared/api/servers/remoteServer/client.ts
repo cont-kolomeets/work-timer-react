@@ -1,6 +1,7 @@
 import { sendDelete, sendGet, sendPatch, sendPost } from "./fetchUtil";
 
-const API_URL = "https://work-timer-backend.onrender.com/api/";
+const API_URL = "https://work-timer-backend-production.up.railway.app/api/";
+//const API_URL = "https://work-timer-backend.onrender.com/api/";
 //const API_URL = "http://localhost:5000/api/";
 
 export class RemoteClient {
