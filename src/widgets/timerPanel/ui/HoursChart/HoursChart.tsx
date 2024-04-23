@@ -2,7 +2,7 @@ import { useAppSelector } from "../../../../app/redux/hooks";
 import { workIntervalsToNormalLatePercent } from "../../../../shared/lib";
 import { timerModel } from "../../model/timerModel";
 
-const FILL_COLOR = "#f89c10";
+const FILL_COLOR = "rgb(248, 156, 16, 0.7)"; // "#f89c10";
 
 export function HoursChart() {
   const { normal, late } = workIntervalsToNormalLatePercent(
@@ -72,7 +72,7 @@ function _draw12HoursChart(
         viewBox={`-16 -16 ${width + 32} ${height + 32}`}
         width={width}
       >
-        <circle
+        {/* <circle
           fill="transparent"
           stroke="#262626"
           cx={cx}
@@ -80,7 +80,7 @@ function _draw12HoursChart(
           r={r}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
-        />
+        /> */}
 
         {strokeDashOffsets.map((item, index) => {
           return (
