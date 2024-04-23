@@ -2,7 +2,7 @@ import { useAppSelector } from "../../../../app/redux/hooks";
 import { workIntervalsToNormalLatePercent } from "../../../../shared/lib";
 import { timerModel } from "../../model/timerModel";
 
-const FILL_COLOR = "rgb(248, 156, 16, 0.7)"; // "#f89c10";
+const FILL_COLOR = "rgb(255, 255, 255, 0.8)"; // "rgb(248, 156, 16, 0.7)"; // "#f89c10";
 
 export function HoursChart() {
   const { normal, late } = workIntervalsToNormalLatePercent(
@@ -21,7 +21,7 @@ function _draw12HoursChart(
   isInner: boolean,
   showTicks: boolean
 ) {
-  const baseSize = Math.max(180, Math.min(500, window.innerHeight - 200));
+  const baseSize = Math.max(180, Math.min(600, window.innerHeight - 200));
   const size = isInner ? baseSize : baseSize + 60;
   const height = size;
   const width = size;
@@ -69,9 +69,19 @@ function _draw12HoursChart(
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height={height}
-        viewBox={`-16 -16 ${width + 32} ${height + 32}`}
+        viewBox={`-60 -60 ${width + 120} ${height + 120}`}
         width={width}
       >
+        <style>
+          {`
+          .tickText {
+            opacity: 0;
+          }
+          svg:hover .tickText {
+            opacity: 1;
+          }
+          `}
+        </style>
         {/* <circle
           fill="transparent"
           stroke="#262626"
@@ -105,15 +115,33 @@ function _draw12HoursChart(
           const c = width / 2;
           const a = (Math.PI * 2 * m) / 12 / 6;
           return (
-            <path
-              key={m}
-              strokeWidth="3"
-              strokeLinecap="round"
-              stroke="white"
-              d={`M${c + r * Math.cos(a)} ${c + r * Math.sin(a)} ${
-                c + r2 * Math.cos(a)
-              } ${c + r2 * Math.sin(a)}`}
-            />
+            <>
+              <path
+                key={m}
+                strokeWidth="3"
+                strokeLinecap="round"
+                stroke="white"
+                d={`M${c + r * Math.cos(a)} ${c + r * Math.sin(a)} ${
+                  c + r2 * Math.cos(a)
+                } ${c + r2 * Math.sin(a)}`}
+              />
+              {m % 6 === 0 ? (
+                <text
+                  className="tickText"
+                  fill="white"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  style={{
+                    fontFamily: "latoregular",
+                    fontSize: "32px",
+                  }}
+                  x={c + (r + 30) * Math.cos(a - Math.PI / 2)}
+                  y={c + (r + 30) * Math.sin(a - Math.PI / 2)}
+                >
+                  {m === 0 ? 12 : m / 6}
+                </text>
+              ) : null}
+            </>
           );
         })}
       </svg>
