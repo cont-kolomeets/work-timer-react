@@ -7,7 +7,7 @@ import { gridModel } from "../../../widgets/monthPanel/model/gridModel";
 import { timerModel } from "../../../widgets/timerPanel/model/timerModel";
 import { userModel } from "../../../widgets/userPanel/model/userModel";
 
-const MAX_BG_INDEX = 5;
+const MAX_BG_INDEX = 6;
 
 function _getRandomBgIndex(): number {
   return 1 + Math.round((MAX_BG_INDEX - 1) * Math.random());
