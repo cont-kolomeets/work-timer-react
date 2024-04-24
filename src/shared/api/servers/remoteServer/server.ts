@@ -1,4 +1,4 @@
-import { clone, get1BasedDate, getNumDaysInMonth } from "../../../lib";
+import { clone, get1BasedDate, getNow, getNumDaysInMonth } from "../../../lib";
 import { SavedState_Day, SavedState_Task } from "../../interfaces";
 import { IWorkTimerServer } from "../interfaces";
 import {
@@ -301,8 +301,8 @@ class ServerClass implements IWorkTimerServer {
     isRestoring?: boolean;
   }): Promise<SavedState_Task> {
     if (!isRestoring) {
-      !task.id && (task.created = Date.now());
-      task.modified = Date.now();
+      !task.id && (task.created = getNow());
+      task.modified = getNow();
     }
 
     const data: any = { ...task };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { useDateEditorDialog } from "../../../features/timeEditorDialog/model/useDateEditorDialog";
 import { client } from "../../../shared/api";
-import { formatDate, get1BasedDate } from "../../../shared/lib";
+import { formatDate, get1BasedDate, getNow } from "../../../shared/lib";
 import { downloadFile } from "../lib/fileUtil";
 import { tasksModel } from "./tasksModel";
 import { useTaskDialog } from "./useTaskDialog";
@@ -77,7 +77,7 @@ export function useTasksToolbar() {
       month,
       day: get1BasedDate().d,
     });
-    downloadFile(`Tasks for ${formatDate(Date.now(), "y/m/d")}.txt`, report);
+    downloadFile(`Tasks for ${formatDate(getNow(), "y/m/d")}.txt`, report);
     setLoading(false);
   };
 
@@ -87,7 +87,7 @@ export function useTasksToolbar() {
       year,
       month,
     });
-    downloadFile(`Tasks for ${formatDate(Date.now(), "y/m")}.txt`, report);
+    downloadFile(`Tasks for ${formatDate(getNow(), "y/m")}.txt`, report);
     setLoading(false);
   };
 

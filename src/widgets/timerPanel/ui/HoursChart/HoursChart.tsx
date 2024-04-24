@@ -1,3 +1,4 @@
+import React from "react";
 import { useAppSelector } from "../../../../app/redux/hooks";
 import { workIntervalsToNormalLatePercent } from "../../../../shared/lib";
 import { timerModel } from "../../model/timerModel";
@@ -115,9 +116,9 @@ function _draw12HoursChart(
           const c = width / 2;
           const a = (Math.PI * 2 * m) / 12 / 6;
           return (
-            <>
+            <React.Fragment key={"tick.text" + m}>
               <path
-                key={m}
+                key={"tick." + m}
                 strokeWidth="3"
                 strokeLinecap="round"
                 stroke="white"
@@ -127,6 +128,7 @@ function _draw12HoursChart(
               />
               {m % 6 === 0 ? (
                 <text
+                  key={"text." + m}
                   className="tickText"
                   fill="white"
                   textAnchor="middle"
@@ -141,7 +143,7 @@ function _draw12HoursChart(
                   {m === 0 ? 12 : m / 6}
                 </text>
               ) : null}
-            </>
+            </React.Fragment>
           );
         })}
       </svg>

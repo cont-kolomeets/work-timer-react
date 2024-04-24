@@ -1,4 +1,4 @@
-import { formatDate } from "../../../shared/lib";
+import { formatDate, getHours, getMinutes, getNow } from "../../../shared/lib";
 
 class DayTimer {
   private _startTime = 0;
@@ -7,7 +7,7 @@ class DayTimer {
   private _intervalHandle: any;
   private _secondPoint = 0;
   private _curInterval: number[] = [];
-  private _lastDate: string = "";
+  private _lastDate: string = formatDate(getNow(), "y/m/d");
 
   get isRunning(): boolean {
     return this._isRunning;
@@ -41,10 +41,10 @@ class DayTimer {
   }
 
   private _restart(timeElapsed = 0): void {
-    this._startTime = Date.now();
+    this._startTime = getNow();
     if (timeElapsed > 0) this._startTime -= timeElapsed;
     this._curInterval = [this._toIntevalTime(), this._toIntevalTime()];
-    this._secondPoint = Date.now();
+    this._secondPoint = getNow();
   }
 
   private _updateTimer(): void {
@@ -52,7 +52,7 @@ class DayTimer {
     // case: the person worked over 0:00am
     this._checkDateChanged() && this._restart(0); // give it a fresh start
 
-    let currentTime = Date.now();
+    let currentTime = getNow();
     let delta = currentTime - this._startTime;
     this._timeElapsed = delta;
     this._curInterval[1] = this._toIntevalTime();
@@ -64,11 +64,11 @@ class DayTimer {
   }
 
   private _toIntevalTime(): number {
-    return (new Date().getHours() * 3600 + new Date().getMinutes() * 60) * 1000;
+    return (getHours() * 3600 + getMinutes() * 60) * 1000;
   }
 
   private _checkDateChanged(): boolean {
-    const curDate = formatDate(Date.now(), "y/m/d");
+    const curDate = formatDate(getNow(), "y/m/d");
     this._lastDate = this._lastDate || curDate;
     if (this._lastDate !== curDate) {
       this._lastDate = curDate;

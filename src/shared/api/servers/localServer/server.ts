@@ -1,6 +1,7 @@
 import { nanoid } from "@reduxjs/toolkit";
 import {
   get1BasedDate,
+  getNow,
   getNumDaysInMonth,
   isHoliday,
   isWeekend,
@@ -68,8 +69,8 @@ if (isDemo) {
       id: "1",
       link: "https://github.com/cont-kolomeets/work-timer-react/issues/1",
       label: "Initial prototyping of Work Timer",
-      created: Date.now(),
-      modified: Date.now(),
+      created: getNow(),
+      modified: getNow(),
       time: 5 * 3_600_000,
       type: "task",
     },
@@ -77,8 +78,8 @@ if (isDemo) {
       id: "2",
       link: "https://github.com/cont-kolomeets/work-timer-react/issues/2",
       label: "Introducing Redux architecture to the project",
-      created: Date.now(),
-      modified: Date.now(),
+      created: getNow(),
+      modified: getNow(),
       time: 8 * 3_600_000,
       type: "task",
     },
@@ -87,8 +88,8 @@ if (isDemo) {
       link: "https://github.com/cont-kolomeets/work-timer-react/issues/3",
       label:
         "Adding key components to the project: TimerPanel, GridPanel, TasksPanel",
-      created: Date.now(),
-      modified: Date.now(),
+      created: getNow(),
+      modified: getNow(),
       time: 8 * 3_600_000,
       type: "task",
     },
@@ -96,8 +97,8 @@ if (isDemo) {
       id: "4",
       link: "https://github.com/cont-kolomeets/work-timer-react/issues/4",
       label: "Final bug fixing and polishing of the app",
-      created: Date.now(),
-      modified: Date.now(),
+      created: getNow(),
+      modified: getNow(),
       time: 8 * 3_600_000,
       type: "bug",
     },
@@ -274,8 +275,8 @@ class ServerClass implements IWorkTimerServer {
     month: number;
     task: SavedState_Task;
   }): Promise<SavedState_Task> {
-    task.created = task.created || Date.now();
-    task.modified = Date.now();
+    task.created = task.created || getNow();
+    task.modified = getNow();
     task.id = task.id || nanoid(8); // creation
     const { state, m } = await this._provideMonth({ year, month });
     m.tasks[task.id] = { ...task };

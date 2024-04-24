@@ -1,5 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../../app/redux/hooks";
 import { alertModel } from "../../../entities/alert/model/alertModel";
+import { getHours } from "../../../shared/lib";
 
 let numCalls = 0;
 
@@ -13,7 +14,7 @@ export function useShowGreetingsAlert() {
         return;
       }
 
-      const isAm = new Date().getHours() < 12;
+      const isAm = getHours() < 12;
       dispatch(
         alertModel.actions.showAlert({
           title: numCalls

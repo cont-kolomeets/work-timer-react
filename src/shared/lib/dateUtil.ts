@@ -1,13 +1,36 @@
 type DateLike = Date | number;
 
+(window as any)._nowTimeInfo = {
+  time: null,
+};
+
+function _getNowDate(): Date {
+  const d = new Date();
+  (window as any)._nowTimeInfo.time &&
+    d.setTime((window as any)._nowTimeInfo.time);
+  return d;
+}
+
 function _toDate(value: DateLike | undefined): Date {
-  value = value || Date.now();
-  if (value instanceof Date) {
+  value = value || _getNowDate();
+  if (value && typeof value === "object") {
     return value;
   }
-  const d = new Date();
+  const d = _getNowDate();
   d.setTime(value);
   return d;
+}
+
+export function getNow(): number {
+  return _getNowDate().getTime();
+}
+
+export function getHours(): number {
+  return _getNowDate().getHours();
+}
+
+export function getMinutes(): number {
+  return _getNowDate().getHours();
 }
 
 /** 1-based. */
