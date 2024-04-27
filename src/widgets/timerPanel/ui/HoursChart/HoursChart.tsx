@@ -38,7 +38,7 @@ function _draw12HoursChart(
   const r = width / 2 - strokeWidth / 2;
   const C = Math.PI * r * 2;
   const computedGap = (C * gap) / 100;
-  const dashOffsetCorrection = Math.PI * r * (1 + 1 / 6);
+  const dashOffsetCorrection = Math.PI * r * (1 + 1 / 9);
 
   const sumGapPercentage = (gap * (percentage?.length - 1)) / 100;
   const strokeDashArrays = percentage.map((percent) => {
