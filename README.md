@@ -10,6 +10,7 @@ Check out the online version: https://work-timer-react.netlify.app/?demo=true&lo
 * View the total time spent at work for the current or any specified month (in a table).
 * Track the time you spent on tasks or bugs. Add, edit, remove tasks.
 * Create daily and monthly task reports.
+* Enjoy different background images that change every once in a while.
 
 
 ## Screenshots
@@ -20,6 +21,8 @@ Check out the online version: https://work-timer-react.netlify.app/?demo=true&lo
 ![2024-03-01 16_46_35-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/e36424fa-a532-4c6e-8ea3-dfd0fdeb58df)
 
 ![2024-03-01 16_46_14-Running](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/23a11e79-a8d6-4cfa-9b7c-f29a138e2a2c)
+
+![image](https://github.com/cont-kolomeets/work-timer-react/assets/5318527/ba56c3ba-2fac-42bc-9c5e-4c006ed7f46b)
 
 
 
