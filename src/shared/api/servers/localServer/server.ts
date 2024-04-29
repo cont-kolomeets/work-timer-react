@@ -35,12 +35,12 @@ export type SavedState_Month = {
 };
 
 function _getLoggedInUserName(): string {
-  return window.location.href.includes("demo=true") ? "demo" : "alex";
+  return "demo";
 }
 
-const isDemo = _getLoggedInUserName() === "demo";
+const isDemo = true;
 
-const KEY = `workTimer.savedState${isDemo ? ".demo" : ""}`;
+const KEY = "workTimer.savedState.demo";
 const SEVER_LATENCY = 250; // ms
 
 //localStorage.removeItem(KEY); // remove for testing
@@ -137,7 +137,7 @@ class ServerClass implements IWorkTimerServer {
   } {
     return {
       username: _getLoggedInUserName(),
-      fullName: isDemo ? "Demo User" : "Alex",
+      fullName: "Demo User",
     };
   }
 
