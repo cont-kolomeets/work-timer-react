@@ -1,6 +1,6 @@
 # Demo
 
-Check out the online version: https://work-timer-react.netlify.app/?demo=true&local=true (used demo data)
+Check out the online version: https://work-timer-react.netlify.app/?local=true (used demo data)
 
 # Key Features
 
